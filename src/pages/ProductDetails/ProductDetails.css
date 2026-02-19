@@ -304,3 +304,123 @@
   font-size: 16px;
   font-weight: 600;
 }
+/* ================================================= */
+/* ⭐ PRODUCT PAGE MOBILE FIX (DESKTOP UNCHANGED) ⭐ */
+/* ================================================= */
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+
+  .product-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .main-image {
+    height: 220px;
+  }
+
+  .rating-breakdown {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+
+/* ---------- Mobile ---------- */
+@media (max-width: 768px) {
+
+  .product-page {
+    padding: 12px 0;
+  }
+
+  .product-container {
+    padding: 16px;
+    border-radius: 16px;
+    gap: 20px;
+  }
+
+  /* smaller image */
+  .main-image {
+    height: 180px;
+  }
+
+  /* thumbnails smaller */
+  .thumbs img {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* text scaling */
+  .title {
+    font-size: 20px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .desc {
+    font-size: 14px;
+  }
+
+  /* buttons stack */
+  .actions {
+    flex-direction: column;
+  }
+
+  .add,
+  .buy {
+    width: 100%;
+    padding: 10px;
+  }
+
+  /* quantity smaller */
+  .qty-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* weight buttons wrap */
+  .weight-options {
+    flex-wrap: wrap;
+  }
+
+  /* rating layout stack */
+  .rating-breakdown {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* review spacing */
+  .reviews-section {
+    padding: 16px;
+  }
+}
+
+
+/* ---------- Small Phones ---------- */
+@media (max-width: 480px) {
+
+  .main-image {
+    height: 150px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .price {
+    font-size: 18px;
+  }
+
+  .thumbs img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .qty-value {
+    font-size: 14px;
+  }
+}

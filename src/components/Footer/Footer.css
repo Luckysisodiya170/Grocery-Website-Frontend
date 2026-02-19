@@ -222,13 +222,211 @@
 }
 
 /* ================= RESPONSIVE ================= */
-@media (max-width: 968px) {
-  .footer-top { grid-template-columns: 1fr; }
-  .footer-links-grid { grid-template-columns: repeat(2, 1fr); }
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+
+  .footer-section {
+    padding-top: 60px;
+  }
+
+  /* stack top section */
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  /* reduce newsletter size */
+  .newsletter-area {
+    padding: 30px;
+  }
+
+  /* 2 column links */
+  .footer-links-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    padding: 40px 0;
+  }
 }
 
-@media (max-width: 600px) {
-  .footer-links-grid { grid-template-columns: 1fr; }
-  .footer-bottom { flex-direction: column; gap: 20px; }
-  .input-group { flex-direction: column; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 768px) {
+
+  .footer-section {
+    padding-top: 50px;
+  }
+
+  /* smaller brand */
+  .footer-brand-text {
+    font-size: 22px;
+  }
+
+  .brand-desc {
+    font-size: 14px;
+  }
+
+  /* app buttons stack */
+  .app-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .app-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  /* newsletter tighter */
+  .newsletter-area {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .newsletter-area h3 {
+    font-size: 18px;
+  }
+
+  /* input stack */
+  .input-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .input-group input,
+  .subscribe-btn {
+    width: 100%;
+  }
+
+  /* links 1 column */
+  .footer-links-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 30px 0;
+  }
+
+  .link-col h4 {
+    font-size: 16px;
+  }
+
+  .link-col a {
+    font-size: 14px;
+  }
+
+  /* bottom section stack */
+  .footer-bottom {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+}
+
+
+/* ---------- Small Phones ---------- */
+@media (max-width: 480px) {
+
+  .footer-section {
+    padding-top: 40px;
+  }
+
+  .footer-brand-img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .footer-brand-text {
+    font-size: 20px;
+  }
+
+  .brand-desc {
+    font-size: 13px;
+  }
+
+  .newsletter-area {
+    padding: 16px;
+  }
+
+  .social-row {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .payment-icons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+/* ===================================== */
+/* ⭐ COMPACT FOOTER LINKS (MOBILE) ⭐ */
+/* ===================================== */
+
+@media (max-width: 768px) {
+
+  /* reduce column spacing */
+  .footer-links-grid {
+    gap: 16px !important;
+    padding: 15px 0 !important;
+  }
+
+  /* reduce section title space */
+  .link-col h4 {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  /* reduce link spacing */
+  .link-col li {
+    margin-bottom: 6px;
+  }
+
+  .link-col a {
+    font-size: 13px;
+  }
+
+  /* compact contact items */
+  .contact-item {
+    font-size: 13px;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  /* smaller social buttons */
+  .social-row {
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .social-icon {
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 14px;
+  }
+}
+
+
+/* extra small phones */
+@media (max-width: 480px) {
+
+  .footer-links-grid {
+    gap: 12px !important;
+  }
+
+  .link-col h4 {
+    font-size: 13px;
+  }
+
+  .link-col a {
+    font-size: 12px;
+  }
+
+  .contact-item {
+    font-size: 12px;
+  }
+
+  .social-icon {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
 }

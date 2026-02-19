@@ -4,6 +4,7 @@ import ProductGallery from "../../components/Product/ProductGallery";
 import ProductInfo from "../../components/Product/ProductInfo";
 import ProductTabs from "../../components/Product/ProductTabs";
 import "./ProductDetails.css";
+import SimilarProducts from "../../components/SimilarProduct/SimilarProducts";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -30,6 +31,9 @@ function ProductDetails() {
 
       {/* BELOW → TABS + REVIEWS */}
       <ProductTabs product={product} />
+
+      <SimilarProducts currentProduct={product} />
+
 
     </div>
   );

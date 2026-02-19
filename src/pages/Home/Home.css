@@ -839,21 +839,162 @@
 }
 
 /* ================= RESPONSIVE ================= */
+/* ================= MOBILE FIX ONLY ================= */
+
+/* Tablet */
 @media (max-width: 768px) {
-  .bento-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
+
+  /* Reduce section spacing */
+  .subcategory-elite {
+    margin: 20px auto;
   }
-  
-  .bento-title {
-    font-size: 16px;
+
+  /* Smaller title */
+  .section-title-elite {
+    font-size: 24px !important;
+  }
+
+  /* Make cards smaller */
+ /* ================= SUBCATEGORY HORIZONTAL SCROLL ================= */
+
+.bento-grid {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.bento-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* each subcategory card size */
+.bento-grid > * {
+  min-width: 240px;
+  flex: 0 0 auto;
+}
+
+/* tablet */
+@media (max-width: 768px) {
+  .bento-grid > * {
+    min-width: 180px;
   }
 }
 
-.app-image img{
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  right: 50px;
+/* mobile */
+@media (max-width: 480px) {
+  .bento-grid > * {
+    min-width: 150px;
+  }
+}
+
+
+  /* Reduce card size */
+  .bento-card {
+    padding: 12px !important;
+    border-radius: 14px !important;
+    gap: 10px !important;
+  }
+
+  /* Reduce image container height */
+  .bento-image-grid {
+    padding: 8px !important;
+    gap: 6px !important;
+    aspect-ratio: auto !important;
+  }
+
+  /* Smaller images */
+  .bento-img-box {
+    padding: 4px !important;
+    min-height: 70px !important;
+  }
+
+  /* Smaller text */
+  .bento-title {
+    font-size: 14px !important;
+  }
+}
+
+
+/* ===== APP IMAGE WRAPPER ===== */
+.app-image {
   width: 100%;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* ===== IMAGE ===== */
+.app-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  display: block;
+}
+
+
+/* Small phones */
+@media (max-width: 480px) {
+
+  .bento-card {
+    padding: 10px !important;
+  }
+
+  .bento-img-box {
+    min-height: 60px !important;
+  }
+
+  .section-title-elite {
+    font-size: 22px !important;
+  }
+}
+
+
+/* MOBILE ONLY */
+@media (max-width: 768px) {
+
+  .app-image {
+    margin: 20px auto;
+    padding: 0 12px;
+  }
+
+  .app-image img {
+    border-radius: 12px;
+  }
+}
+/* ================= HORIZONTAL SCROLL PRODUCTS ================= */
+
+.product-grid-elite {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.product-grid-elite::-webkit-scrollbar {
+  display: none;
+}
+
+/* each card width */
+.product-grid-elite > * {
+  min-width: 260px;
+  flex: 0 0 auto;
+}
+
+/* tablet */
+@media (max-width: 768px) {
+  .product-grid-elite > * {
+    min-width: 180px;
+  }
+}
+
+/* mobile */
+@media (max-width: 480px) {
+  .product-grid-elite > * {
+    min-width: 150px;
+  }
 }

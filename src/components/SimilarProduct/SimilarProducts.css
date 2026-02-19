@@ -1,0 +1,45 @@
+/* ===== SECTION ===== */
+.similar-section {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+/* ===== HEADER ===== */
+.similar-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* ===== GRID ===== */
+.similar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .similar-section {
+    padding: 16px;
+  }
+
+  .similar-header h2 {
+    font-size: 20px;
+  }
+
+  .similar-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .similar-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

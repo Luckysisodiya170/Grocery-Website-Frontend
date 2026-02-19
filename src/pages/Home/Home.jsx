@@ -17,7 +17,7 @@ function Home() {
   const [current, setCurrent] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
-const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
+  const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
   // Auto-Slide Logic for the Cinematic Hero
   useEffect(() => {
     const timer = setInterval(() => {
@@ -45,8 +45,8 @@ const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
       <section className="hero-elite">
         <div className="hero-slider">
           {banners.map((img, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`hero-slide-wrapper ${index === current ? "active" : ""}`}
               style={{ opacity: index === current ? 1 : 0, zIndex: index === current ? 1 : 0 }}
             >
@@ -80,10 +80,19 @@ const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
               {selectedCategory.subcategories.map((sub) => {
                 const previewImages = products.filter((p) => p.category === sub).slice(0, 4);
                 return (
-                  <div 
-                    key={sub} 
+                  <div
+                    key={sub}
                     className={`bento-card ${selectedSub === sub ? "active" : ""}`}
-                    onClick={() => setSelectedSub(sub)}
+                    onClick={() => {
+                      setSelectedSub(sub);
+
+                      // scroll to products
+                      setTimeout(() => {
+                        document
+                          .getElementById("products-section")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                      }, 100);
+                    }}
                   >
                     <div className="bento-header">
                       <span className="bento-title">{sub}</span>
@@ -104,7 +113,7 @@ const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
         )}
 
         {/* ===== GLASS PRODUCTS PANEL ===== */}
-        <section className="glass-panel-heavy products-elite">
+        <section id="products-section" className="glass-panel-heavy products-elite">
           <div className="editorial-header center">
             <span className="overline">Curated Collection</span>
             <h2 className="section-title-elite">{selectedSub || "Trending Selection"}</h2>
@@ -117,12 +126,12 @@ const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
             ))}
 
           </div>
-         
+
         </section>
-       <div className="app-image">
-         <img src={app} alt="" href="https://play.google.com/store/games?hl=en_IN"/>     
-         </div> 
-           <Recommended products={recommendedItems} />
+        <div className="app-image">
+          <img src={app} alt="" href="https://play.google.com/store/games?hl=en_IN" />
+        </div>
+        <Recommended products={recommendedItems} />
       </div>
     </div>
   );
