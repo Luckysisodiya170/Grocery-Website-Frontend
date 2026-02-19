@@ -1,0 +1,252 @@
+/* ===============================
+   PAGE BACKGROUND (FULL SCREEN)
+================================ */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+}
+
+/* ===============================
+   MAIN AUTH CARD
+================================ */
+
+.auth-card {
+  width: 820px;
+  max-width: 100%;
+
+  display: flex;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+
+  height: 560px; /* same size login + register */
+  overflow: hidden;
+}
+
+/* ===============================
+   FORM SIDE
+================================ */
+
+.auth-form {
+  flex: 1;
+  padding: 30px 35px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* form width */
+.form-wrapper {
+  width: 100%;
+  max-width: 320px;
+}
+
+/* ===============================
+   TEXT
+================================ */
+
+.auth-form h2 {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  color: #64748b;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+/* ===============================
+   INPUTS
+================================ */
+
+.form-wrapper input,
+.form-wrapper textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.form-wrapper input:focus,
+.form-wrapper textarea:focus {
+  border-color: #005f73;
+  background: white;
+}
+
+/* ===============================
+   FORGOT PASSWORD
+================================ */
+
+.forgot-wrapper {
+  text-align: right;
+  margin-bottom: 12px;
+}
+
+.forgot-link {
+  font-size: 13px;
+  color: #005f73;
+}
+
+/* ===============================
+   LOGIN BUTTON
+================================ */
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+
+  border-radius: 10px;
+  border: none;
+  background: #111;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background: #000;
+}
+
+/* ===============================
+   DIVIDER
+================================ */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+/* ===============================
+   SOCIAL BUTTONS
+================================ */
+
+.social-btn {
+  width: 100%;
+  padding: 12px;
+
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.social-btn:hover {
+  background: #f8fafc;
+}
+
+/* ===============================
+   SWITCH TEXT
+================================ */
+
+.switch-text {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.switch-text a {
+  color: #005f73;
+  font-weight: 600;
+}
+
+/* ===============================
+   IMAGE SIDE
+================================ */
+
+.auth-image {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* image */
+.auth-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* overlay color */
+.auth-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,95,115,0.45);
+}
+
+/* ===============================
+   TEXT OVER IMAGE (NEW)
+================================ */
+
+.auth__visual-content {
+  position: absolute;
+  bottom: 210px;
+  left: 30px;
+  z-index: 2;
+
+  color: rgb(255, 255, 255);
+  max-width: 300px;
+}
+
+.auth__visual-content h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.auth__visual-content p {
+  font-size: 14px;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media (max-width: 900px) {
+  .auth-card {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .auth-image {
+    height: 220px;
+  }
+
+  .auth-form {
+    padding: 25px;
+  }
+}
+.auth-error {
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: 8px;
+}
