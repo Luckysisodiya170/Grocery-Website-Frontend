@@ -58,6 +58,24 @@ const categories = [
       "Women",
       "Shoes"
     ]
+  }, {
+    id: 6,
+    name: "Sports",
+    image: "sports-category.jpeg",
+    subcategories: [
+      "Men",
+      "Women",
+      "Shoes"
+    ]
+  }, {
+    id: 6,
+    name: "Sports",
+    image: "sports-category.jpeg",
+    subcategories: [
+      "Men",
+      "Women",
+      "Shoes"
+    ]
   }
 ];
 

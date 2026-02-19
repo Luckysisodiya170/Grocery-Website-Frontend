@@ -28,10 +28,7 @@ function Category({ data = [], onSelect }) {
             View all categories <span className="arrow-right">→</span>
           </span>
           
-          <div className="category-controls">
-            <button className="nav-arrow" onClick={scrollLeft} aria-label="Scroll Left">‹</button>
-            <button className="nav-arrow" onClick={scrollRight} aria-label="Scroll Right">›</button>
-          </div>
+          
         </div>
 
       </div>

@@ -105,32 +105,30 @@ const Card = ({ product }) => {
 
 const StyledWrapper = styled.div`
 .card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 28px;
+  background: linear-gradient(145deg, #ffffff, #f0f9ff);
+  border-radius: 26px;
   overflow: hidden;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s ease;
+  border: 4px solid linear-gradient(135deg, #6366f1, #ec4899, #14b8a6) 1;
 }
 
 .card:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 35px 60px -15px rgba(0, 95, 115, 0.15);
-  border-color: rgba(20, 184, 166, 0.4); /* var(--secondary) tint */
-  background: white;
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 35px 70px rgba(99, 102, 241, 0.28);
+ 
+
 }
 
-/* ================= BADGES & BUTTONS ================= */
+/* ================= DISCOUNT BADGE ================= */
 .discount {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  background: var(--sunset-gradient, linear-gradient(135deg, #FF9D6C 0%, #BB4E75 100%));
+  top: 15px;
+  left: 15px;
+  background: linear-gradient(135deg, #ff6a00, #ee0979);
   color: white;
   padding: 6px 14px;
   border-radius: 20px;
@@ -138,82 +136,86 @@ const StyledWrapper = styled.div`
   font-weight: 800;
   letter-spacing: 0.5px;
   z-index: 10;
-  box-shadow: 0 8px 15px rgba(187, 78, 117, 0.25);
+  box-shadow: 0 8px 20px rgba(238, 9, 121, 0.4);
 }
 
+/* ================= WISHLIST ================= */
 .wishlist-btn {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  border: 1px solid rgba(255,255,255,0.8);
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(8px);
+  top: 15px;
+  right: 15px;
+  background: white;
   width: 42px;
   height: 42px;
   border-radius: 50%;
+  border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
 .wishlist-btn:hover {
   transform: scale(1.15);
-  background: white;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-.liked { color: #ef4444; filter: drop-shadow(0 4px 8px rgba(239, 68, 68, 0.3)); }
-.unliked { color: var(--text-light); }
+.liked {
+  color: #ff006e;
+  filter: drop-shadow(0 6px 10px rgba(255, 0, 110, 0.4));
+}
 
-/* ================= FLOATING IMAGE ================= */
+.unliked {
+  color: #94a3b8;
+}
+
+/* ================= IMAGE SECTION ================= */
 .image-box {
-  height: 220px;
-  padding: 30px;
+  height: 230px;
+  padding: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top left, #ffffff, #f0f9ff);
+  background: linear-gradient(135deg, #dbeafe, #fce7f3);
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.glow-backdrop {
+.image-box::before {
+  content: "";
   position: absolute;
-  width: 120px;
-  height: 120px;
-  background: var(--primary);
-  filter: blur(60px);
-  opacity: 0.05;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, #6366f1, transparent);
+  opacity: 0.15;
   border-radius: 50%;
   transition: 0.5s;
+}
+
+.card:hover .image-box::before {
+  transform: scale(1.6);
+  opacity: 0.25;
 }
 
 .image-box img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.5s ease;
   z-index: 2;
 }
 
 .card:hover img {
-  transform: scale(1.15) translateY(-8px) rotate(-3deg);
-  filter: drop-shadow(0 20px 25px rgba(0,0,0,0.15));
+  transform: scale(1.15) rotate(-4deg);
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.2));
 }
 
-.card:hover .glow-backdrop {
-  opacity: 0.15;
-  transform: scale(1.5);
-}
-
-/* ================= INFO SECTION ================= */
+/* ================= INFO ================= */
 .info {
-  padding: 24px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -221,22 +223,23 @@ const StyledWrapper = styled.div`
 
 .category-tag {
   font-size: 11px;
-  font-weight: 700;
-  color: var(--secondary);
+  font-weight: 800;
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 8px;
 }
 
 .name {
   font-size: 18px;
   font-weight: 800;
   margin-bottom: 12px;
-  color: var(--text-main);
+  color: #111827;
   cursor: pointer;
   line-height: 1.3;
-  transition: color 0.3s ease;
-  /* Truncate long names */
+  transition: 0.3s;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -244,39 +247,39 @@ const StyledWrapper = styled.div`
 }
 
 .card:hover .name {
-  color: var(--primary);
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* ================= RATINGS ================= */
+/* ================= RATING ================= */
 .rating {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .stars {
-  color: #f59e0b;
-  font-weight: 700;
-  background: rgba(245, 158, 11, 0.1);
+  background: linear-gradient(135deg, #facc15, #f97316);
+  color: white;
   padding: 4px 8px;
   border-radius: 8px;
+  font-weight: 700;
 }
 
 .reviews {
-  color: var(--text-light);
+  color: #64748b;
   font-weight: 500;
 }
 
-/* ================= PRICE & CART ROW ================= */
+/* ================= PRICE ================= */
 .price-row {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   margin-top: auto;
-  padding-top: 10px;
-  border-top: 1px solid rgba(0,0,0,0.04);
 }
 
 .price-stack {
@@ -286,35 +289,35 @@ const StyledWrapper = styled.div`
 
 .price {
   font-size: 22px;
-  font-weight: 800;
-  color: var(--text-main);
+  font-weight: 900;
+  background: linear-gradient(90deg, #14b8a6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .old {
   text-decoration: line-through;
-  color: var(--text-light);
+  color: #94a3b8;
   font-size: 13px;
-  font-weight: 500;
 }
 
-/* Glowing Add Button */
+/* ================= ADD BUTTON ================= */
 .add-btn {
   padding: 12px 20px;
   border-radius: 14px;
   border: none;
-  background: var(--accent-gradient, linear-gradient(135deg, #005f73 0%, #14b8a6 100%));
+  background: linear-gradient(135deg, #6366f1, #ec4899);
   color: white;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.4s ease;
-  box-shadow: 0 8px 20px rgba(0, 95, 115, 0.15);
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
 }
 
 .add-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(0, 95, 115, 0.3);
-  filter: brightness(1.1);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 20px 35px rgba(236, 72, 153, 0.4);
 }
 `;
 

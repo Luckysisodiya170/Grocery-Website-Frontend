@@ -1,0 +1,192 @@
+/* ================= RECOMMENDED SPOTLIGHT ELITE ================= */
+.recommended-spotlight {
+  /* padding: 100px 0; */
+  position: relative;
+  background: radial-gradient(circle at 10% 20%, rgba(20, 184, 166, 0.05) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(0, 95, 115, 0.05) 0%, transparent 40%);
+  overflow: hidden;
+}
+
+/* Header with Refined Spacing */
+.editorial-header.space-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  /* margin-bottom: 50px; */
+  padding: 0 10px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #005f73 0%, #0a9396 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+
+/* Magnetic Control Buttons */
+.elite-controls {
+  display: flex;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 8px;
+  border-radius: 100px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.control-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid #eef2f6;
+  background: white;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e293b;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.control-btn:hover {
+  background: var(--primary, #005f73);
+  color: white;
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 95, 115, 0.2);
+  border-color: transparent;
+}
+
+/* Spotlight Track & Masking */
+.spotlight-wrapper {
+  position: relative;
+  margin: 0 -50px;
+  padding: 0 50px;
+}
+
+/* Subtle fade on edges for focus */
+.spotlight-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 100px;
+  background: linear-gradient(to right, transparent, #f8fafc);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.spotlight-track {
+  display: flex;
+  gap: 35px;
+  overflow-x: auto;
+  padding: 30px 15px 60px;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+/* Spotlight Item Elevation */
+.spotlight-item {
+  flex: 0 0 auto;
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.spotlight-item:hover {
+  transform: translateY(-15px);
+}
+
+/* Hover Glow Effect */
+.spotlight-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  background: var(--primary, #005f73);
+  filter: blur(40px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: -1;
+}
+
+.spotlight-item:hover::before {
+  opacity: 0.08;
+}
+
+/* Exclusive Floating Badge */
+.badge-exclusive {
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background: linear-gradient(135deg, #005f73, #0a9396);
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 95, 115, 0.2);
+  z-index: 10;
+  transform: rotate(-2deg);
+}/* ================= RECOMMENDED SPOTLIGHT - WIDE VERSION ================= */
+.recommended-spotlight {
+  padding: 100px 0;
+  /* Darker gradient at the bottom for better grounding */
+  background: linear-gradient(to bottom, #f8fafc, #f1f5f9 50%, #f8fafc);
+  overflow: hidden; 
+}
+
+/* Keep the header aligned with your standard container, 
+   but the wrapper below will go full width.
+*/
+.recommended-spotlight .container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* THE FIX: Full Width Wrapper */
+.spotlight-full-wrapper {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 20px 0 60px;
+}
+
+.spotlight-track {
+  display: flex;
+  gap: 40px; /* Increased gap for breathing room */
+  overflow-x: auto;
+  /* Padding-left: Keeps the first item aligned with your site's container.
+     Padding-right: Ensures the last item doesn't hit the edge.
+  */
+  padding-left: calc((100vw - 1300px) / 2 + 24px);
+  padding-right: 50px;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+/* Fallback for smaller screens where 100vw - 1300px is negative */
+@media (max-width: 1350px) {
+  .spotlight-track {
+    padding-left: 24px;
+  }
+}
+
+.spotlight-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Increase card width slightly for better presence */
+.spotlight-item {
+  flex: 0 0 280px; /* Set a fixed, wider base for the cards */
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.spotlight-item:hover {
+  transform: translateY(-12px) scale(1.03);
+}

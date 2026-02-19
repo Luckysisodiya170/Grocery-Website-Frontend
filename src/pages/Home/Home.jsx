@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import "./Home.css";
-
+import "./Home.css"; // Ensure all your CSS is combined here
+import app from "../../assets/screen/WhatsApp Image 2026-02-20 at 12.54.29 AM.jpeg"
 import Card from "../Productcard/Productcard.jsx";
 import products from "../../data/products.json";
 import Category from "../../components/Category/Category";
 import categories from "../../data/category.js";
-import Footer from "../../components/Footer/Footer.jsx";
-
+import Recommended from "./Recommended.jsx";
 import beauty from "../../assets/bannerimages/beauty11.jpg";
 import electronics from "../../assets/bannerimages/fashion4th.jpg";
 import fashion from "../../assets/bannerimages/electro11.jpg";
@@ -15,121 +14,116 @@ import toys from "../../assets/bannerimages/health11.jpg";
 
 function Home() {
   const banners = [beauty, electronics, fashion, food, toys];
-
   const [current, setCurrent] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
-
-  /* ---------------- AUTO SLIDE ---------------- */
+const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
+  // Auto-Slide Logic for the Cinematic Hero
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % banners.length);
-    }, 3500);
+    }, 4000); // 4 seconds to match fillProgress animation
     return () => clearInterval(timer);
   }, [banners.length]);
 
-  const nextSlide = () => setCurrent((prev) => (prev + 1) % banners.length);
-  const prevSlide = () => setCurrent((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
-
-  /* ---------------- CATEGORY CLICK ---------------- */
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setSelectedSub(null);
+    // Smooth scroll to results
+    document.getElementById("explore-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  /* ---------------- SUBCATEGORY CLICK ---------------- */
-  const handleSubSelect = (sub) => {
-    setSelectedSub(sub);
-  };
-
-  /* ---------------- FILTER PRODUCTS ---------------- */
   const filteredProducts = products.filter((p) => {
     if (!selectedCategory) return true;
-    if (selectedCategory.name === "Grocery") {
-      return !selectedSub || p.category === selectedSub;
-    }
-    return true;
+    if (!selectedSub) return p.parentCategory === selectedCategory.name; // Adjust based on your JSON structure
+    return p.category === selectedSub;
   });
 
   return (
-    <div className="home app-layout">
-
-      {/* ===== CLEAN HERO SLIDER ===== */}
-      <section className="hero-clean container">
-        <div className="hero-slider-track" style={{ transform: `translateX(-${current * 100}%)` }}>
+    <div className="home cinematic-bg">
+      {/* ===== CINEMATIC HERO SLIDER ===== */}
+      <section className="hero-elite">
+        <div className="hero-slider">
           {banners.map((img, index) => (
-            <img key={index} src={img} alt="Promo Banner" className="hero-image" />
+            <div 
+              key={index} 
+              className={`hero-slide-wrapper ${index === current ? "active" : ""}`}
+              style={{ opacity: index === current ? 1 : 0, zIndex: index === current ? 1 : 0 }}
+            >
+              <img src={img} alt="Banner" className="hero-slide-img" />
+              <div className="hero-vignette"></div>
+            </div>
           ))}
-        </div>
-
-        <button className="nav-arrow left" onClick={prevSlide}>‹</button>
-        <button className="nav-arrow right" onClick={nextSlide}>›</button>
-
-        <div className="slider-pagination">
-          {banners.map((_, i) => (
-            <span key={i} className={`page-dot ${i === current ? "active" : ""}`} onClick={() => setCurrent(i)} />
-          ))}
+          <div className="elite-slider-dots">
+            {banners.map((_, i) => (
+              <div key={i} className={`elite-dot ${i === current ? "active" : ""}`} onClick={() => setCurrent(i)}>
+                {i === current && <div className="dot-progress"></div>}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ===== CATEGORY ===== */}
-      <Category data={categories} onSelect={handleCategorySelect} />
+      <div className="container">
+        {/* ===== CATEGORY SELECTION ===== */}
+        <Category data={categories} onSelect={handleCategorySelect} />
 
-    {/* ===== SUBCATEGORY (Visual Bento Cards) ===== */}
-      {selectedCategory?.subcategories && (
-        <section className="subcategory-bento container">
-          <div className="section-header">
-            <h2>Explore {selectedCategory.name}</h2>
-          </div>
+        {/* ===== BENTO SUBCATEGORIES ===== */}
+        {selectedCategory?.subcategories && (
+          <section id="explore-section" className="subcategory-elite">
+            <div className="editorial-header">
+              <span className="overline">Discover</span>
+              <h2 className="section-title-elite">Explore {selectedCategory.name}</h2>
+            </div>
 
-          <div className="bento-grid">
-            {selectedCategory.subcategories.map((sub) => {
-              // Automatically grab up to 4 products that match this subcategory
-              const previewImages = products
-                .filter((p) => p.category === sub)
-                .slice(0, 4);
-
-              return (
-                <div
-                  key={sub}
-                  className={`bento-card ${selectedSub === sub ? "active" : ""}`}
-                  onClick={() => handleSubSelect(sub)}
-                >
-                  <div className="bento-header">
-                    <span className="bento-title">{sub}</span>
-                    <span className="bento-arrow">→</span>
-                  </div>
-
-                  <div className="bento-image-grid">
-                    {previewImages.length > 0 ? (
-                      previewImages.map((p) => (
+            <div className="bento-grid">
+              {selectedCategory.subcategories.map((sub) => {
+                const previewImages = products.filter((p) => p.category === sub).slice(0, 4);
+                return (
+                  <div 
+                    key={sub} 
+                    className={`bento-card ${selectedSub === sub ? "active" : ""}`}
+                    onClick={() => setSelectedSub(sub)}
+                  >
+                    <div className="bento-header">
+                      <span className="bento-title">{sub}</span>
+                      <span className="bento-arrow">→</span>
+                    </div>
+                    <div className="bento-image-grid">
+                      {previewImages.map((p) => (
                         <div className="bento-img-box" key={p.id}>
                           <img src={`/product/${p.image}`} alt={p.name} />
                         </div>
-                      ))
-                    ) : (
-                      <div className="bento-empty">More items coming soon</div>
-                    )}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* ===== GLASS PRODUCTS PANEL ===== */}
+        <section className="glass-panel-heavy products-elite">
+          <div className="editorial-header center">
+            <span className="overline">Curated Collection</span>
+            <h2 className="section-title-elite">{selectedSub || "Trending Selection"}</h2>
           </div>
+
+          <div className="product-grid-elite">
+            {filteredProducts.map((item) => (
+              <Card key={item.id} product={item} />
+
+            ))}
+
+          </div>
+         
         </section>
-      )}
-      {/* ===== PRODUCTS ===== */}
-      <section className="products-clean container">
-        <div className="section-header">
-          <h2>{selectedSub || "Trending Now"}</h2>
-        </div>
-
-        <div className="product-grid-clean">
-          {filteredProducts.map((item) => (
-            <Card key={item.id} product={item} />
-          ))}
-        </div>
-      </section>
-
+       <div className="app-image">
+         <img src={app} alt="" href="https://play.google.com/store/games?hl=en_IN"/>     
+         </div> 
+           <Recommended products={recommendedItems} />
+      </div>
     </div>
   );
 }
