@@ -6,6 +6,7 @@
   background: radial-gradient(circle at 10% 20%, rgba(20, 184, 166, 0.05) 0%, transparent 40%),
               radial-gradient(circle at 90% 80%, rgba(0, 95, 115, 0.05) 0%, transparent 40%);
   border-top: 1px solid var(--border);
+  border-radius: 26px;
 }
 
 /* Header with Refined Spacing */

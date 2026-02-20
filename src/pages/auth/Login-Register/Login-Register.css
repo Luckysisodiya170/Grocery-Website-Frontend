@@ -107,14 +107,14 @@
 
   border-radius: 10px;
   border: none;
-  background: #111;
+  background:var(--primary);
   color: white;
   font-weight: 600;
   cursor: pointer;
 }
 
 .login-btn:hover {
-  background: #000;
+  background: #3e3e3e;
 }
 
 /* ===============================

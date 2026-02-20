@@ -98,7 +98,7 @@ function LoginRegister() {
                 onChange={(e)=>setMobile(e.target.value.replace(/\D/g,""))}
               />
 
-              {!isRegister && (
+              {/* {!isRegister && (
                 <div className="forgot-wrapper">
                   <span
                     className="forgot-link"
@@ -107,7 +107,7 @@ function LoginRegister() {
                     Forgot Password?
                   </span>
                 </div>
-              )}
+              )} */}
 
               {error && <p className="auth-error">{error}</p>}
 

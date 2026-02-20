@@ -18,7 +18,7 @@ function Home() {
   const [current, setCurrent] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(8); // Limits products shown initially
+  const [visibleCount, setVisibleCount] = useState(8); 
 
   const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
 
@@ -32,13 +32,13 @@ function Home() {
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setSelectedSub(null);
-    setVisibleCount(8); // Reset count when changing category
+    setVisibleCount(8); 
     document.getElementById("explore-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleSubSelect = (sub) => {
     setSelectedSub(sub);
-    setVisibleCount(8); // Reset count when changing subcategory
+    setVisibleCount(8); 
     setTimeout(() => {
       document.getElementById("products-section")?.scrollIntoView({ behavior: "smooth" });
     }, 100);
@@ -55,6 +55,7 @@ function Home() {
 
   return (
     <div className="home cinematic-bg">
+      {/* ================= HERO SLIDER ================= */}
       <section className="hero-elite container">
         <div className="hero-slider">
           {banners.map((img, index) => (
@@ -78,8 +79,10 @@ function Home() {
       </section>
 
       <div className="container">
+        {/* ================= CATEGORIES ================= */}
         <Category data={categories} onSelect={handleCategorySelect} />
 
+        {/* ================= BENTO SUBCATEGORIES WITH +X LOGIC ================= */}
         {selectedCategory?.subcategories && (
           <section id="explore-section" className="subcategory-elite">
             <div className="editorial-header">
@@ -89,7 +92,11 @@ function Home() {
 
             <div className="bento-grid">
               {selectedCategory.subcategories.map((sub) => {
-                const previewImages = products.filter((p) => p.category === sub).slice(0, 4);
+                // Get all products for this subcategory
+                const allSubProducts = products.filter((p) => p.category === sub);
+                const totalCount = allSubProducts.length;
+                const previewImages = allSubProducts.slice(0, 4); // Only take first 4
+
                 return (
                   <div
                     key={sub}
@@ -101,11 +108,27 @@ function Home() {
                       <span className="bento-arrow">→</span>
                     </div>
                     <div className="bento-image-grid">
-                      {previewImages.length > 0 ? previewImages.map((p) => (
-                        <div className="bento-img-box" key={p.id}>
-                          <img src={`/product/${p.image}`} alt={p.name} />
-                        </div>
-                      )) : <div className="bento-empty">No preview</div>}
+                      {previewImages.length > 0 ? (
+                        previewImages.map((p, index) => {
+                          // Check if this is the 4th slot and there are more products
+                          const isMoreSlot = index === 3 && totalCount > 4;
+
+                          return (
+                            <div className={`bento-img-box ${isMoreSlot ? "more-box" : ""}`} key={p.id}>
+                              <img src={`/product/${p.image}`} alt={p.name} />
+                              
+                              {/* The +X Overlay */}
+                              {isMoreSlot && (
+                                <div className="more-overlay">
+                                  <span>More Products</span>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="bento-empty">No preview</div>
+                      )}
                     </div>
                   </div>
                 );
@@ -114,13 +137,13 @@ function Home() {
           </section>
         )}
 
+        {/* ================= MAIN PRODUCT GRID ================= */}
         <section id="products-section" className="glass-panel-heavy products-elite">
           <div className="editorial-header center">
             <span className="overline">Curated Collection</span>
             <h2 className="section-title-elite">{selectedSub || selectedCategory?.name || "Trending Selection"}</h2>
           </div>
 
-          {/* NO PRODUCTS FOUND STATE */}
           {filteredProducts.length === 0 ? (
             <div className="empty-state-box">
                <h3>No product found.</h3>
@@ -128,14 +151,12 @@ function Home() {
             </div>
           ) : (
             <>
-              {/* THE GRID: Auto-fit makes 2 products look perfect, and wraps 4+ nicely */}
               <div className="product-grid-elite">
                 {displayProducts.map((item) => (
                   <Card key={item.id} product={item} />
                 ))}
               </div>
 
-              {/* LOAD MORE BUTTON ++ */}
               {hasMoreProducts && (
                 <div className="load-more-container">
                   <button className="btn-load-more" onClick={() => setVisibleCount(prev => prev + 8)}>
@@ -147,13 +168,14 @@ function Home() {
           )}
         </section>
 
-        {/* FIXED ANCHOR TAG FOR PLAY STORE */}
+        {/* ================= APP BANNER ================= */}
         <div className="app-image">
           <a href="https://play.google.com/store/apps" target="_blank" rel="noreferrer">
             <img src={app} alt="Download App" />
           </a>
         </div>
 
+        {/* ================= RECOMMENDED SECTION ================= */}
         <Recommended products={recommendedItems} />
       </div>
     </div>
