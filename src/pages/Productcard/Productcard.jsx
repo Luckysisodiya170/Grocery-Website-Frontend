@@ -7,25 +7,24 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 const Card = ({ product }) => {
   const navigate = useNavigate();
 
- const goToProduct = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
+  const goToProduct = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+    navigate(`/product/${product.id}`);
+  };
 
-  navigate(`/product/${product.id}`);
-};
   /* ---------------- WISHLIST STATE ---------------- */
   const [liked, setLiked] = useState(false);
 
-  // load saved wishlist
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("wishlist")) || [];
     setLiked(saved.includes(product.id));
   }, [product.id]);
 
-  // toggle like
-  const toggleLike = () => {
+  const toggleLike = (e) => {
+    e.stopPropagation(); // Prevents navigating to product when clicking heart
     let saved = JSON.parse(localStorage.getItem("wishlist")) || [];
 
     if (saved.includes(product.id)) {
@@ -35,19 +34,18 @@ const Card = ({ product }) => {
       saved.push(product.id);
       setLiked(true);
     }
-
     localStorage.setItem("wishlist", JSON.stringify(saved));
   };
 
   /* ---------------- ADD TO CART ---------------- */
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
+    e.stopPropagation(); // Prevents navigating to product
     const isLoggedIn = localStorage.getItem("authToken");
 
     if (!isLoggedIn) {
       navigate("/login");
       return;
     }
-
     console.log("Added to cart");
   };
 
@@ -57,7 +55,7 @@ const Card = ({ product }) => {
         {/* ❤️ Glass Wishlist Button */}
         <button className="wishlist-btn" onClick={toggleLike}>
           {liked ? (
-            <FavoriteIcon className="liked" />
+            <FavoriteIcon className="liked" style={{ color: "#ec4899" }} />
           ) : (
             <FavoriteBorderIcon className="unliked" />
           )}
@@ -68,17 +66,16 @@ const Card = ({ product }) => {
           <span className="discount">{product.discount} OFF</span>
         )}
 
-        {/* Floating Image Box */}
+        {/* Floating Image Box (FIXED TO COVER TOP HALF perfectly) */}
         <div className="image-box" onClick={goToProduct}>
-          <div className="glow-backdrop"></div>
-          <img src={`/product/${product.image}`} alt={product.name} />
+          <img src={product.image.startsWith('http') ? product.image : `/product/${product.image}`} alt={product.name} />
         </div>
 
         {/* Info Section */}
-        <div className="info">
+        <div className="info" onClick={goToProduct}>
           <div className="category-tag">{product.category}</div>
           
-          <h4 className="name" onClick={goToProduct}>
+          <h4 className="name">
             {product.name}
           </h4>
 
@@ -108,217 +105,171 @@ const Card = ({ product }) => {
 };
 
 const StyledWrapper = styled.div`
-.card {
-  background: linear-gradient(145deg, #ffffff, #f0f9ff);
-  border-radius: 26px;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-  transition: all 0.4s ease;
-}
-
-/* ================= HOVER ================= */
-.card:hover {
-  transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 35px 70px rgba(99, 102, 241, 0.28);
-}
-
-/* ================= DISCOUNT ================= */
-.discount {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  background: linear-gradient(135deg, #ff6a00, #ee0979);
-  color: white;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 800;
-  z-index: 10;
-}
-
-/* ================= WISHLIST ================= */
-.wishlist-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: white;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ================= IMAGE ================= */
-.image-box {
-  height: 230px;
-  padding: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #dbeafe, #fce7f3);
-  cursor: pointer;
-}
-
-.image-box img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-/* ================= INFO ================= */
-.info {
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.category-tag {
-  font-size: 11px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.name {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 12px;
-  line-height: 1.3;
-}
-
-/* ================= PRICE ================= */
-.price-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-top: auto;
-}
-
-.price {
-  font-size: 22px;
-  font-weight: 900;
-}
-
-.old {
-  text-decoration: line-through;
-  font-size: 13px;
-}
-
-/* ================= BUTTON ================= */
-.add-btn {
-  padding: 12px 20px;
-  border-radius: 14px;
-  border: none;
-  background: linear-gradient(135deg, #6366f1, #ec4899);
-  color: white;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-/* ===================================================== */
-/* ⭐⭐⭐ MOBILE ONLY FIX (DESKTOP UNCHANGED) ⭐⭐⭐ */
-/* ===================================================== */
-
-@media (max-width: 768px) {
-
+  height: 100%;
+  
   .card {
-    border-radius: 18px;
+    background: linear-gradient(145deg, #ffffff, #f0f9ff);
+    border-radius: var(--radius-lg, 16px);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+    cursor: pointer;
   }
 
-  /* smaller image area */
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 35px 70px rgba(99, 102, 241, 0.28);
+    border-color: var(--primary);
+  }
+
+  .discount {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(135deg, #ff6a00, #ee0979);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    z-index: 10;
+  }
+
+  .wishlist-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+  }
+  
+  .wishlist-btn:hover {
+    transform: scale(1.1);
+    color: #ec4899;
+  }
+
+  /* THE MAGIC IMAGE FIX */
   .image-box {
-    height: 140px;
-    padding: 12px;
+    height: 200px;
+    width: 100%;
+    padding: 0; /* Removed padding so image goes edge-to-edge */
+    background: #f8fafc; 
+    overflow: hidden;
   }
 
-  /* reduce spacing */
+  .image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Forces image to stretch and cover perfectly */
+    transition: transform 0.5s ease;
+  }
+
+  .card:hover .image-box img {
+    transform: scale(1.08); /* Nice subtle zoom effect */
+  }
+
   .info {
-    padding: 14px;
-  }
-
-  /* smaller text */
-  .name {
-    font-size: 15px;
-  }
-
-  .price {
-    font-size: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
   }
 
   .category-tag {
-    font-size: 10px;
-  }
-
-  /* smaller button */
-  .add-btn {
-    padding: 8px 14px;
-    font-size: 12px;
-    border-radius: 10px;
-  }
-
-  /* smaller wishlist */
-  .wishlist-btn {
-    width: 34px;
-    height: 34px;
-  }
-}
-  /* ================= PRODUCT GRID ================= */
-.product-grid-elite {
-  display: grid;
-  gap: 20px;
-}
-
-/* Desktop → auto layout */
-@media (min-width: 1025px) {
-  .product-grid-elite {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  }
-}
-
-/* Tablet → 3 cards */
-@media (max-width: 1024px) {
-  .product-grid-elite {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Mobile → 3 cards (what you want) */
-@media (max-width: 768px) {
-  .product-grid-elite {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-}
-
-/* Small phone → still 3 but tighter */
-@media (max-width: 480px) {
-  .product-grid-elite {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-}
-
-
-/* small phones */
-@media (max-width: 480px) {
-
-  .image-box {
-    height: 120px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-light);
+    margin-bottom: 6px;
+    text-transform: uppercase;
   }
 
   .name {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    line-height: 1.3;
+    color: var(--text-main);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .rating {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    margin-bottom: 15px;
+    color: #f59e0b;
+    font-weight: bold;
+  }
+
+  .reviews {
+    color: var(--text-light);
+    font-weight: normal;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+
+  .price-stack {
+    display: flex;
+    flex-direction: column;
   }
 
   .price {
-    font-size: 16px;
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--primary, #005f73);
   }
-}
+
+  .old {
+    text-decoration: line-through;
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  .add-btn {
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #6366f1, #ec4899);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .add-btn:hover {
+    box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4);
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    .image-box { height: 160px; }
+    .info { padding: 14px; }
+    .name { font-size: 14px; }
+    .price { font-size: 18px; }
+    .add-btn { padding: 8px 14px; font-size: 12px; }
+  }
 `;
- export default Card
+
+export default Card;

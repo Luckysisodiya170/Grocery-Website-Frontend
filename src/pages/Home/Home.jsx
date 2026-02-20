@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import "./Home.css"; // Ensure all your CSS is combined here
+import "./Home.css"; 
 import app from "../../assets/screen/WhatsApp Image 2026-02-20 at 12.54.29 AM.jpeg"
 import Card from "../Productcard/Productcard.jsx";
 import products from "../../data/products.json";
 import Category from "../../components/Category/Category";
 import categories from "../../data/category.js";
 import Recommended from "./Recommended.jsx";
+
 import beauty from "../../assets/bannerimages/beauty11.jpg";
 import electronics from "../../assets/bannerimages/fashion4th.jpg";
 import fashion from "../../assets/bannerimages/electro11.jpg";
@@ -17,32 +18,44 @@ function Home() {
   const [current, setCurrent] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(8); // Limits products shown initially
+
   const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
-  // Auto-Slide Logic for the Cinematic Hero
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % banners.length);
-    }, 4000); // 4 seconds to match fillProgress animation
+    }, 4000); 
     return () => clearInterval(timer);
   }, [banners.length]);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setSelectedSub(null);
-    // Smooth scroll to results
+    setVisibleCount(8); // Reset count when changing category
     document.getElementById("explore-section")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSubSelect = (sub) => {
+    setSelectedSub(sub);
+    setVisibleCount(8); // Reset count when changing subcategory
+    setTimeout(() => {
+      document.getElementById("products-section")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   const filteredProducts = products.filter((p) => {
     if (!selectedCategory) return true;
-    if (!selectedSub) return p.parentCategory === selectedCategory.name; // Adjust based on your JSON structure
+    if (!selectedSub) return p.parentCategory === selectedCategory.name; 
     return p.category === selectedSub;
   });
 
+  const displayProducts = filteredProducts.slice(0, visibleCount);
+  const hasMoreProducts = visibleCount < filteredProducts.length;
+
   return (
     <div className="home cinematic-bg">
-      {/* ===== CINEMATIC HERO SLIDER ===== */}
-      <section className="hero-elite">
+      <section className="hero-elite container">
         <div className="hero-slider">
           {banners.map((img, index) => (
             <div
@@ -65,10 +78,8 @@ function Home() {
       </section>
 
       <div className="container">
-        {/* ===== CATEGORY SELECTION ===== */}
         <Category data={categories} onSelect={handleCategorySelect} />
 
-        {/* ===== BENTO SUBCATEGORIES ===== */}
         {selectedCategory?.subcategories && (
           <section id="explore-section" className="subcategory-elite">
             <div className="editorial-header">
@@ -83,27 +94,18 @@ function Home() {
                   <div
                     key={sub}
                     className={`bento-card ${selectedSub === sub ? "active" : ""}`}
-                    onClick={() => {
-                      setSelectedSub(sub);
-
-                      // scroll to products
-                      setTimeout(() => {
-                        document
-                          .getElementById("products-section")
-                          ?.scrollIntoView({ behavior: "smooth" });
-                      }, 100);
-                    }}
+                    onClick={() => handleSubSelect(sub)}
                   >
                     <div className="bento-header">
                       <span className="bento-title">{sub}</span>
                       <span className="bento-arrow">→</span>
                     </div>
                     <div className="bento-image-grid">
-                      {previewImages.map((p) => (
+                      {previewImages.length > 0 ? previewImages.map((p) => (
                         <div className="bento-img-box" key={p.id}>
                           <img src={`/product/${p.image}`} alt={p.name} />
                         </div>
-                      ))}
+                      )) : <div className="bento-empty">No preview</div>}
                     </div>
                   </div>
                 );
@@ -112,25 +114,46 @@ function Home() {
           </section>
         )}
 
-        {/* ===== GLASS PRODUCTS PANEL ===== */}
         <section id="products-section" className="glass-panel-heavy products-elite">
           <div className="editorial-header center">
             <span className="overline">Curated Collection</span>
-            <h2 className="section-title-elite">{selectedSub || "Trending Selection"}</h2>
+            <h2 className="section-title-elite">{selectedSub || selectedCategory?.name || "Trending Selection"}</h2>
           </div>
 
-          <div className="product-grid-elite">
-            {filteredProducts.map((item) => (
-              <Card key={item.id} product={item} />
+          {/* NO PRODUCTS FOUND STATE */}
+          {filteredProducts.length === 0 ? (
+            <div className="empty-state-box">
+               <h3>No product found.</h3>
+               <p>We couldn't find any items in this category right now.</p>
+            </div>
+          ) : (
+            <>
+              {/* THE GRID: Auto-fit makes 2 products look perfect, and wraps 4+ nicely */}
+              <div className="product-grid-elite">
+                {displayProducts.map((item) => (
+                  <Card key={item.id} product={item} />
+                ))}
+              </div>
 
-            ))}
-
-          </div>
-
+              {/* LOAD MORE BUTTON ++ */}
+              {hasMoreProducts && (
+                <div className="load-more-container">
+                  <button className="btn-load-more" onClick={() => setVisibleCount(prev => prev + 8)}>
+                    More Products ++
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </section>
+
+        {/* FIXED ANCHOR TAG FOR PLAY STORE */}
         <div className="app-image">
-          <img src={app} alt="" href="https://play.google.com/store/games?hl=en_IN" />
+          <a href="https://play.google.com/store/apps" target="_blank" rel="noreferrer">
+            <img src={app} alt="Download App" />
+          </a>
         </div>
+
         <Recommended products={recommendedItems} />
       </div>
     </div>

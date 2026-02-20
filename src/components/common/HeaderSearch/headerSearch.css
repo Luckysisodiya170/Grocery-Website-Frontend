@@ -330,3 +330,27 @@
   .location-pill, .search-pill-container { width: 100%; }
   .location-modal { width: 90%; padding: 20px; }
 }
+/* Manual Location Input Additions */
+.manual-location-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.manual-input {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  outline: none;
+  font-family: inherit;
+}
+.manual-input:focus { border-color: var(--primary); }
+.manual-submit-btn {
+  padding: 0 20px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: bold;
+  cursor: pointer;
+}

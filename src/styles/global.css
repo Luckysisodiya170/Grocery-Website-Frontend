@@ -27,8 +27,8 @@
   /* ELEVATION & DEPTH */
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-premium: 0 20px 40px -15px rgba(0, 95, 115, 0.15);
-  --radius-xl: 32px;
-  --radius-lg: 20px;
+  --radius-xl: 24px; /* Standardized */
+  --radius-lg: 16px; /* Standardized */
   
   /* LAYOUT */
   --container-width: 1200px;
@@ -62,8 +62,9 @@ body {
 /* ---------- REUSABLE CLASSES ---------- */
 .container {
   max-width: var(--container-width);
-  margin: auto;
+  margin: 0 auto;
   padding: 0 20px;
+  width: 100%;
 }
 
 .text-gradient {
@@ -95,7 +96,7 @@ body {
   background: var(--accent-gradient);
   color: white;
   padding: 12px 28px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: none;
   font-weight: 600;
   cursor: pointer;
@@ -107,39 +108,16 @@ body {
   transform: scale(1.05);
 }
 
-/* ---------- LINK RESET ---------- */
-
 a {
   text-decoration: none;
   color: inherit;
 }
-/* ---------- NEW LUXURY UTILITIES ---------- */
 
-/* Dynamic Mesh Background for Sections */
-.mesh-bg {
-  background-color: var(--bg);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(20, 184, 166, 0.05) 0, transparent 50%), 
-    radial-gradient(at 100% 100%, rgba(0, 95, 115, 0.05) 0, transparent 50%);
-}
-
-/* Shimmer Animation for Badges */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.animate-shimmer {
-  background: linear-gradient(90deg, var(--secondary), #fff, var(--secondary));
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite linear;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Floating Animation */
-@keyframes floating {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+/* GLOBAL PRODUCT CARD FIX (For your next step) */
+.product-card-global-image-fix {
+  width: 100%;
+  height: 180px; /* Fixed height for top half */
+  object-fit: cover; /* Forces image to cover area perfectly */
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
 }

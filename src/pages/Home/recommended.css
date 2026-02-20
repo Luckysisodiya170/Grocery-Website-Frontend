@@ -1,10 +1,11 @@
-/* ================= RECOMMENDED SPOTLIGHT ELITE ================= */
+/* ================= RECOMMENDED SPOTLIGHT ================= */
 .recommended-spotlight {
-  /* padding: 100px 0; */
+  padding: 80px 0 40px;
+  margin-top: 40px;
   position: relative;
   background: radial-gradient(circle at 10% 20%, rgba(20, 184, 166, 0.05) 0%, transparent 40%),
               radial-gradient(circle at 90% 80%, rgba(0, 95, 115, 0.05) 0%, transparent 40%);
-  overflow: hidden;
+  border-top: 1px solid var(--border);
 }
 
 /* Header with Refined Spacing */
@@ -12,12 +13,11 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  /* margin-bottom: 50px; */
-  padding: 0 10px;
+  margin-bottom: 30px;
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #005f73 0%, #0a9396 100%);
+  background: linear-gradient(135deg, #005f73 0%, #14b8a6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 900;
@@ -26,167 +26,134 @@
 /* Magnetic Control Buttons */
 .elite-controls {
   display: flex;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.5);
-  padding: 8px;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 6px;
   border-radius: 100px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border);
 }
 
 .control-btn {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 1px solid #eef2f6;
+  border: 1px solid transparent;
   background: white;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1e293b;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
 }
 
 .control-btn:hover {
-  background: var(--primary, #005f73);
+  background: var(--primary);
   color: white;
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 15px 30px rgba(0, 95, 115, 0.2);
-  border-color: transparent;
-}
-
-/* Spotlight Track & Masking */
-.spotlight-wrapper {
-  position: relative;
-  margin: 0 -50px;
-  padding: 0 50px;
-}
-
-/* Subtle fade on edges for focus */
-.spotlight-wrapper::after {
-  content: '';
-  position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 100px;
-  background: linear-gradient(to right, transparent, #f8fafc);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.spotlight-track {
-  display: flex;
-  gap: 35px;
-  overflow-x: auto;
-  padding: 30px 15px 60px;
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-}
-
-/* Spotlight Item Elevation */
-.spotlight-item {
-  flex: 0 0 auto;
-  position: relative;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.spotlight-item:hover {
-  transform: translateY(-15px);
-}
-
-/* Hover Glow Effect */
-.spotlight-item::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 30px;
-  background: var(--primary, #005f73);
-  filter: blur(40px);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  z-index: -1;
-}
-
-.spotlight-item:hover::before {
-  opacity: 0.08;
-}
-
-/* Exclusive Floating Badge */
-.badge-exclusive {
-  position: absolute;
-  top: -10px;
-  left: 20px;
-  background: linear-gradient(135deg, #005f73, #0a9396);
-  padding: 6px 16px;
-  border-radius: 12px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: white;
+  transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 95, 115, 0.2);
-  z-index: 10;
-  transform: rotate(-2deg);
-}/* ================= RECOMMENDED SPOTLIGHT - WIDE VERSION ================= */
-.recommended-spotlight {
-  padding: 100px 0;
-  /* Darker gradient at the bottom for better grounding */
-  background: linear-gradient(to bottom, #f8fafc, #f1f5f9 50%, #f8fafc);
-  overflow: hidden; 
 }
 
-/* Keep the header aligned with your standard container, 
-   but the wrapper below will go full width.
-*/
-.recommended-spotlight .container {
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-/* THE FIX: Full Width Wrapper */
+/* ================= FULL WIDTH TRACK FIX ================= */
+/* Safely breaks out of the container without causing horizontal scrollbars */
 .spotlight-full-wrapper {
-  width: 100vw;
+  width: 100%;
   position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
   padding: 20px 0 60px;
 }
 
+/* ================= ALIGNMENT FIX ================= */
 .spotlight-track {
   display: flex;
-  gap: 40px; /* Increased gap for breathing room */
+  gap: 30px; 
   overflow-x: auto;
-  /* Padding-left: Keeps the first item aligned with your site's container.
-     Padding-right: Ensures the last item doesn't hit the edge.
-  */
-  padding-left: calc((100vw - 1300px) / 2 + 24px);
-  padding-right: 50px;
+  /* Precisely calculates the left gap so the cards align with your header text */
+  padding-left: max(20px, calc((100% - var(--container-width)) / 2 + 20px));
+  padding-right: 40px;
+  /* Added padding-top so our centered crown badge doesn't get cut off */
+  padding-top: 20px; 
   scrollbar-width: none;
   scroll-behavior: smooth;
-}
-
-/* Fallback for smaller screens where 100vw - 1300px is negative */
-@media (max-width: 1350px) {
-  .spotlight-track {
-    padding-left: 24px;
-  }
 }
 
 .spotlight-track::-webkit-scrollbar {
   display: none;
 }
 
-/* Increase card width slightly for better presence */
+/* Spotlight Item Elevation */
 .spotlight-item {
-  flex: 0 0 280px; /* Set a fixed, wider base for the cards */
+  flex: 0 0 280px; 
   position: relative;
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  height: auto; 
+  /* Added margin-top so the badge has room to breathe */
+  margin-top: 10px; 
 }
 
 .spotlight-item:hover {
-  transform: translateY(-12px) scale(1.03);
+  transform: translateY(-10px);
+}
+
+
+.badge-exclusive {
+  position: absolute;
+  top: -14px;
+  left: 50%; /* Pushes to the center */
+  transform: translateX(-50%); /* Perfectly centers it */
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  padding: 6px 16px;
+  border-radius: 50px; /* Fully rounded pill looks cleaner here */
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: white;
+  box-shadow: 0 8px 15px rgba(0, 95, 115, 0.25);
+  z-index: 20;
+  pointer-events: none;
+  white-space: nowrap; /* Prevents text from breaking into two lines */
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 968px) {
+  .editorial-header.space-between {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .recommended-spotlight {
+    padding: 50px 0 20px;
+  }
+  
+  .spotlight-track {
+    gap: 15px;
+    padding-left: 20px; /* Fallback padding for mobile */
+  }
+
+  .spotlight-item {
+    flex: 0 0 220px; /* Smaller cards on tablet/mobile */
+  }
+
+  .control-btn {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  .spotlight-item {
+    flex: 0 0 180px; /* Even smaller for tiny phones to show hints of the next card */
+  }
+  
+  .badge-exclusive {
+    font-size: 9px;
+    padding: 4px 10px;
+    top: -8px;
+    left: 10px;
+  }
 }

@@ -2,7 +2,7 @@ const categories = [
   {
     id: 1,
     name: "Electronics",
-    image: "electronics-category.png",
+    image: "cat1.png",
     subcategories: [
       "Mobiles",
       "Earbuds",
@@ -17,13 +17,15 @@ const categories = [
     subcategories: [
       "Vegetables",
       "Fruits",
-      "Dairy"
+      "Dairy",
+      "Maggie",
+      "Icecream😋"
     ]
   },
   {
     id: 3,
     name: "Fashion",
-    image: "fashion-category.jpg",
+    image: "cat4.png",
     subcategories: [
       "Men",
       "Women",
@@ -33,7 +35,7 @@ const categories = [
     {
     id: 4,
     name: "Health & Beauty",
-    image: "health-beauty-category.jpg",
+    image: "cat3.png",
     subcategories: [
       "Men",
       "Women",
@@ -42,7 +44,7 @@ const categories = [
   },  {
     id: 5,
     name: "Home-Utensils",
-    image: "kitchen-category.jpg",
+    image: "cat5.png",
     subcategories: [
       "Men",
       "Women",
@@ -52,6 +54,15 @@ const categories = [
     {
     id: 6,
     name: "Sports",
+    image: "cat6.png",
+    subcategories: [
+      "Men",
+      "Women",
+      "Shoes"
+    ]
+  }, {
+    id: 6,
+    name: "Toys & Baby Care",
     image: "sports-category.jpeg",
     subcategories: [
       "Men",
@@ -60,16 +71,7 @@ const categories = [
     ]
   }, {
     id: 6,
-    name: "Sports",
-    image: "sports-category.jpeg",
-    subcategories: [
-      "Men",
-      "Women",
-      "Shoes"
-    ]
-  }, {
-    id: 6,
-    name: "Sports",
+    name: "Automotive",
     image: "sports-category.jpeg",
     subcategories: [
       "Men",

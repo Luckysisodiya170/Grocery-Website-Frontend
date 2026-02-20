@@ -17,9 +17,8 @@ function Category({ data = [], onSelect }) {
       <div className="category-header">
         
         <div className="title-area">
-          <h2 className="category-title">
-            Shop by Category
-            <span className="title-dot">.</span>
+          <h2 className="category-title">Category
+            <span className="title-dot"></span>
           </h2>
         </div>
 

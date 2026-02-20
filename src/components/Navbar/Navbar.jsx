@@ -12,7 +12,7 @@ import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 
-import logo from "../../assets/logosvg.svg";
+import logo from "../../assets/logonew.jpeg";
 import HeaderSearch from "../common/HeaderSearch/HeaderSearch";
 
 function Navbar() {
@@ -31,7 +31,7 @@ function Navbar() {
           <div className="logo-img-wrapper">
             <img src={logo} alt="Delivery App" />
           </div>
-          <span className="logo-text">Quick<span className="text-gradient">Drop</span></span>
+          <span className="logo-text">Ship<span className="text-gradient">zyy</span></span>
         </Link>
 
         {/* NAV LINKS WITH ICONS */}
@@ -48,12 +48,12 @@ function Navbar() {
 
           <Link to="/about" className="nav-item">
             <InfoOutlinedIcon fontSize="small" />
-            <span>About</span>
+            <span>Orders</span>
           </Link>
 
           <Link to="/contact" className="nav-item">
             <CallOutlinedIcon fontSize="small" />
-            <span>Contact</span>
+            <span>Help</span>
           </Link>
         </nav>
 
