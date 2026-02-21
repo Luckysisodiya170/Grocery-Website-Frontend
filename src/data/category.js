@@ -63,7 +63,7 @@ const categories = [
   }, {
     id: 6,
     name: "Toys & Baby Care",
-    image: "sports-category.jpeg",
+    image: "cat7.png",
     subcategories: [
       "Men",
       "Women",
@@ -72,11 +72,51 @@ const categories = [
   }, {
     id: 6,
     name: "Automotive",
-    image: "sports-category.jpeg",
+    image: "cat8.png",
     subcategories: [
-      "Men",
-      "Women",
-      "Shoes"
+     
+    ]
+  }, {
+    id: 6,
+    name: "Automotive",
+    image: "cat8.png",
+    subcategories: [
+     
+    ]
+  }, {
+    id: 6,
+    name: "Automotive",
+    image: "cat8.png",
+    subcategories: [
+     
+    ]
+  }, {
+    id: 6,
+    name: "Automotive",
+    image: "cat8.png",
+    subcategories: [
+     
+    ]
+  }, {
+    id: 6,
+    name: "Automotive",
+    image: "cat8.png",
+    subcategories: [
+     
+    ]
+  }, {
+    id: 6,
+    name: "Automotive",
+    image: "cat8.png",
+    subcategories: [
+     
+    ]
+  }, {
+    id: 6,
+    name: "Automotive",
+    image: "cat8.png",
+    subcategories: [
+     
     ]
   }
 ];

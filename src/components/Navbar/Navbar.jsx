@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 import SearchBar from "../common/SearchBar";
-import LocationPicker from "../common/LocationPicker";
+// import LocationPicker from "../common/LocationPicker";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";

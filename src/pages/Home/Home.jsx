@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./Home.css"; 
+import "./Home.css";
 import app from "../../assets/screen/WhatsApp Image 2026-02-20 at 12.54.29 AM.jpeg"
 import Card from "../Productcard/Productcard.jsx";
 import products from "../../data/products.json";
@@ -18,27 +18,27 @@ function Home() {
   const [current, setCurrent] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(8); 
+  const [visibleCount, setVisibleCount] = useState(8);
 
   const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % banners.length);
-    }, 4000); 
+    }, 4000);
     return () => clearInterval(timer);
   }, [banners.length]);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setSelectedSub(null);
-    setVisibleCount(8); 
+    setVisibleCount(8);
     document.getElementById("explore-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleSubSelect = (sub) => {
     setSelectedSub(sub);
-    setVisibleCount(8); 
+    setVisibleCount(8);
     setTimeout(() => {
       document.getElementById("products-section")?.scrollIntoView({ behavior: "smooth" });
     }, 100);
@@ -46,7 +46,7 @@ function Home() {
 
   const filteredProducts = products.filter((p) => {
     if (!selectedCategory) return true;
-    if (!selectedSub) return p.parentCategory === selectedCategory.name; 
+    if (!selectedSub) return p.parentCategory === selectedCategory.name;
     return p.category === selectedSub;
   });
 
@@ -82,7 +82,7 @@ function Home() {
         {/* ================= CATEGORIES ================= */}
         <Category data={categories} onSelect={handleCategorySelect} />
 
-        {/* ================= BENTO SUBCATEGORIES WITH +X LOGIC ================= */}
+       {/* ================= BENTO SUBCATEGORIES WITH +X LOGIC ================= */}
         {selectedCategory?.subcategories && (
           <section id="explore-section" className="subcategory-elite">
             <div className="editorial-header">
@@ -95,6 +95,10 @@ function Home() {
                 // Get all products for this subcategory
                 const allSubProducts = products.filter((p) => p.category === sub);
                 const totalCount = allSubProducts.length;
+                
+                // Skip rendering if there are no products
+                if (totalCount === 0) return null; 
+
                 const previewImages = allSubProducts.slice(0, 4); // Only take first 4
 
                 return (
@@ -108,27 +112,23 @@ function Home() {
                       <span className="bento-arrow">→</span>
                     </div>
                     <div className="bento-image-grid">
-                      {previewImages.length > 0 ? (
-                        previewImages.map((p, index) => {
-                          // Check if this is the 4th slot and there are more products
-                          const isMoreSlot = index === 3 && totalCount > 4;
+                      {previewImages.map((p, index) => {
+                        // Check if this is the 4th slot and there are more products
+                        const isMoreSlot = index === 3 && totalCount > 4;
 
-                          return (
-                            <div className={`bento-img-box ${isMoreSlot ? "more-box" : ""}`} key={p.id}>
-                              <img src={`/product/${p.image}`} alt={p.name} />
-                              
-                              {/* The +X Overlay */}
-                              {isMoreSlot && (
-                                <div className="more-overlay">
-                                  <span>More Products</span>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="bento-empty">No preview</div>
-                      )}
+                        return (
+                          <div className={`bento-img-box ${isMoreSlot ? "more-box" : ""}`} key={p.id}>
+                            <img src={`/product/${p.image}`} alt={p.name} />
+
+                            {/* The +X Overlay */}
+                            {isMoreSlot && (
+                              <div className="more-overlay">
+                                <span>More Products</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -146,8 +146,8 @@ function Home() {
 
           {filteredProducts.length === 0 ? (
             <div className="empty-state-box">
-               <h3>No product found.</h3>
-               <p>We couldn't find any items in this category right now.</p>
+              <h3>No product found.</h3>
+              <p>We couldn't find any items in this category right now.</p>
             </div>
           ) : (
             <>
@@ -168,6 +168,9 @@ function Home() {
           )}
         </section>
 
+        {/* ================= RECOMMENDED SECTION ================= */}
+        <Recommended products={recommendedItems} />
+
         {/* ================= APP BANNER ================= */}
         <div className="app-image">
           <a href="https://play.google.com/store/apps" target="_blank" rel="noreferrer">
@@ -175,8 +178,6 @@ function Home() {
           </a>
         </div>
 
-        {/* ================= RECOMMENDED SECTION ================= */}
-        <Recommended products={recommendedItems} />
       </div>
     </div>
   );

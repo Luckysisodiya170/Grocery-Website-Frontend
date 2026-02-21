@@ -2,7 +2,7 @@
 .home.cinematic-bg {
   width: 100%;
   min-height: 100vh;
-  background: #f8fafc;
+  background: transparent;
   padding-bottom: 60px;
   overflow-x: hidden;
 }
@@ -148,15 +148,17 @@
 }
 
 /* ================= THE PRODUCT GRID FIX ================= */
+/* ================= THE PRODUCT GRID FIX ================= */
 .product-grid-elite {
   display: grid;
-  /* This ensures if there are 2 items, they stretch out nicely. If 4+, they wrap properly. */
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  /* CHANGED: auto-fit to auto-fill. 
+     This forces the grid to keep empty columns, stopping a single item from stretching out! */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  justify-content: start; /* Keeps items aligned beautifully to the left */
   gap: 25px;
   margin-top: 30px;
   width: 100%;
 }
-
 /* ================= EMPTY STATE & LOAD MORE ================= */
 .empty-state-box {
   text-align: center;
@@ -213,8 +215,9 @@
   .glass-panel-heavy { padding: 30px 20px; border-radius: 16px; margin: 20px 0; }
   
   .bento-card { min-width: 180px; padding: 15px; }
-  .product-grid-elite {
-    grid-template-columns: repeat(2, 1fr); /* 2 side-by-side on mobile */
+ .product-grid-elite {
+    /* This ensures a single item won't stretch to 50% width if it's the only one */
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
     gap: 15px;
   }
 }
