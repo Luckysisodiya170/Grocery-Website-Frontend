@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 1. Import useNavigate
 import "./Home.css";
 import app from "../../assets/screen/WhatsApp Image 2026-02-20 at 12.54.29 AM.jpeg"
-import Card from "../Productcard/Productcard.jsx";
+import Card from "../../components/Product/Productcard/Productcard.jsx";
 import products from "../../data/products.json";
-import Category from "../../components/Category/Category";
+import Category from "../../components/Category/Category.jsx";
 import categories from "../../data/category.js";
-import Recommended from "./Recommended.jsx";
+import Recommended from "../../components/Recommendation/Recommended.jsx";
 
 import beauty from "../../assets/bannerimages/beauty11.jpg";
 import electronics from "../../assets/bannerimages/fashion4th.jpg";
@@ -14,40 +15,53 @@ import food from "../../assets/bannerimages/grocery11.jpg";
 import toys from "../../assets/bannerimages/health11.jpg";
 
 function Home() {
+  const navigate = useNavigate(); // 👈 2. Initialize navigate
   const banners = [beauty, electronics, fashion, food, toys];
   const [current, setCurrent] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSub, setSelectedSub] = useState(null);
   const [visibleCount, setVisibleCount] = useState(8);
 
   const recommendedItems = products.filter(p => p.rating >= 4.5).slice(0, 8);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % banners.length);
+      setCurrent((prev) => (prev + 1) % banners.length);   
     }, 4000);
     return () => clearInterval(timer);
   }, [banners.length]);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-    setSelectedSub(null);
     setVisibleCount(8);
-    document.getElementById("explore-section")?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleSubSelect = (sub) => {
-    setSelectedSub(sub);
-    setVisibleCount(8);
+    
     setTimeout(() => {
-      document.getElementById("products-section")?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("explore-section")?.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
 
+  // 👈 3. THE MAGIC: Ab click karne par new page par jayega data ke sath!
+// 👈 3. THE MAGIC: Ab click karne par new page par jayega data ke sath!
+  const handleSubSelect = (sub) => {
+    
+    // 🔴 THE FIX: Force the browser window to scroll back to the very top 
+    // smoothly BEFORE navigating to the new page.
+    window.scrollTo({
+      top: 0,
+      behavior: "instant" // Use "instant" instead of smooth so they don't see the jump
+    });
+
+    navigate("/shop", {
+      state: {
+        selectedCategory: selectedCategory.name, // Parent Category ka naam (e.g. Grocery)
+        selectedSub: sub                           // Subcategory ka naam (e.g. Fruits)
+      }
+    });
+  };
+
+  // Home page par ab sirf Main category ke products dikhenge
   const filteredProducts = products.filter((p) => {
     if (!selectedCategory) return true;
-    if (!selectedSub) return p.parentCategory === selectedCategory.name;
-    return p.category === selectedSub;
+    return p.parentCategory === selectedCategory.name;
   });
 
   const displayProducts = filteredProducts.slice(0, visibleCount);
@@ -82,7 +96,7 @@ function Home() {
         {/* ================= CATEGORIES ================= */}
         <Category data={categories} onSelect={handleCategorySelect} />
 
-       {/* ================= BENTO SUBCATEGORIES WITH +X LOGIC ================= */}
+       {/* ================= BENTO SUBCATEGORIES ================= */}
         {selectedCategory?.subcategories && (
           <section id="explore-section" className="subcategory-elite">
             <div className="editorial-header">
@@ -92,20 +106,18 @@ function Home() {
 
             <div className="bento-grid">
               {selectedCategory.subcategories.map((sub) => {
-                // Get all products for this subcategory
                 const allSubProducts = products.filter((p) => p.category === sub);
                 const totalCount = allSubProducts.length;
                 
-                // Skip rendering if there are no products
                 if (totalCount === 0) return null; 
 
-                const previewImages = allSubProducts.slice(0, 4); // Only take first 4
+                const previewImages = allSubProducts.slice(0, 4); 
 
                 return (
                   <div
                     key={sub}
-                    className={`bento-card ${selectedSub === sub ? "active" : ""}`}
-                    onClick={() => handleSubSelect(sub)}
+                    className="bento-card"
+                    onClick={() => handleSubSelect(sub)} // 👈 Click pe redirect
                   >
                     <div className="bento-header">
                       <span className="bento-title">{sub}</span>
@@ -113,14 +125,11 @@ function Home() {
                     </div>
                     <div className="bento-image-grid">
                       {previewImages.map((p, index) => {
-                        // Check if this is the 4th slot and there are more products
                         const isMoreSlot = index === 3 && totalCount > 4;
 
                         return (
                           <div className={`bento-img-box ${isMoreSlot ? "more-box" : ""}`} key={p.id}>
                             <img src={`/product/${p.image}`} alt={p.name} />
-
-                            {/* The +X Overlay */}
                             {isMoreSlot && (
                               <div className="more-overlay">
                                 <span>More Products</span>
@@ -137,11 +146,11 @@ function Home() {
           </section>
         )}
 
-        {/* ================= MAIN PRODUCT GRID ================= */}
+        {/* ================= MAIN PRODUCT GRID (TRENDING) ================= */}
         <section id="products-section" className="glass-panel-heavy products-elite">
           <div className="editorial-header center">
             <span className="overline">Curated Collection</span>
-            <h2 className="section-title-elite">{selectedSub || selectedCategory?.name || "Trending Selection"}</h2>
+            <h2 className="section-title-elite">{selectedCategory?.name || "Trending Selection"}</h2>
           </div>
 
           {filteredProducts.length === 0 ? (
@@ -160,7 +169,7 @@ function Home() {
               {hasMoreProducts && (
                 <div className="load-more-container">
                   <button className="btn-load-more" onClick={() => setVisibleCount(prev => prev + 8)}>
-                    More Products ++
+                    Explore More ++
                   </button>
                 </div>
               )}

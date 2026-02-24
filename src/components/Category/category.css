@@ -1,277 +1,135 @@
-/* ================= SECTION ================= */
-.category-section {
-  padding: 40px 0 20px;
-  background: transparent !important;
-  position: relative;
+/* ================= CATEGORY SECTION WRAPPER ================= */
+.category-section { 
+  padding: 40px 0 20px; 
+  background: transparent; /* Lets the starry background show */
+  position: relative; 
 }
 
-/* ================= HEADER ================= */
-.category-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 30px;
+.category-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-end; 
+  margin-bottom: 30px; 
 }
 
-/* Matched to your "Trending Selection" style */
-.category-title {
-  font-size: 32px;
-  font-weight: 900;
-  color: var(--text-main);
-  letter-spacing: -0.5px;
-  line-height: 1.2;
+/* Crisp White Text for Dark Background */
+.category-title { 
+  font-size: 32px; 
+  font-weight: 800; 
+  color: #ffffff; 
+  letter-spacing: -0.5px; 
+  line-height: 1.2; 
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6); /* Adds depth over stars */
+}
+.title-dot { 
+  color: var(--primary); /* Uses your global Teal/Cyan to pop */
 }
 
-.title-dot {
-  color: var(--secondary); /* Teal dot to match the brand */
+.view-all-text { 
+  font-size: 14px; 
+  font-weight: 700; 
+  color: rgba(255, 255, 255, 0.7); 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  transition: all 0.3s ease; 
+}
+.view-all-text:hover { 
+  color: #ffffff; 
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+.arrow-right { 
+  margin-left: 6px; 
+  transition: 0.3s; 
+}
+.view-all-text:hover .arrow-right { 
+  transform: translateX(4px); 
 }
 
-/* ================= ACTIONS ================= */
-.category-actions {
-  display: flex;
-  align-items: center;
-}
-
-.view-all-text {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--primary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-
-.view-all-text:hover {
-  color: var(--secondary);
-}
-
-.arrow-right {
-  margin-left: 6px;
-  transition: 0.3s ease;
-}
-
-.view-all-text:hover .arrow-right {
-  transform: translateX(4px);
-}
-
-/* ================= SCROLL AREA ================= */
-.category-scroll {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  /* Extra padding on bottom/sides prevents shadows from clipping */
+/* Horizontal Scroll Container */
+.category-scroll { 
+  display: flex; 
+  gap: 20px; 
+  overflow-x: auto; 
+  scroll-behavior: smooth; 
   padding: 10px 10px 30px 10px; 
-  margin: 0 -10px;
-  scrollbar-width: none;
+  margin: 0 -10px; 
+  scrollbar-width: none; 
+}
+.category-scroll::-webkit-scrollbar { display: none; }
+
+.app-cat-item { 
+  min-width: 140px; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 12px; 
+  cursor: pointer; 
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
 }
 
-.category-scroll::-webkit-scrollbar {
-  display: none;
+/* 🌟 FROSTED GLASS CIRCLES */
+.app-cat-img-box { 
+  width: 120px; 
+  height: 120px; 
+  border-radius: 50%; 
+  background: white; /* Transparent White */
+  backdrop-filter: blur(12px); /* Frosted Glass Blur */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15); /* Soft light edge */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 24px; 
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+  position: relative; 
+  overflow: hidden; 
 }
 
-/* ================= CATEGORY CARD ================= */
-.app-cat-item {
-  min-width: 140px; /* Slightly tighter width for a neater row */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+/* 🌟 The Premium Glass Hover Effect */
+.app-cat-item:hover .app-cat-img-box { 
+  background: rgba(186, 0, 0, 0.15); 
+  border-color: var(--primary); /* Glows with your brand color */
+  box-shadow: 0 10px 30px rgba(0, 95, 115, 0.4); /* Teal glowing shadow */
+  transform: translateY(-6px); 
 }
 
-.app-cat-item:hover {
-  transform: translateY(-8px);
+.app-cat-img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  z-index: 2; 
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.4)); /* 3D pop for the inner image */
+}
+.app-cat-item:hover .app-cat-img { 
+  transform: scale(1.15); 
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.5));
 }
 
-/* ================= PREMUIM IMAGE BOX ================= */
-.app-cat-img-box {
-  width: 130px;
-  height: 130px;
-  border-radius: var(--radius-xl, 24px); /* Matches your global soft corners */
-  background: #ffffff;
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  position: relative;
-  overflow: hidden;
+.app-cat-title { 
+  font-size: 15px; 
+  font-weight: 700; 
+  color: rgba(255, 255, 255, 0.8); /* Soft white text */
+  text-align: center; 
+  transition: color 0.3s ease; 
+}
+.app-cat-item:hover .app-cat-title { 
+  color: #ffffff; /* Brightens on hover */
+  font-weight: 800;
 }
 
-/* The Premium Hover Effect (No more loud pinks) */
-.app-cat-item:hover .app-cat-img-box {
-  border-color: var(--secondary);
-  background: linear-gradient(145deg, #ffffff, #f0f9ff); /* Soft icy blue glow */
-  box-shadow: 0 15px 35px rgba(20, 184, 166, 0.15); /* Soft teal shadow */
-}
-
-/* ================= IMAGE ================= */
-.app-cat-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 2;
-  transition: transform 0.4s ease;
-}
-
-.app-cat-item:hover .app-cat-img {
-  transform: scale(1.12); /* Subtle zoom inward */
-}
-
-/* ================= TITLE ================= */
-.app-cat-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-main);
-  text-align: center;
-  transition: color 0.3s ease;
-}
-
-.app-cat-item:hover .app-cat-title {
-  color: var(--primary);
-}
-
-/* ================= RESPONSIVE ================= */
+/* ================= MOBILE RESPONSIVENESS ================= */
 @media (max-width: 768px) {
-  .category-title {
-    font-size: 26px;
-  }
-
-  .view-all-text {
-    font-size: 13px;
-  }
-
-  .app-cat-item {
-    min-width: 110px;
-    gap: 8px;
-  }
-
-  .app-cat-img-box {
-    width: 100px;
-    height: 100px;
-    padding: 16px;
-    border-radius: 20px;
-  }
-
-  .app-cat-title {
-    font-size: 13px;
-  }
+  .category-title { font-size: 26px; }
+  .app-cat-item { min-width: 110px; gap: 8px; }
+  .app-cat-img-box { width: 90px; height: 90px; padding: 15px; }
+  .app-cat-title { font-size: 13px; }
 }
 
 @media (max-width: 480px) {
-  .category-header {
-    margin-bottom: 20px;
-  }
-  
-  .category-title {
-    font-size: 22px;
-  }
-
-  .app-cat-item {
-    min-width: 90px;
-  }
-
-  .app-cat-img-box {
-    width: 85px;
-    height: 85px;
-    padding: 12px;
-    border-radius: 16px;
-  }
-
-  .app-cat-title {
-    font-size: 12px;
-  }
-}
-
-/* ========================================================= */
-/* 🚀 THE FINAL POLISH: UNIFYING THE WHOLE PAGE LAYOUT 🚀 */
-/* ========================================================= */
-
-/* 1. FIX THE CATEGORY SECTION TITLE (Remove Pink Gradient) */
-.category-title {
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
-  color: #0f172a !important; /* Dark Navy to match 'Trending Selection' */
-  font-size: 32px !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.5px !important;
-}
-
-.view-all-text {
-  color: var(--primary) !important; /* Teal instead of purple */
-}
-
-/* 2. CLEAN UP CATEGORY BOXES (Make them sleek circles) */
-.app-cat-img-box {
-  background: #f8fafc !important; /* Clean, flat light-gray/blue */
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 50% !important; /* Perfect circles look much more modern */
-  width: 120px !important;
-  height: 120px !important;
-  box-shadow: none !important; /* Remove heavy dated shadow */
-}
-
-.app-cat-item:hover .app-cat-img-box {
-  background: #ffffff !important;
-  border-color: var(--primary) !important;
-  box-shadow: 0 10px 25px rgba(0, 95, 115, 0.1) !important;
-  transform: translateY(-5px);
-}
-
-/* 3. ALIGN THE "TRENDING SELECTION" GRID */
-/* Remove the heavy glass box padding so the products align exactly with the categories and banner */
-.glass-panel-heavy {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important; 
-  margin: 40px auto 60px !important;
-  max-width: 100% !important;
-}
-
-/* 4. FIX THE APP BANNER MARGINS & RADIUS */
-.app-image {
-  width: 100%;
-  margin: 0 auto 60px !important;
-  padding: 0 !important;
-  display: flex;
-  justify-content: center;
-}
-
-.app-image a {
-  display: block;
-  width: 100%;
-}
-
-.app-image img {
-  width: 100%;
-  height: auto;
-  border-radius: 24px !important; /* Match your premium rounded corners */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
-  display: block;
-}
-
-/* 5. CENTER "TRENDING SELECTION" BUTTON PROPERLY */
-.load-more-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 40px !important;
-}
-
-/* 6. MOBILE ADJUSTMENTS FOR THESE OVERRIDES */
-@media (max-width: 768px) {
-  .app-cat-img-box {
-    width: 90px !important;
-    height: 90px !important;
-    padding: 15px !important;
-  }
-  .app-image img {
-    border-radius: 16px !important;
-  }
+  .app-cat-item { min-width: 90px; }
+  .app-cat-img-box { width: 85px; height: 85px; padding: 12px; }
+  .app-cat-title { font-size: 12px; }
 }

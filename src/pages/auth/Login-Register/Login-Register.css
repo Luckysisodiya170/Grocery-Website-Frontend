@@ -1,252 +1,135 @@
-/* ===============================
-   PAGE BACKGROUND (FULL SCREEN)
-================================ */
+/* =========================================================
+   AUTHENTICATION PAGE (LOGIN / REGISTER)
+========================================================= */
 
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f1f5f9;
+.auth-page { 
+  min-height: 100vh; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: var(--bg); 
+  padding: 20px; 
 }
 
-/* ===============================
-   MAIN AUTH CARD
-================================ */
-
-.auth-card {
-  width: 820px;
-  max-width: 100%;
-
-  display: flex;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-
-  height: 560px; /* same size login + register */
-  overflow: hidden;
+/* Main Card */
+.auth-card { 
+  width: 850px; 
+  max-width: 100%; 
+  display: flex; 
+  background: var(--card-bg); 
+  border-radius: var(--radius-xl); 
+  box-shadow: var(--shadow-float); 
+  height: 580px; 
+  overflow: hidden; 
+  border: 1px solid var(--border); 
 }
 
-/* ===============================
-   FORM SIDE
-================================ */
-
-.auth-form {
-  flex: 1;
-  padding: 30px 35px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* Left Side - Form */
+.auth-form { 
+  flex: 1; 
+  padding: 40px; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
 }
 
-/* form width */
-.form-wrapper {
-  width: 100%;
-  max-width: 320px;
+.form-wrapper { width: 100%; max-width: 340px; }
+.auth-form h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+.subtitle { color: var(--text-light); margin-bottom: 24px; font-size: 15px; }
+
+/* Inputs */
+.form-wrapper input, .form-wrapper textarea { 
+  width: 100%; 
+  padding: 12px 16px; 
+  margin-bottom: 12px; 
+  border-radius: var(--radius-md); 
+  border: 1px solid var(--border); 
+  background: var(--bg-soft); 
+  color: var(--text-main); 
+  font-size: 15px; 
+  outline: none; 
+  transition: 0.3s; 
 }
 
-/* ===============================
-   TEXT
-================================ */
-
-.auth-form h2 {
-  font-size: 24px;
-  margin-bottom: 6px;
+.form-wrapper input:focus, .form-wrapper textarea:focus { 
+  border-color: var(--primary); 
+  background: var(--card-bg); 
+  box-shadow: 0 0 0 4px rgba(0, 95, 115, 0.1); 
 }
 
-.subtitle {
-  color: #64748b;
-  margin-bottom: 18px;
-  font-size: 14px;
+.forgot-wrapper { text-align: right; margin-bottom: 16px; }
+.forgot-link { font-size: 13px; font-weight: 600; color: var(--primary); transition: 0.2s; }
+.forgot-link:hover { color: var(--primary-hover); text-decoration: underline; }
+
+/* Primary Button */
+.login-btn { 
+  width: 100%; 
+  padding: 14px; 
+  border-radius: var(--radius-md); 
+  border: none; 
+  background: var(--brand-gradient); 
+  color: #fff; 
+  font-weight: 700; 
+  font-size: 16px; 
+  cursor: pointer; 
+  transition: 0.3s; 
+  box-shadow: var(--shadow-sm); 
 }
 
-/* ===============================
-   INPUTS
-================================ */
-
-.form-wrapper input,
-.form-wrapper textarea {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
+.login-btn:hover { 
+  transform: translateY(-2px); 
+  box-shadow: var(--shadow-md); 
+  filter: brightness(1.1); 
 }
 
-.form-wrapper input:focus,
-.form-wrapper textarea:focus {
-  border-color: #005f73;
-  background: white;
+.auth-error { color: var(--danger); font-size: 13px; font-weight: 600; margin-top: 8px; text-align: center; }
+
+/* Social & Dividers */
+.divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--text-muted); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+.social-btn { 
+  width: 100%; 
+  padding: 12px; 
+  border-radius: var(--radius-md); 
+  border: 1px solid var(--border); 
+  background: var(--card-bg); 
+  color: var(--text-main); 
+  font-weight: 600; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 10px; 
+  margin-bottom: 12px; 
+  cursor: pointer; 
+  transition: 0.2s; 
+  box-shadow: var(--shadow-sm); 
 }
 
-/* ===============================
-   FORGOT PASSWORD
-================================ */
+.social-btn:hover { background: var(--bg-soft); border-color: var(--text-light); transform: translateY(-1px); }
 
-.forgot-wrapper {
-  text-align: right;
-  margin-bottom: 12px;
-}
+.switch-text { margin-top: 16px; font-size: 14px; color: var(--text-light); text-align: center; }
+.switch-text a { color: var(--primary); font-weight: 700; margin-left: 4px; transition: 0.2s; }
+.switch-text a:hover { color: var(--text-light); text-decoration: underline; }
 
-.forgot-link {
-  font-size: 13px;
-  color: #005f73;
-}
+/* Right Side - Visual */
+.auth-image { flex: 1; position: relative; overflow: hidden; background: var(--bg-soft); }
+.auth-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+.auth-card:hover .auth-image img { transform: scale(1.05); }
+.auth-image::after { content: ""; position: absolute; inset: 0; background: var(--glass-overlay); }
 
-/* ===============================
-   LOGIN BUTTON
-================================ */
+.auth__visual-content { position: absolute; bottom: 40px; left: 40px; z-index: 2; color: #fff; max-width: 80%; }
+.auth__visual-content h2 { font-size: 32px; font-weight: 800; margin-bottom: 12px; line-height: 1.2; }
+.auth__visual-content p { font-size: 16px; line-height: 1.6; opacity: 0.9; }
 
-.login-btn {
-  width: 100%;
-  padding: 12px;
-
-  border-radius: 10px;
-  border: none;
-  background:var(--primary);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.login-btn:hover {
-  background: #3e3e3e;
-}
-
-/* ===============================
-   DIVIDER
-================================ */
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 12px 0;
-  color: #64748b;
-  font-size: 13px;
-}
-
-.divider::before,
-.divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: #e2e8f0;
-}
-
-/* ===============================
-   SOCIAL BUTTONS
-================================ */
-
-.social-btn {
-  width: 100%;
-  padding: 12px;
-
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: white;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  margin-bottom: 8px;
-  cursor: pointer;
-}
-
-.social-btn:hover {
-  background: #f8fafc;
-}
-
-/* ===============================
-   SWITCH TEXT
-================================ */
-
-.switch-text {
-  margin-top: 8px;
-  font-size: 13px;
-}
-
-.switch-text a {
-  color: #005f73;
-  font-weight: 600;
-}
-
-/* ===============================
-   IMAGE SIDE
-================================ */
-
-.auth-image {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-}
-
-/* image */
-.auth-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* overlay color */
-.auth-image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,95,115,0.45);
-}
-
-/* ===============================
-   TEXT OVER IMAGE (NEW)
-================================ */
-
-.auth__visual-content {
-  position: absolute;
-  bottom: 210px;
-  left: 30px;
-  z-index: 2;
-
-  color: rgb(255, 255, 255);
-  max-width: 300px;
-}
-
-.auth__visual-content h2 {
-  font-size: 24px;
-  margin-bottom: 8px;
-}
-
-.auth__visual-content p {
-  font-size: 14px;
-  line-height: 1.5;
-  opacity: 0.9;
-}
-
-/* ===============================
-   MOBILE
-================================ */
-
+/* Responsive */
 @media (max-width: 900px) {
-  .auth-card {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .auth-image {
-    height: 220px;
-  }
-
-  .auth-form {
-    padding: 25px;
-  }
+  .auth-card { flex-direction: column; height: auto; }
+  .auth-image { height: 260px; }
+  .auth__visual-content { bottom: 20px; left: 20px; }
+  .auth__visual-content h2 { font-size: 24px; }
 }
-.auth-error {
-  color: #ef4444;
-  font-size: 13px;
-  margin-top: 8px;
+@media (max-width: 480px) {
+  .auth-form { padding: 30px 20px; }
 }

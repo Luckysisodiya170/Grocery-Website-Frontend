@@ -2,7 +2,7 @@
 .location-picker-wrapper {
   position: relative;
   width: fit-content;
-  font-family: 'Inter', system-ui, sans-serif; /* Clean font */
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 /* ================= MAIN BUTTON ================= */
@@ -10,42 +10,42 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--glass-border);
   padding: 6px 16px 6px 6px;
-  border-radius: 50px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
+  border-radius: 50px; /* Kept 50px for the exact pill shape */
+  background: var(--glass-white);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  color: #1e293b;
+  box-shadow: var(--shadow-sm);
+  color: var(--text-main);
   font-weight: 600;
   font-size: 14px;
 }
 
 .location-btn:hover:not(.detecting), .location-btn.active {
-  background: #ffffff;
-  border-color: #005f73;
-  box-shadow: 0 8px 25px rgba(0, 95, 115, 0.15), inset 0 1px 0 #ffffff;
+  background: var(--card-bg);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-premium);
 }
 
 .icon-circle {
   width: 34px;
   height: 34px;
-  background: rgba(0, 95, 115, 0.08);
+  background: var(--bg-soft);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #005f73;
+  color: var(--primary);
   transition: all 0.3s ease;
 }
 
 .location-btn:hover:not(.detecting) .icon-circle, 
 .location-btn.active .icon-circle {
-  background: #005f73;
-  color: white;
+  background: var(--primary);
+  color: #ffffff; /* Explicitly white for contrast against the primary colored circle */
 }
 
 .loc-text {
@@ -53,13 +53,13 @@
 }
 
 .arrow-icon {
-  color: #64748b;
+  color: var(--text-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .arrow-icon.rotated {
   transform: rotate(180deg);
-  color: #005f73;
+  color: var(--primary);
 }
 
 /* Detecting Animation */
@@ -68,8 +68,8 @@
   animation: pulse-border 1.5s infinite alternate;
 }
 @keyframes pulse-border {
-  0% { box-shadow: 0 0 0 0 rgba(0, 95, 115, 0.1); }
-  100% { box-shadow: 0 0 0 6px rgba(0, 95, 115, 0.2); border-color: #005f73; }
+  0% { box-shadow: 0 0 0 0 transparent; }
+  100% { box-shadow: 0 0 0 6px var(--border); border-color: var(--primary); }
 }
 
 /* ================= DROPDOWN MENU ================= */
@@ -78,12 +78,12 @@
   top: calc(100% + 12px);
   left: 0;
   width: 320px;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--glass-white);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-premium);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px) scale(0.98);
@@ -104,12 +104,12 @@
   align-items: center;
   gap: 10px;
   padding: 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  background: rgba(255,255,255,0.5);
+  border-bottom: 1px solid var(--border);
+  background: transparent;
 }
 
 .search-icon-small {
-  color: #94a3b8;
+  color: var(--text-light);
   font-size: 20px !important;
 }
 
@@ -119,10 +119,15 @@
   outline: none;
   width: 100%;
   font-size: 14px;
-  color: #1e293b;
+  color: var(--text-main);
   font-weight: 500;
 }
-.dropdown-search input::placeholder { color: #94a3b8; font-weight: 400; }
+
+.dropdown-search input::placeholder { 
+  color: var(--text-light); 
+  font-weight: 400; 
+  opacity: 0.7;
+}
 
 /* Dropdown Body & Items */
 .dropdown-body {
@@ -132,7 +137,7 @@
 }
 
 .dropdown-body::-webkit-scrollbar { width: 6px; }
-.dropdown-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+.dropdown-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
 .dropdown-item {
   display: flex;
@@ -144,11 +149,11 @@
 }
 
 .dropdown-item:hover {
-  background: rgba(0, 95, 115, 0.06);
+  background: var(--bg-soft);
 }
 
 .item-icon {
-  color: #64748b;
+  color: var(--text-light);
   font-size: 20px !important;
 }
 
@@ -160,21 +165,21 @@
 .item-title {
   font-size: 14px;
   font-weight: 500;
-  color: #334155;
+  color: var(--text-main);
 }
 
 .item-subtitle {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--text-light);
 }
 
 /* Special styling for Detect Location */
-.detect-item .detect-icon { color: #005f73; }
-.detect-item .item-title { color: #005f73; font-weight: 600; }
+.detect-item .detect-icon { color: var(--primary); }
+.detect-item .item-title { color: var(--primary); font-weight: 600; }
 
 .dropdown-divider {
   height: 1px;
-  background: rgba(0,0,0,0.06);
+  background: var(--border);
   margin: 4px 0;
 }
 
@@ -190,8 +195,9 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--text-light);
 }
+
 /* ================= SEARCH BAR ================= */
 .search-container {
   position: relative;
@@ -205,16 +211,15 @@
   border: 1px solid var(--border);
   padding: 12px 18px;
   border-radius: 50px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--glass-white);
   backdrop-filter: blur(8px);
   transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  box-shadow: var(--shadow-sm);
 }
 
 .search-input-wrapper.focused {
-  background: white;
+  background: var(--card-bg);
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(0, 95, 115, 0.1);
 }
 
 .search-icon {
@@ -237,8 +242,9 @@
 }
 
 .search-input-wrapper input::placeholder {
-  color: #94a3b8;
+  color: var(--text-light);
   font-weight: 400;
+  opacity: 0.7;
 }
 
 /* ================= SEARCH DROPDOWN ================= */
@@ -247,11 +253,11 @@
   top: 60px;
   left: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-bg);
   backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-premium);
   overflow: hidden;
   z-index: 1000;
   animation: slideDown 0.3s cubic-bezier(0.23, 1, 0.32, 1);
@@ -290,7 +296,7 @@
 }
 
 .dropdown-item:hover {
-  background: rgba(0, 95, 115, 0.05);
+  background: var(--bg-soft);
   color: var(--primary);
 }
 

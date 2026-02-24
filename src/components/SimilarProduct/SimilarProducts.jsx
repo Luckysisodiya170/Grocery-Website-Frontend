@@ -1,5 +1,5 @@
 import "./SimilarProducts.css";
-import Card from "../../pages/Productcard/Productcard";
+import Card from "../Product/Productcard/Productcard";
 import products from "../../data/products.json";
 
 function SimilarProducts({ currentProduct }) {

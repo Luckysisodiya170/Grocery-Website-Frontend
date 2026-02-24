@@ -1,8 +1,12 @@
 import { useRef } from "react";
 import "./category.css";
+import { useNavigate } from "react-router-dom";
 
 function Category({ data = [], onSelect }) {
   const scrollRef = useRef();
+  
+  // 🔴 1. Initialize navigate at the top of the component!
+  const navigate = useNavigate(); 
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -400, behavior: "smooth" });
@@ -10,6 +14,12 @@ function Category({ data = [], onSelect }) {
 
   const scrollRight = () => {
     scrollRef.current.scrollBy({ left: 400, behavior: "smooth" });
+  };
+
+  // 🔴 2. Create a handler function for the click
+  const handleViewAll = () => {
+    window.scrollTo({ top: 0, behavior: "instant" }); // Snaps to top
+    navigate("/shop");
   };
 
   return (
@@ -23,10 +33,11 @@ function Category({ data = [], onSelect }) {
         </div>
 
         <div className="category-actions">
-          <span className="view-all-text">
+          
+          {/* 🔴 3. Call the handler function here using an arrow function */}
+          <span className="view-all-text" onClick={handleViewAll}>
             View all categories <span className="arrow-right">→</span>
           </span>
-          
           
         </div>
 

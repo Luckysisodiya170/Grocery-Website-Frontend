@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import "./recommended.css";
-import Card from "../Productcard/Productcard.jsx";
+import Card from "../Product/Productcard/Productcard";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 

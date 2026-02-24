@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Icons
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -13,28 +14,97 @@ import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+
+// Cart & Data
+import { useCart } from "../../../pages/cart/CartContext"; 
+import products from "../../../data/products.json"; 
 
 import "./headerSearch.css";
 
 function HeaderSearch() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { addToCart, setIsCartOpen } = useCart();
+  
+  // --- LOCATION STATES ---
   const [selectedLocation, setSelectedLocation] = useState("New Delhi, 110001");
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState("");
-  
-  // Updated states for the expanded Address Form
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [addressForm, setAddressForm] = useState({
-    name: "",
-    phone: "",
-    street: "",
-    landmark: "",
-    city: "",
-    state: "",
-    pin: "",
-    type: "Home" // Default to Home
+    name: "", phone: "", street: "", landmark: "", city: "", state: "", pin: "", type: "Home"
   });
+  
+  // --- SEARCH STATES ---
+  const [query, setQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchContainerRef = useRef(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // --- DROPDOWN DATA FILTERING ---
+  const matchingProducts = products.filter(p => 
+    p.name.toLowerCase().includes(query.toLowerCase()) || 
+    p.category.toLowerCase().includes(query.toLowerCase())
+  ).slice(0, 6); 
+
+  const textSuggestions = Array.from(new Set(
+    products
+      .filter(p => p.name.toLowerCase().includes(query.toLowerCase()))
+      .map(p => p.name)
+  )).slice(0, 5); 
+
+  // --- CLICK HANDLERS ---
+  const goToProduct = (productId) => {
+    setIsSearchFocused(false);
+    setQuery(""); 
+    navigate(`/product/${productId}`);
+  };
+
+  const handleAddToCart = (e, product) => {
+    e.stopPropagation(); 
+    addToCart(product);
+    setIsCartOpen(true); 
+  };
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setQuery(val);
+    if (location.pathname === "/shop") {
+      navigate(`/shop?search=${encodeURIComponent(val)}`, { replace: true });
+    }
+  };
+
+  const handleFocus = () => {
+    setIsSearchFocused(true);
+    if (location.pathname !== "/shop") {
+      navigate("/shop");
+    }
+  };
+
+  const executeSearch = (searchTerm) => {
+    setQuery(searchTerm);
+    setIsSearchFocused(false);
+    navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      executeSearch(query);
+      setIsSearchFocused(false);
+    }
+  };
+
+  // --- LOCATION HANDLERS ---
   const handleDetectLocation = () => {
     setLoading(true);
     navigator.geolocation.getCurrentPosition(
@@ -69,8 +139,6 @@ function HeaderSearch() {
 
   const handleSaveAddress = (e) => {
     e.preventDefault();
-    
-    // Destructure and trim values to prevent users from just typing spaces "   "
     const { name, phone, street, city, state, pin, type } = addressForm;
     const trimmedName = name.trim();
     const trimmedPhone = phone.trim();
@@ -79,48 +147,30 @@ function HeaderSearch() {
     const trimmedState = state.trim();
     const trimmedPin = pin.trim();
 
-    // 1. Basic Empty Field Validation
     if (!trimmedName || !trimmedPhone || !trimmedStreet || !trimmedCity || !trimmedState || !trimmedPin) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-    // 2. Name Validation (Only letters and spaces, minimum 2 characters)
-    const nameRegex = /^[A-Za-z\s]{2,50}$/;
-    if (!nameRegex.test(trimmedName)) {
-      toast.error("Please enter a valid name (letters only).");
-      return;
-    }
-
-    // 3. Phone Number Validation (Exactly 10 digits, starts with 6-9 for India)
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(trimmedPhone)) {
       toast.error("Please enter a valid 10-digit mobile number.");
       return;
     }
 
-    // 4. Pincode Validation (Exactly 6 digits, cannot start with 0)
-    const pinRegex = /^[1-9][0-9]{5}$/;
-    if (!pinRegex.test(trimmedPin)) {
-      toast.error("Please enter a valid 6-digit Pincode.");
-      return;
-    }
-
-    // If all validations pass, save it!
     const formattedAddress = `${type} - ${trimmedCity}, ${trimmedPin}`;
     setSelectedLocation(formattedAddress);
     setShowLocationModal(false);
     setIsAddingAddress(false);
-    
-    // Reset form to default blank state
     setAddressForm({ name: "", phone: "", street: "", landmark: "", city: "", state: "", pin: "", type: "Home" });
     toast.success("New address added successfully!");
   };
 
   return (
     <>
-      <div className="header-search">
+      <div className="header-search" ref={searchContainerRef}>
         <div className="container header-search__inner">
+          
           <button className="location-pill premium-hover" onClick={() => setShowLocationModal(true)}>
             <div className="loc-icon-wrapper">
               <LocationOnIcon className="pin-icon" fontSize="small" />
@@ -137,19 +187,96 @@ function HeaderSearch() {
             <input 
               type="text" 
               className="search-input" 
-              placeholder="Search for fresh food, electronics..." 
+              placeholder="Search for Fresh Spinach, Milk..." 
               value={query} 
-              onChange={(e) => setQuery(e.target.value)} 
+              onChange={handleInputChange} 
+              onFocus={handleFocus}
+              onKeyDown={handleKeyDown}
             />
             {query && (
-              <button className="clear-search" onClick={() => setQuery("")}>
+              <button className="clear-search" onClick={() => { 
+                setQuery(""); 
+                navigate("/shop");
+              }}>
                 <CloseIcon fontSize="small" />
               </button>
             )}
           </div>
         </div>
+
+        {/* --- FULL WIDTH ZEPTO-STYLE OVERLAY --- */}
+        {query && isSearchFocused && (
+          <div className="zepto-dropdown-overlay">
+            <div className="container zepto-dropdown-inner">
+              
+              {textSuggestions.length > 0 && (
+                <div className="zepto-suggestions-list">
+                  {textSuggestions.map((name, i) => {
+                    const matchedProduct = products.find(p => p.name === name);
+                    const safeImage = matchedProduct?.image || "default.png";
+                    
+                    return (
+                      <div key={i} className="zepto-suggestion-item" onClick={() => executeSearch(name)}>
+                        <div className="sugg-img-placeholder">
+                          <img src={`/product/${safeImage}`} alt={name} />
+                        </div>
+                        <span>
+                          {name.toLowerCase().startsWith(query.toLowerCase()) ? (
+                            <><strong>{query}</strong>{name.substring(query.length)}</>
+                          ) : (
+                            name
+                          )}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {matchingProducts.length > 0 && (
+                <div className="zepto-products-section">
+                  <h4 className="zepto-results-title">Showing results for "{query}"</h4>
+                  <div className="zepto-products-row">
+                    {matchingProducts.map((product) => (
+                      <div className="zepto-mini-card" key={product.id} onClick={() => goToProduct(product.id)}>
+                        <div className="img-box">
+                          {product.discount && <span className="blue-badge">{product.discount}</span>}
+                          {product.isNew && !product.discount && <span className="new-badge">NEW</span>}
+                          <img src={`/product/${product.image}`} alt={product.name} />
+                        </div>
+                        
+                        <div className="delivery-time">
+                          <AccessTimeIcon style={{fontSize: "10px"}} /> 8 MINS
+                        </div>
+                        
+                        <div className="mini-title">{product.name}</div>
+                        <div className="weight-selector">1 pc <KeyboardArrowDownIcon style={{fontSize: "14px"}} /></div>
+                        
+                        <div className="price-add-row">
+                          <div className="price-block">
+                            <span className="current-price">₹{product.price}</span>
+                            {product.originalPrice && <span className="old-price">₹{product.originalPrice}</span>}
+                          </div>
+                          
+                          <button 
+                            className="mini-add-btn" 
+                            onClick={(e) => handleAddToCart(e, product)}
+                          >
+                            ADD
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* --- LOCATION MODAL --- */}
       {showLocationModal && createPortal(
         <div className="modal-overlay" onClick={() => {
           setShowLocationModal(false);
@@ -179,10 +306,7 @@ function HeaderSearch() {
             </div>
 
             {isAddingAddress ? (
-              /* ================= PREMIUM ADDRESS FORM ================= */
               <form onSubmit={handleSaveAddress} className="detailed-address-form">
-                
-                {/* Visual Address Type Selector */}
                 <div className="address-type-selector">
                   {["Home", "Work", "Other"].map((type) => (
                     <button
@@ -239,7 +363,6 @@ function HeaderSearch() {
                 <button type="submit" className="save-address-btn">Save Address Details</button>
               </form>
             ) : (
-              /* ================= DEFAULT MODAL VIEW ================= */
               <>
                 <button className="add-address-trigger" onClick={() => setIsAddingAddress(true)}>
                   <div className="add-icon-wrapper"><AddIcon /></div>
@@ -271,7 +394,6 @@ function HeaderSearch() {
                         <p>Block C, Connaught Place, New Delhi, 110001</p>
                       </div>
                     </div>
-
                     <div className="address-item" onClick={() => handleSelectSaved("Work - Gurugram, 122018")}>
                       <div className="address-icon work-icon"><WorkOutlineIcon /></div>
                       <div className="address-details">
@@ -293,5 +415,3 @@ function HeaderSearch() {
 }
 
 export default HeaderSearch;
-
-

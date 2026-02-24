@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import products from "../../data/products.json";
-import ProductGallery from "../../components/Product/ProductGallery";
-import ProductInfo from "../../components/Product/ProductInfo";
-import ProductTabs from "../../components/Product/ProductTabs";
+import products from "../../../data/products.json";
+import ProductGallery from "../ProductGallery";
+import ProductInfo from "../ProductInfo";
+import ProductTabs from "../ProductTabs";
 import "./ProductDetails.css";
-import SimilarProducts from "../../components/SimilarProduct/SimilarProducts";
+import SimilarProducts from "../../SimilarProduct/SimilarProducts";
 
 function ProductDetails() {
   const { id } = useParams();

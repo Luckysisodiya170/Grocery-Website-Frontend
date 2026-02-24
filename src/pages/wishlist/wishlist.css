@@ -1,0 +1,30 @@
+.wishlist-page {
+  padding: 60px 20px;
+  min-height: 70vh; /* 👈 This pushes the footer down */
+  margin-top: 20px;
+}
+
+.wishlist-title {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.empty-wishlist-box {
+  padding: 80px 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.empty-wishlist-box h3 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.empty-wishlist-box p {
+  color: rgba(255, 255, 255, 0.6);
+}

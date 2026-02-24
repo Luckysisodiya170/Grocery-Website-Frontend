@@ -2,9 +2,9 @@
 .home.cinematic-bg {
   width: 100%;
   min-height: 100vh;
-  background: transparent;
   padding-bottom: 60px;
   overflow-x: hidden;
+  background: transparent; /* Lets the starry background show */
 }
 
 .editorial-header {
@@ -24,19 +24,21 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 3px;
-  color: var(--secondary);
+  color: #00f2fe; /* Glowing Neon Cyan */
   margin-bottom: 12px;
   display: block;
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
 }
 
 .section-title-elite {
   font-size: 38px;
   font-weight: 900;
-  color: var(--text-main);
+  color: #ffffff; /* Crisp white */
   letter-spacing: -1px;
   line-height: 1.1;
   position: relative;
   display: inline-block;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 /* ================= CINEMATIC HERO SLIDER ================= */
@@ -44,9 +46,10 @@
   height: 500px; 
   margin: 40px auto;
   position: relative;
-  border-radius: var(--radius-xl, 24px); 
+  border-radius: var(--radius-xl); 
   overflow: hidden;
-  background: var(--bg);
+  background: transparent;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .hero-slider { position: relative; width: 100%; height: 100%; }
@@ -54,7 +57,7 @@
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   transition: opacity 0.8s ease;
   overflow: hidden;
-  border-radius: 26px;
+  border-radius: var(--radius-xl);
 }
 
 .hero-slide-img {
@@ -63,9 +66,11 @@
 }
 
 .hero-slide-wrapper.active .hero-slide-img { transform: scale(1); }
+
+/* Darker vignette for the space theme */
 .hero-vignette {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 40%);
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, transparent 50%);
   z-index: 2; pointer-events: none;
 }
 
@@ -73,20 +78,23 @@
 .elite-slider-dots {
   position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
   display: flex; gap: 15px; z-index: 10;
-  background: rgba(0, 0, 0, 0.4); padding: 10px 20px;
-  border-radius: 50px; backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.4); 
+  padding: 10px 20px;
+  border-radius: var(--radius-pill); 
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .elite-dot {
-  width: 10px; height: 10px; border-radius: 50px;
-  background: rgba(255, 255, 255, 0.4); cursor: pointer;
+  width: 10px; height: 10px; border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.3); cursor: pointer;
   position: relative; overflow: hidden; transition: all 0.4s ease;
 }
 
-.elite-dot.active { width: 35px; background: rgba(255, 255, 255, 0.2); }
+.elite-dot.active { width: 35px; background: rgba(255, 255, 255, 0.1); }
 .dot-progress {
   position: absolute; top: 0; left: 0; height: 100%; width: 100%;
-  background: white; border-radius: 50px;
+  background: #00f2fe; border-radius: var(--radius-pill);
   animation: fillProgress 4s linear infinite; 
 }
 
@@ -95,319 +103,164 @@
   100% { transform: scaleX(1); transform-origin: left; }
 }
 
-/* ================= BENTO SUBCATEGORIES ================= */
+/* ================= BENTO SUBCATEGORIES (GLASS TILE FIX) ================= */
 .subcategory-elite { margin: 40px auto; }
 
 .bento-grid {
-  display: flex;
-  overflow-x: auto;
+  display: flex !important;       
+  flex-wrap: nowrap !important;   
+  overflow-x: auto !important;    
   gap: 20px;
-  padding-bottom: 10px;
+  padding: 10px 5px 25px 5px;     
   scroll-behavior: smooth;
-  scrollbar-width: none;
+  scrollbar-width: none;          
+  -webkit-overflow-scrolling: touch; 
 }
+
 .bento-grid::-webkit-scrollbar { display: none; }
 
 .bento-card {
   min-width: 240px;
-  flex: 0 0 auto;
-  border-radius: 20px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  cursor: pointer;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  transition: all 0.3s ease;
-}
-
-.bento-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
-.bento-card.active { border: 2px solid #2563eb; background: #dbeafe; }
-
-.bento-header { display: flex; justify-content: space-between; align-items: center; }
-.bento-title { font-size: 16px; font-weight: 700; color: #111827; }
-
-.bento-image-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-  background: rgba(0,0,0,0.03); padding: 10px; border-radius: 14px;
-}
-.bento-img-box { background: white; border-radius: 8px; padding: 6px; }
-.bento-img-box img { width: 100%; height: 100%; object-fit: contain; }
-.bento-empty { grid-column: span 2; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 0; }
-
-/* ================= HEAVY GLASS PRODUCTS AREA ================= */
-.glass-panel-heavy {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl, 24px);
-  margin: 40px auto;
-  padding: 50px 40px;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
-}
-
-/* ================= THE PRODUCT GRID FIX ================= */
-/* ================= THE PRODUCT GRID FIX ================= */
-.product-grid-elite {
-  display: grid;
-  /* CHANGED: auto-fit to auto-fill. 
-     This forces the grid to keep empty columns, stopping a single item from stretching out! */
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  justify-content: start; /* Keeps items aligned beautifully to the left */
-  gap: 25px;
-  margin-top: 30px;
-  width: 100%;
-}
-/* ================= EMPTY STATE & LOAD MORE ================= */
-.empty-state-box {
-  text-align: center;
-  padding: 60px 20px;
-  background: white;
-  border-radius: var(--radius-lg);
-  border: 1px dashed var(--border);
-  margin-top: 20px;
-}
-.empty-state-box h3 { color: var(--text-main); margin-bottom: 10px; }
-.empty-state-box p { color: var(--text-light); }
-
-.load-more-container {
-  text-align: center;
-  margin-top: 40px;
-}
-.btn-load-more {
-  padding: 14px 35px;
-  border-radius: 50px;
-  background: transparent;
-  color: var(--primary);
-  font-weight: bold;
-  font-size: 15px;
-  border: 2px solid var(--primary);
-  cursor: pointer;
-  transition: 0.3s;
-}
-.btn-load-more:hover {
-  background: var(--primary);
-  color: white;
-  transform: translateY(-2px);
-}
-
-/* ===== APP IMAGE WRAPPER ===== */
-.app-image { 
-  width: 100%; /* Forces it to fill the container perfectly */
-  margin: 60px auto; /* Even, breathable spacing above and below */
-}
-
-.app-image img { 
-  width: 100%; 
-  height: auto; 
-  /* Match the border-radius of your large Hero banner & Glass panels */
-  border-radius: var(--radius-xl, 24px); 
-  display: block; 
-  object-fit: cover;
-  /* Add the premium shadow to match the rest of your cards */
-  box-shadow: 0 20px 40px -15px rgba(0, 95, 115, 0.15);
-}
-/* ================= MOBILE RESPONSIVENESS ================= */
-@media (max-width: 768px) {
-  .hero-elite { height: 300px; border-radius: 16px; margin: 20px auto; width: 92%; }
-  .section-title-elite { font-size: 26px; }
-  .glass-panel-heavy { padding: 30px 20px; border-radius: 16px; margin: 20px 0; }
-  
-  .bento-card { min-width: 180px; padding: 15px; }
- .product-grid-elite {
-    /* This ensures a single item won't stretch to 50% width if it's the only one */
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-    gap: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-elite { height: 220px; }
-  .bento-card { min-width: 160px; }
-  .product-grid-elite { gap: 10px; }
-}/* ================= BENTO SUBCATEGORIES ================= */
-.subcategory-elite { margin: 40px auto; }
-
-.bento-grid {
-  display: flex;
-  overflow-x: auto;
-  gap: 20px;
-  padding: 10px 5px 20px; /* Extra padding to prevent shadow clipping */
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-}
-.bento-grid::-webkit-scrollbar { display: none; }
-
-.bento-card {
-  min-width: 240px;
-  flex: 0 0 auto;
-  border-radius: 24px;
+  flex: 0 0 auto !important;      
+  border-radius: var(--radius-xl);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   cursor: pointer;
-  background: linear-gradient(145deg, #ffffff, #f8fafc);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+  /* Frosted Glass Tile */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .bento-card:hover { 
   transform: translateY(-8px); 
-  box-shadow: 0 20px 40px -10px rgba(0, 95, 115, 0.12); 
-  border-color: rgba(20, 184, 166, 0.3);
+  border-color: #00f2fe;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 25px rgba(0, 242, 254, 0.2); 
 }
 
 .bento-card.active { 
-  border: 2px solid var(--primary); 
-  background: #f0fdfa; /* Very soft teal tint */
-  box-shadow: 0 15px 35px -10px rgba(0, 95, 115, 0.2);
+  border: 2px solid #00f2fe; 
+  background: rgba(0, 242, 254, 0.1); 
+  box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);
 }
 
 .bento-header { display: flex; justify-content: space-between; align-items: center; }
-.bento-title { font-size: 16px; font-weight: 800; color: var(--text-main); }
-.bento-arrow { color: var(--text-light); transition: 0.3s; }
-.bento-card:hover .bento-arrow { transform: translateX(4px); color: var(--primary); }
+.bento-title { font-size: 16px; font-weight: 800; color: #ffffff; }
+.bento-arrow { color: rgba(255, 255, 255, 0.5); transition: 0.3s; }
+.bento-card:hover .bento-arrow { transform: translateX(4px); color: #00f2fe; }
 
 .bento-image-grid {
   display: grid; 
   grid-template-columns: 1fr 1fr; 
   gap: 10px;
-  background: #f1f5f9; 
+  background: rgba(0, 0, 0, 0.2); /* Recessed dark background */
   padding: 12px; 
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .bento-img-box { 
-  background: white; 
-  border-radius: 10px; 
+  background: rgba(255, 255, 255, 0.05); 
+  border-radius: var(--radius-md); 
   padding: 8px; 
-  aspect-ratio: 1; /* Forces perfect squares */
+  aspect-ratio: 1; 
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-  position: relative; /* Needed for the overlay */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative; 
   overflow: hidden;
 }
 
 .bento-img-box img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: contain; 
+  width: 100%; height: 100%; object-fit: contain; 
   transition: transform 0.4s ease;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); /* Makes products pop out of the dark */
 }
 
-.bento-card:hover .bento-img-box img {
-  transform: scale(1.08);
-}
-
-/* --- THE +MORE OVERLAY STYLES --- */
-.more-box img {
-  filter: blur(2px); /* Blurs the image under the overlay */
-  transform: scale(1.1); /* Slight zoom so blurry edges don't show */
-}
+.bento-card:hover .bento-img-box img { transform: scale(1.08); }
+.more-box img { filter: blur(2px); transform: scale(1.1); }
 
 .more-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 95, 115, 0.65); /* Dark teal transparent background */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  z-index: 2;
+  position: absolute; inset: 0;
+  background: rgba(15, 23, 42, 0.7); 
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-md); z-index: 1;
+  backdrop-filter: blur(4px);
 }
-
 .more-overlay span {
-  color: white;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  color: #ffffff; font-size: 14px; font-weight: 900; 
+  letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); z-index: 22;
 }
 
-.bento-empty { grid-column: span 2; text-align: center; color: var(--text-light); font-size: 13px; padding: 30px 0; font-style: italic; }
-
-
-/* ================= BENTO SUBCATEGORIES (HORIZONTAL SCROLL FIX) ================= */
-.bento-grid {
-  display: flex !important;       /* Forces flexbox layout */
-  flex-wrap: nowrap !important;   /* Forces a single row, no wrapping */
-  overflow-x: auto !important;    /* Enables left-to-right scrolling */
-  gap: 20px;
-  padding: 10px 5px 25px 5px;     /* Extra bottom padding for shadow visibility */
-  scroll-behavior: smooth;
-  scrollbar-width: none;          /* Hides scrollbar in Firefox */
-  -webkit-overflow-scrolling: touch; /* Enables buttery smooth momentum scrolling on iOS */
+/* ================= HEAVY GLASS PRODUCTS AREA ================= */
+.glass-panel-heavy {
+  background: transparent; border: none; box-shadow: none;
+  padding: 0; margin: 40px auto 60px; max-width: 100%;
 }
 
-/* Hides scrollbar in Chrome/Safari/Edge */
-.bento-grid::-webkit-scrollbar { 
-  display: none; 
+.product-grid-elite {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  justify-content: start; gap: 25px; margin-top: 30px; width: 100%;
 }
 
-.bento-card {
-  min-width: 240px;
-  flex: 0 0 auto !important;      /* Prevents cards from shrinking; forces them to stay wide */
-  border-radius: 24px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  cursor: pointer;
-  background: linear-gradient(145deg, #ffffff, #f8fafc);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+/* ================= EMPTY STATE & LOAD MORE ================= */
+.empty-state-box {
+  text-align: center; padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  margin-top: 20px;
+}
+.empty-state-box h3 { color: #ffffff; margin-bottom: 10px; }
+.empty-state-box p { color: rgba(255, 255, 255, 0.6); }
+
+.load-more-container { text-align: center; margin-top: 40px; }
+.btn-load-more {
+  padding: 14px 35px; border-radius: var(--radius-pill);
+  background: transparent; color: #00f2fe; font-weight: bold;
+  font-size: 15px; border: 2px solid #00f2fe;
+  cursor: pointer; transition: 0.3s;
+}
+.btn-load-more:hover {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  color: white; border-color: transparent;
+  transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 242, 254, 0.4);
 }
 
-.bento-card:hover { 
-  transform: translateY(-8px); 
-  box-shadow: 0 20px 40px -10px rgba(0, 95, 115, 0.12); 
-  border-color: rgba(20, 184, 166, 0.3);
+/* ===== APP IMAGE WRAPPER ===== */
+.app-image { width: 100%; margin: 60px auto; padding: 0; display: flex; justify-content: center; }
+.app-image a { display: block; width: 100%; }
+.app-image img { 
+  width: 100%; height: auto; border-radius: var(--radius-xl); 
+  display: block; object-fit: cover;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.bento-card.active { 
-  border: 2px solid var(--primary); 
-  background: #f0fdfa; 
-  box-shadow: 0 15px 35px -10px rgba(0, 95, 115, 0.2);
-}
-
-/* ================= MOBILE RESPONSIVENESS FOR HORIZONTAL SCROLL ================= */
+/* ================= MOBILE RESPONSIVENESS ================= */
 @media (max-width: 768px) {
-  .bento-grid {
-    gap: 16px; /* Slightly tighter gap on tablets */
-  }
-  .bento-card {
-    min-width: 200px; /* Slightly smaller so more peek onto the screen */
-    padding: 16px;
-    gap: 12px;
-  }
+  .hero-elite { height: 300px; border-radius: var(--radius-lg); margin: 20px auto; width: 92%; }
+  .section-title-elite { font-size: 26px; }
+  .glass-panel-heavy { padding: 0; margin: 20px 0; }
+  .bento-grid { gap: 16px; }
+  .bento-card { min-width: 200px; padding: 16px; gap: 12px; }
+  .product-grid-elite { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
 }
 
 @media (max-width: 480px) {
-  .bento-grid {
-    gap: 12px; /* Tighter spacing for small phones */
-    padding-bottom: 15px;
-  }
-  .bento-card {
-    min-width: 155px; /* Perfect size for mobile swiping */
-    padding: 12px;
-    border-radius: 18px;
-  }
-  .bento-title {
-    font-size: 14px; /* Adjust text size for the smaller card */
-  }
-  .bento-image-grid {
-    padding: 8px; /* Tighter image grid for mobile */
-    border-radius: 12px;
-    gap: 6px;
-  }
-  .more-overlay{
-    font-size: 6px; /* Adjust the '+X' text size */
-   
-  }
+  .hero-elite { height: 220px; }
+  .product-grid-elite { gap: 10px; }
+  .bento-grid { gap: 12px; padding-bottom: 15px; }
+  .bento-card { min-width: 155px; padding: 12px; border-radius: 18px; }
+  .bento-title { font-size: 14px; }
+  .bento-image-grid { padding: 8px; border-radius: var(--radius-md); gap: 6px; }
+  .more-overlay { font-size: 6px; }
 }
