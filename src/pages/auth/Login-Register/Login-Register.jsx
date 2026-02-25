@@ -1,155 +1,177 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import "./Login-Register.css";
-
 import deliveryImg from "../../../assets/deliveryimage.jpg";
-import GoogleIcon from "@mui/icons-material/Google";
-import FacebookIcon from "@mui/icons-material/Facebook";
+import { useAuth } from "../../../context/AuthContext";
 
 function LoginRegister() {
   const location = useLocation();
   const navigate = useNavigate();
-
   const isRegister = location.pathname === "/register";
+  const { login } = useAuth();
 
-  // form state
-  const [name, setName] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    password: "",
+    confirm: "",
+  });
+
   const [error, setError] = useState("");
 
-  // validation helpers
-  const validatePhone = (num) => /^[0-9]{10}$/.test(num);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError("");
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // mobile validation
-    if (!validatePhone(mobile)) {
-      setError("Enter valid 10 digit mobile number");
+    const { name, mobile, email, password, confirm } = formData;
+
+    if (!mobile || mobile.length < 10) {
+      setError("Enter valid mobile number");
       return;
     }
 
     if (isRegister) {
-      // register validation
-      if (!name) {
-        setError("Full name required");
+      if (!name || !email || !password || !confirm) {
+        setError("All fields are required");
         return;
       }
 
-      if (password.length < 6) {
-        setError("Password must be 6+ characters");
+      if (password !== confirm) {
+        setError("Passwords do not match");
         return;
       }
 
-      alert("Registered successfully ✅");
-      navigate("/login");
-      return;
+      // REGISTER SUCCESS (Keep as it is)
+      login({
+        name: name,
+        mobile: mobile,
+        token: "demo_token"
+      });
+
+      navigate("/");
+    } else {
+      // 🔥 LOGIN → Redirect to OTP Verify (NO LOGIN YET)
+      navigate("/verify-otp", {
+        state: { mobile }
+      });
     }
-
-    // login → OTP flow
-    setError("");
-
-    navigate("/verify-otp", {
-      state: { type: "login" }
-    });
   };
 
   return (
     <div className="auth-page">
-
       <div className="auth-card">
 
-        {/* LEFT FORM */}
         <div className="auth-form">
-          <h2>{isRegister ? "Create Account" : "Welcome Back!"}</h2>
-
+          <h2>{isRegister ? "Create Account" : "Welcome Back"}</h2>
           <p className="subtitle">
             {isRegister
-              ? "Create your account to start ordering"
-              : "Sign in with your mobile number"}
+              ? "Join our community today"
+              : "Login with your mobile number"}
           </p>
 
-          <div className="form-wrapper">
+          {/* ENTER KEY WORKS BECAUSE OF onSubmit */}
+          <form onSubmit={handleSubmit}>
 
-            <form onSubmit={handleSubmit}>
+            {isRegister && (
+              <div className="form-group">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter your full name"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
 
-              {isRegister && (
-                <>
+            <div className="form-group">
+              <label>Mobile Number</label>
+              <PhoneInput
+                country={"in"}
+                value={formData.mobile}
+                onChange={(val) =>
+                  setFormData({ ...formData, mobile: val })
+                }
+                inputProps={{
+                  required: true,
+                  onKeyDown: (e) => {
+                    if (e.key === "Enter") {
+                      handleSubmit(e);
+                    }
+                  }
+                }}
+              />
+            </div>
+
+            {isRegister && (
+              <>
+                <div className="form-group">
+                  <label>Email</label>
                   <input
-                    placeholder="Full Name"
-                    value={name}
-                    onChange={(e)=>setName(e.target.value)}
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
                   />
+                </div>
 
+                <div className="form-group">
+                  <label>Password</label>
                   <input
                     type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
+                    name="password"
+                    placeholder="Enter password"
+                    value={formData.password}
+                    onChange={handleChange}
                   />
-                </>
-              )}
-
-              <input
-                placeholder="Mobile Number"
-                value={mobile}
-                maxLength={10}
-                onChange={(e)=>setMobile(e.target.value.replace(/\D/g,""))}
-              />
-
-              {/* {!isRegister && (
-                <div className="forgot-wrapper">
-                  <span
-                    className="forgot-link"
-                    onClick={()=>navigate("/forgot")}
-                  >
-                    Forgot Password?
-                  </span>
                 </div>
-              )} */}
 
-              {error && <p className="auth-error">{error}</p>}
+                <div className="form-group">
+                  <label>Confirm Password</label>
+                  <input
+                    type="password"
+                    name="confirm"
+                    placeholder="Confirm password"
+                    value={formData.confirm}
+                    onChange={handleChange}
+                  />
+                </div>
+              </>
+            )}
 
-              <button className="login-btn">
-                {isRegister ? "Register" : "Login"}
-              </button>
+            {error && <p className="error">{error}</p>}
 
-            </form>
-
-            <div className="divider">Or login with</div>
-
-            <button type="button" className="social-btn">
-              <GoogleIcon sx={{ color: "#EA4335" }} />
-              Login with Google
+            <button type="submit" className="submit-btn">
+              {isRegister ? "Register" : "Send OTP"}
             </button>
 
-            <button className="social-btn">
-              <FacebookIcon sx={{ color: "#1877F2" }} />
-              Login with Facebook
-            </button>
-          </div>
+          </form>
 
           <p className="switch-text">
             {isRegister
               ? "Already have an account?"
               : "Don't have an account?"}
-
             <Link to={isRegister ? "/login" : "/register"}>
               {isRegister ? " Login" : " Register"}
             </Link>
           </p>
         </div>
 
-        {/* RIGHT IMAGE */}
         <div className="auth-image">
-          <img src={deliveryImg} alt="delivery" />
-
-          <div className="auth__visual-content">
-            <h2>Fast Delivery at Your Doorstep</h2>
+          <img src={deliveryImg} alt="Delivery" />
+          <div className="overlay">
+            <h3>Lightning Fast Delivery</h3>
             <p>
-              Order groceries, essentials and more from nearby stores
-              with lightning fast delivery.
+              Experience the best service in Dewas with real-time tracking.
             </p>
           </div>
         </div>

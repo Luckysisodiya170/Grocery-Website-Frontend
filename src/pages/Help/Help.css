@@ -1,0 +1,58 @@
+.help-hero {
+  position: relative;
+  min-height: 100vh;
+  background-image: url("../../assets/bannerimages/i8dqm3frk1b01.jpg");
+  background-size: cover;
+  background-position: center;
+  padding: 80px 0;
+  display: flex;
+  align-items: center;
+  margin-top: -150px;
+}
+
+.help-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.4)
+  );
+  z-index: 0;
+}
+
+.help-content {
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
+.help-content h1 {
+  font-size: 36px;
+  margin-bottom: 40px;
+}
+
+.help-cards {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.help-box {
+  flex: 1;
+  min-width: 320px;
+  background: white;
+  color: black;
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.help-box h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.help-box p {
+  color: #555;
+}

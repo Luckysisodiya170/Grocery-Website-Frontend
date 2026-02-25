@@ -5,14 +5,14 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-
+import { useAuth } from "../../../context/AuthContext";
 // Context Hooks
 import { useCart } from "../../../pages/cart/CartContext";
 import { useWishlist } from "../../../pages/wishlist/WishlistContext"; // 👈 Added global wishlist brain
 
 const Card = ({ product }) => {
   const navigate = useNavigate();
-  
+  const { user } = useAuth();
   // 1. Cart Context
   const { cart, addToCart, removeFromCart, setIsCartOpen } = useCart();
   const cartItem = cart.find((item) => item.id === product.id);
@@ -23,14 +23,13 @@ const Card = ({ product }) => {
   const liked = isProductLiked(product.id);
 
   // 3. Login Protection Helper
-  const requireLogin = (action) => {
-    const isLoggedIn = localStorage.getItem("authToken");
-    if (!isLoggedIn) {
-      navigate("/login");
-      return false;
-    }
-    return true;
-  };
+ const requireLogin = () => {
+  if (!user) {
+    navigate("/login");
+    return false;
+  }
+  return true;
+};
 
   /* ---------------- QUANTITY CONTROLS ---------------- */
   const handleInitialAdd = (e) => {

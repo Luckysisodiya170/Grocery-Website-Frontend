@@ -1,100 +1,127 @@
-import { Link } from "react-router-dom";
-import "./Navbar.css";
+import { NavLink, Link } from "react-router-dom"; import "./Navbar.css";
 
-// Icons
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined"; // Added for the new Cart link
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
+import { useNavigate } from "react-router-dom";
 import { useWishlist } from "../../pages/wishlist/WishlistContext";
+import { useCart } from "../../pages/cart/CartContext";
+import { useAuth } from "../../context/AuthContext";
+import { useState, useRef, useEffect } from "react";
 import logo from "../../assets/logonew.jpeg";
 import HeaderSearch from "../common/HeaderSearch/HeaderSearch";
 
-// Import our global cart brain
-import { useCart } from "../../pages/cart/CartContext"; 
-
 function Navbar() {
-  const isLoggedIn = false; // later from auth
 
-  // We only need the count now! The drawer is gone.
+  const { user, logout } = useAuth();
+  const isLoggedIn = !!user;
+  const navigate = useNavigate();
   const { getCartCount } = useCart();
-const { wishlist } = useWishlist();
-  const handleProtectedClick = (e) => {
-    if (!isLoggedIn) e.preventDefault();
-  };
+  const { wishlist } = useWishlist();
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <header className="navbar glass-nav">
       <div className="container navbar__inner">
 
-        {/* LOGO */}
-        <Link to="/" className="navbar__logo" onClick={() => window.scrollTo(0,0)}>
+        <Link to="/" className="navbar__logo">
           <div className="logo-img-wrapper">
             <img src={logo} alt="Delivery App" />
           </div>
-          <span className="logo-text">Ship<span className="text-gradient">zyy</span></span>
+          <span className="logo-text">
+            Ship<span className="text-gradient">zyy</span>
+          </span>
         </Link>
 
-        {/* NAV LINKS WITH ICONS */}
         <nav className="navbar__links">
-          <Link to="/" className="nav-item" onClick={() => window.scrollTo(0,0)}>
+
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive ? "nav-item active-nav" : "nav-item"
+            }
+          >
             <HomeOutlinedIcon fontSize="small" />
             <span>Home</span>
-          </Link>
+          </NavLink>
 
-          <Link 
-            to="/shop" 
-            className="nav-item"
-            onClick={() => window.scrollTo({ top: 0, behavior: "instant" })}
+          <NavLink
+            to="/shop"
+            className={({ isActive }) =>
+              isActive ? "nav-item active-nav" : "nav-item"
+            }
           >
             <StorefrontOutlinedIcon fontSize="small" />
             <span>Category</span>
-          </Link>
+          </NavLink>
 
-          {/* 🔴 CHANGED: This is now the Cart page link! */}
-          <Link 
-            to="/cart" 
-            className="nav-item"
-            onClick={() => window.scrollTo({ top: 0, behavior: "instant" })}
+          <NavLink
+            to="/cart"
+            className={({ isActive }) =>
+              isActive ? "nav-item active-nav" : "nav-item"
+            }
           >
             <ShoppingCartOutlinedIcon fontSize="small" />
             <span>Cart</span>
-            {/* Show badge next to text if there are items */}
             {getCartCount() > 0 && (
-              <span className="cart-badge-inline" style={{ 
-                background: '#ec4899', color: 'white', borderRadius: '50px', 
-                padding: '2px 8px', fontSize: '11px', fontWeight: 'bold', marginLeft: '6px' 
-              }}>
+              <span className="cart-badge-inline">
                 {getCartCount()}
               </span>
             )}
-          </Link>
+          </NavLink>
 
-          <Link to="/contact" className="nav-item">
+          <NavLink
+            to="/help"
+            className={({ isActive }) =>
+              isActive ? "nav-item active-nav" : "nav-item"
+            }
+          >
             <CallOutlinedIcon fontSize="small" />
             <span>Help</span>
-          </Link>
-        </nav>
+          </NavLink>
 
-        {/* RIGHT SIDE ACTIONS */}
+        </nav>
         <div className="navbar__actions">
 
-          <Link to="/wishlist" className="icon-btn" aria-label="Wishlist">
-  <FavoriteBorderIcon />
-  {wishlist.length > 0 && <span className="cart-badge">{wishlist.length}</span>}
-</Link>
+          {/* Wishlist */}
+          <NavLink
+            to="/wishlist"
+            className={({ isActive }) =>
+              isActive ? "icon-btn active-icon" : "icon-btn"
+            }
+          >
+            <FavoriteBorderIcon />
+            {wishlist.length > 0 && (
+              <span className="cart-badge">
+                {wishlist.length}
+              </span>
+            )}
+          </NavLink>
 
-          {/* 🔴 CHANGED: This icon is now your Order History link! */}
-          <Link
+          {/* Orders */}
+          <NavLink
             to="/orders"
-            className="icon-btn"
-            onClick={() => window.scrollTo({ top: 0, behavior: "instant" })}
-            aria-label="My Orders"
+            className={({ isActive }) =>
+              isActive ? "icon-btn active-icon" : "icon-btn"
+            }
           >
             <ShoppingBagOutlinedIcon />
-          </Link>
+          </NavLink>
 
           <div className="auth-section">
             {!isLoggedIn ? (
@@ -102,19 +129,43 @@ const { wishlist } = useWishlist();
                 Login
               </Link>
             ) : (
-              <div className="profile-pill">
-                <div className="avatar">L</div>
-                <span>Lakshya</span>
+              <div className="profile-wrapper" ref={dropdownRef}>
+                <div
+                  className="profile-pill"
+                  onClick={() => setOpen(!open)}
+                >
+                  <div className="avatar">
+                    {user?.name?.charAt(0)?.toUpperCase()}
+                  </div>
+                  <span>{user?.name}</span>
+                </div>
+
+                {open && (
+                  <div className="profile-dropdown">
+                    <Link to="/profile" onClick={() => setOpen(false)}>
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setOpen(false);
+                        navigate("/", { replace: true });
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
-        </div>
 
+        </div>
       </div>
-      
-      {/* Search Bar Container */}
+
       <div className="navbar-search-wrapper">
-         <HeaderSearch/>
+        <HeaderSearch />
       </div>
     </header>
   );
