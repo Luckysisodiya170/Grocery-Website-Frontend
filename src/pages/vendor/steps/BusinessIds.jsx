@@ -1,25 +1,18 @@
-function BusinessIds({ data, setData, next, prev }) {
+function BusinessIds({ vendorData, handleChange }) {
   return (
-    <>
-      <div className="form-group">
+    <div className="form-grid">
+      <div className="form-group full-width">
         <label>Trade License Number</label>
-        <input
-          value={data.tradeLicense}
-          onChange={(e) =>
-            setData({ ...data, tradeLicense: e.target.value })
-          }
-        />
+        <input type="text" name="tradeLicense" placeholder="Enter trade license ID" value={vendorData.tradeLicense} onChange={handleChange} />
       </div>
-
-      <div className="step-actions">
-        <button className="outline-btn" onClick={prev}>
-          ← Previous
-        </button>
-        <button className="primary-btn" onClick={next}>
-          Next →
-        </button>
+      <div className="form-group full-width">
+        <label>Upload Trade License (PDF/Image)</label>
+        <div className="upload-box" style={{ border: '2px dashed #ccc', padding: '40px', textAlign: 'center', borderRadius: '8px', cursor: 'pointer' }}>
+          <span style={{ fontSize: '24px' }}>↑</span>
+          <p style={{ color: '#666', marginTop: '10px' }}>Click to upload or drag and drop</p>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
