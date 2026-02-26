@@ -5,11 +5,23 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Load user from localStorage on first render
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+    } else {
+      // Default mock user (for testing)
+      const defaultUser = {
+        id: 101,
+        name: "Rahul Sharma",
+        email: "rahul.sharma@example.com",
+        phone: "",
+        gender: "",
+        avatar: "https://i.pravatar.cc/150?img=12",
+        isLoggedIn: true,
+      };
+      localStorage.setItem("user", JSON.stringify(defaultUser));
+      setUser(defaultUser);
     }
   }, []);
 
@@ -23,13 +35,19 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateUser = (updatedData) => {
+    const updatedUser = { ...user, ...updatedData };
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    setUser(updatedUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);

@@ -43,7 +43,7 @@ function VerifyOtp() {
 
     // 🔥 OTP SUCCESS → STORE USER
     login({
-      name: "Lakshya",   // Replace later with real backend data
+      name: "Lucky",   // Replace later with real backend data
       mobile: phone,
       token: "demo_token"
     });

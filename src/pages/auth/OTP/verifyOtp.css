@@ -1,70 +1,126 @@
-.otp-page { 
-  min-height: 100vh; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  background: var(--bg); 
-  padding: 20px; 
+/* ===============================
+   OTP PAGE
+================================ */
+
+.otp-page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
 }
 
-.otp-container { 
-  width: 400px; 
-  border-radius: var(--radius-xl); 
-  overflow: hidden; 
-  background: var(--card-bg); 
-  box-shadow: var(--shadow-float); 
-  border: 1px solid var(--border); 
+/* CONTAINER */
+.otp-container {
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--radius-xl);
+  background: var(--card-gradient);
+  box-shadow: var(--shadow-float);
+  border: 1px solid var(--border);
+  overflow: hidden;
 }
 
-.otp-visual { height: 160px; position: relative; }
-.otp-visual img { width: 100%; height: 100%; object-fit: cover; }
-.otp-visual::after { 
-  content: ""; 
-  position: absolute; 
-  inset: 0; 
-  background: linear-gradient(to top, var(--card-bg), var(--glass-overlay)); 
+/* IMAGE */
+.otp-visual {
+  height: 140px;
+  position: relative;
 }
 
-.otp-content { padding: 40px 30px; text-align: center; }
-.otp-content h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
-
-.otp-box { display: flex; justify-content: center; gap: 12px; margin: 30px 0; }
-.otp-box input { 
-  width: 55px; 
-  height: 60px; 
-  text-align: center; 
-  font-size: 24px; 
-  font-weight: 700; 
-  border-radius: var(--radius-md); 
-  border: 2px solid var(--border); 
-  background: var(--bg-soft); 
-  color: var(--text-main); 
-  transition: 0.2s; 
+.otp-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.otp-box input:focus { 
-  border-color: var(--primary); 
-  background: var(--card-bg); 
-  box-shadow: 0 0 0 4px rgba(0, 95, 115, 0.1); 
-  transform: translateY(-2px); 
+.otp-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-overlay);
 }
 
-.otp-btn { 
-  width: 100%; 
-  padding: 15px; 
-  border-radius: var(--radius-md); 
-  border: none; 
-  background: var(--brand-gradient); 
-  color: #fff; 
-  font-weight: 700; 
-  font-size: 16px; 
-  cursor: pointer; 
-  transition: 0.3s; 
+/* CONTENT */
+.otp-content {
+  padding: 40px 30px;
+  text-align: center;
 }
 
-.otp-btn:hover { 
-  filter: brightness(1.1);
-  transform: translateY(-1px);
+.otp-content h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  color: var(--text-main);
 }
 
+.otp-content p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
 
+/* OTP INPUTS */
+.otp-box {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 30px 0;
+}
+
+.otp-box input {
+  width: 50px;
+  height: 55px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text-main);
+  transition: 0.25s ease;
+}
+
+.otp-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 3px rgba(0, 95, 115, 0.15);
+  transform: translateY(-2px);
+}
+
+/* BUTTON */
+.otp-btn {
+  width: 100%;
+  height: 48px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--brand-gradient);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.otp-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* RESPONSIVE */
+@media (max-height: 650px) {
+  .otp-page {
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .otp-box {
+    gap: 10px;
+  }
+
+  .otp-box input {
+    width: 44px;
+    height: 50px;
+  }
+}

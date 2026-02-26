@@ -1,0 +1,290 @@
+/* =========================================================
+   ACCOUNT PAGE
+========================================================= */
+
+.account-page {
+  padding: 30px 0 40px;
+}
+
+.account-header {
+  text-align: center;
+  margin-bottom: 50px;
+  color: aliceblue;
+}
+
+.account-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.account-header p {
+  font-size: 14px;
+  color: white;
+}
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+.account-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 40px;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.account-sidebar {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar-item {
+  padding: 20px 25px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--bg-soft);
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: var(--text-main);
+}
+
+.sidebar-item:hover {
+  background: #fde047;
+}
+
+.sidebar-item.active {
+  background: #facc15;
+  font-weight: 600;
+}
+
+/* =========================================================
+   CONTENT PANEL
+========================================================= */
+
+.account-content {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;   /* reduced from 40px */
+  box-shadow: var(--shadow-sm);
+}
+
+/* =========================================================
+   GRID SYSTEM
+========================================================= */
+
+.account-content {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;   /* reduced from 40px */
+  box-shadow: var(--shadow-sm);
+}
+/* =========================================================
+   FORM SYSTEM
+========================================================= */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;  /* reduced from 12+25 spacing */
+}
+
+.form-group label {
+  font-size: 13px;      /* smaller label */
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-light);
+  letter-spacing: 0.2px;
+}
+
+/* INPUT BASE */
+.form-group input,
+.form-group select {
+  height: 40px;                     /* reduced from 48px */
+  border-radius: 10px;
+  border: 1.2px solid var(--border);
+  padding: 0 14px;                  /* FIXED missing padding */
+  font-size: 13px;
+  background: var(--bg-soft);
+  color: var(--text-main);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 2px rgba(0, 95, 115, 0.12);
+}
+.form-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%23005f73' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.primary-btn {
+  margin-top: 18px;
+  height: 40px;                    /* reduced from 48px */
+  border-radius: 999px;
+  border: none;
+  background: var(--brand-gradient);
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0 22px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-float);
+}
+
+.green-btn {
+  background: #15803d;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.green-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-float);
+}
+
+.outline-btn {
+  border: 1.5px solid #15803d;
+  background: transparent;
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.outline-btn:hover {
+  background: #15803d;
+  color: white;
+}
+
+.cancel {
+  color: var(--danger);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* =========================================================
+   ORDER CARD
+========================================================= */
+
+.order-card {
+  margin-top: 25px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 25px;
+  background: var(--bg);
+  transition: 0.25s;
+}
+
+.order-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.order-header {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #facc15;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.order-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* =========================================================
+   PROFILE IMAGE UPLOAD
+========================================================= */
+
+.profile-upload-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.profile-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  border: 3px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: 0.3s;
+  position: relative;
+}
+
+.profile-avatar-large:hover {
+  border-color: var(--primary);
+  transform: scale(1.03);
+}
+
+.profile-avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+  .account-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .order-header {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+}

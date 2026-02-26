@@ -1,66 +1,46 @@
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import "./Profile.css";
+import { useState } from "react";
+import Sidebar from "./components/Sidebar";
+import PersonalInfo from "./components/PersonalInfo";
+import MyOrders from "./components/MyOrders";
+import ManageAddress from "./components/ManageAddress";
+import PaymentMethod from "./components/PaymentMethod";
+import PasswordManager from "./components/PasswordManager";
+import LogoutPanel from "./components/LogoutPanel";
+import "./profile1.css";
 
 function Profile() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("personal");
 
-  const [name, setName] = useState(user?.name || "");
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
+  const renderContent = () => {
+    switch (activeTab) {
+      case "personal":
+        return <PersonalInfo />;
+      case "orders":
+        return <MyOrders />;
+      case "address":
+        return <ManageAddress />;
+      case "payment":
+        return <PaymentMethod />;
+      case "password":
+        return <PasswordManager />;
+      case "logout":
+        return <LogoutPanel />;
+      default:
+        return <PersonalInfo />;
     }
-  }, [user, navigate]);
-
-  if (!user) return null;
-
-  const handleSave = () => {
-    const updatedUser = { ...user, name };
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    window.location.reload(); // quick refresh for navbar update
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate("/", { replace: true });
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <div className="profile-page">
-      <div className="profile-card">
-        <div className="profile-header">
-          <div className="profile-avatar">
-            {user.name.charAt(0).toUpperCase()}
-          </div>
-          <h2>{user.name}</h2>
-          <p>{user.mobile}</p>
-        </div>
+    <div className="account-page">
+      <div className="account-header">
+        <h1>My Account</h1>
+        <p>Home / My Account</p>
+      </div>
 
-        <div className="profile-body">
-          <div className="profile-field">
-            <label>Full Name</label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div className="profile-field">
-            <label>Mobile Number</label>
-            <input value={user.mobile} disabled />
-          </div>
-
-          <button className="save-btn" onClick={handleSave}>
-            Save Changes
-          </button>
-
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
+      <div className="account-layout container">
+        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="account-content">
+          {renderContent()}
         </div>
       </div>
     </div>

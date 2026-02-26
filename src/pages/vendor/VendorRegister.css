@@ -1,0 +1,233 @@
+/* =======================================================
+   VENDOR REGISTER PAGE
+======================================================= */
+
+.vendor-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+}
+
+.vendor-card {
+  width: 100%;
+  max-width: 750px;
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: var(--shadow-float);
+  animation: fadeIn 0.4s ease;
+}
+
+.vendor-card h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.vendor-card p {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* =======================================================
+   STEPPER
+======================================================= */
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 35px;
+  position: relative;
+}
+
+.step {
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.step span {
+  display: block;
+  font-size: 12px;
+  margin-top: 6px;
+  color: var(--text-muted);
+}
+
+.circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  margin: 0 auto;
+  transition: 0.3s;
+  border: 2px solid var(--border);
+}
+
+.step.active .circle {
+  background: #6366f1;
+  border-color: #6366f1;
+}
+
+.step.done .circle {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.step.active span {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* =======================================================
+   FORM
+======================================================= */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+
+.form-group input,
+.form-group select {
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 0 14px;
+  font-size: 14px;
+  background: var(--bg-soft);
+  transition: 0.25s ease;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #6366f1;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* =======================================================
+   GRID
+======================================================= */
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* =======================================================
+   BUTTONS
+======================================================= */
+
+.primary-btn {
+  margin-top: 20px;
+  height: 42px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.green-btn {
+  height: 42px;
+  border-radius: 10px;
+  border: none;
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.green-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+.outline-btn {
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.outline-btn:hover {
+  background: var(--bg-soft);
+}
+
+/* Step action buttons */
+.step-actions {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+/* =======================================================
+   ANIMATION
+======================================================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =======================================================
+   RESPONSIVE
+======================================================= */
+
+@media (max-width: 768px) {
+  .vendor-card {
+    padding: 25px;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .stepper {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .circle {
+    margin: 0;
+  }
+}

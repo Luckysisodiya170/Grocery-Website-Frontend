@@ -1,16 +1,29 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "./Login-Register.css";
 import deliveryImg from "../../../assets/deliveryimage.jpg";
 import { useAuth } from "../../../context/AuthContext";
 
+import PersonIcon from "@mui/icons-material/Person";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
+import PhoneIcon from "@mui/icons-material/Phone";
+
 function LoginRegister() {
   const location = useLocation();
   const navigate = useNavigate();
-  const isRegister = location.pathname === "/register";
   const { login } = useAuth();
+
+  const isRegister = useMemo(
+    () => location.pathname === "/register",
+    [location.pathname]
+  );
+
+  const [role, setRole] = useState("user");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -20,47 +33,83 @@ function LoginRegister() {
     confirm: "",
   });
 
-  const [error, setError] = useState("");
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleMobileChange = (value) => {
+    setError("");
+    setFormData((prev) => ({
+      ...prev,
+      mobile: value,
+    }));
+  };
+
+  const validate = () => {
+    const { name, mobile, email, password, confirm } = formData;
+
+    if (!mobile || mobile.length < 10) {
+      return "Enter a valid mobile number";
+    }
+
+    if (isRegister) {
+      if (!name.trim() || !email.trim() || !password || !confirm) {
+        return "All fields are required";
+      }
+
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        return "Enter valid email";
+      }
+
+      if (password.length < 6) {
+        return "Password must be at least 6 characters";
+      }
+
+      if (password !== confirm) {
+        return "Passwords do not match";
+      }
+    }
+
+    return null;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { name, mobile, email, password, confirm } = formData;
-
-    if (!mobile || mobile.length < 10) {
-      setError("Enter valid mobile number");
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
+    setLoading(true);
+
+    const { name, mobile, email } = formData;
+
     if (isRegister) {
-      if (!name || !email || !password || !confirm) {
-        setError("All fields are required");
-        return;
-      }
+      setTimeout(() => {
+        login({
+          id: Date.now(),
+          name,
+          email,
+          mobile,
+          role,
+          avatar: "https://i.pravatar.cc/150?img=12",
+        });
 
-      if (password !== confirm) {
-        setError("Passwords do not match");
-        return;
-      }
+        role === "vendor"
+          ? navigate("/vendor-register")
+          : navigate("/");
 
-      // REGISTER SUCCESS (Keep as it is)
-      login({
-        name: name,
-        mobile: mobile,
-        token: "demo_token"
-      });
-
-      navigate("/");
+        setLoading(false);
+      }, 500);
     } else {
-      // 🔥 LOGIN → Redirect to OTP Verify (NO LOGIN YET)
-      navigate("/verify-otp", {
-        state: { mobile }
-      });
+      navigate("/verify-otp", { state: { mobile } });
+      setLoading(false);
     }
   };
 
@@ -68,6 +117,7 @@ function LoginRegister() {
     <div className="auth-page">
       <div className="auth-card">
 
+        {/* LEFT SIDE */}
         <div className="auth-form">
           <h2>{isRegister ? "Create Account" : "Welcome Back"}</h2>
           <p className="subtitle">
@@ -76,84 +126,120 @@ function LoginRegister() {
               : "Login with your mobile number"}
           </p>
 
-          {/* ENTER KEY WORKS BECAUSE OF onSubmit */}
+          {isRegister && (
+            <div className="role-toggle">
+              <button
+                type="button"
+                className={role === "user" ? "active" : ""}
+                onClick={() => setRole("user")}
+              >
+                User
+              </button>
+              <button
+                type="button"
+                className={role === "vendor" ? "active" : ""}
+                onClick={() => setRole("vendor")}
+              >
+                Vendor
+              </button>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
 
             {isRegister && (
               <div className="form-group">
                 <label>Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Enter your full name"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
+                <div className="input-with-icon">
+                  <span className="icon-wrapper">
+                    <PersonIcon />
+                  </span>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
             )}
 
             <div className="form-group">
               <label>Mobile Number</label>
-              <PhoneInput
-                country={"in"}
-                value={formData.mobile}
-                onChange={(val) =>
-                  setFormData({ ...formData, mobile: val })
-                }
-                inputProps={{
-                  required: true,
-                  onKeyDown: (e) => {
-                    if (e.key === "Enter") {
-                      handleSubmit(e);
-                    }
-                  }
-                }}
-              />
+              <div className="input-with-icon phone-wrapper">
+                <span className="icon-wrapper">
+                  <PhoneIcon />
+                </span>
+                <PhoneInput
+                  country="in"
+                  value={formData.mobile}
+                  onChange={handleMobileChange}
+                />
+              </div>
             </div>
 
             {isRegister && (
               <>
                 <div className="form-group">
                   <label>Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
+                  <div className="input-with-icon">
+                    <span className="icon-wrapper">
+                      <EmailIcon />
+                    </span>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter your email"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
 
                 <div className="form-group">
                   <label>Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Enter password"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
+                  <div className="input-with-icon">
+                    <span className="icon-wrapper">
+                      <LockIcon />
+                    </span>
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Enter password"
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
 
                 <div className="form-group">
                   <label>Confirm Password</label>
-                  <input
-                    type="password"
-                    name="confirm"
-                    placeholder="Confirm password"
-                    value={formData.confirm}
-                    onChange={handleChange}
-                  />
+                  <div className="input-with-icon">
+                    <span className="icon-wrapper">
+                      <LockIcon />
+                    </span>
+                    <input
+                      type="password"
+                      name="confirm"
+                      placeholder="Confirm password"
+                      value={formData.confirm}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
               </>
             )}
 
             {error && <p className="error">{error}</p>}
 
-            <button type="submit" className="submit-btn">
-              {isRegister ? "Register" : "Send OTP"}
+            <button className="submit-btn" disabled={loading}>
+              {loading
+                ? "Processing..."
+                : isRegister
+                ? "Register"
+                : "Send OTP"}
             </button>
-
           </form>
 
           <p className="switch-text">
@@ -166,13 +252,12 @@ function LoginRegister() {
           </p>
         </div>
 
+        {/* RIGHT SIDE */}
         <div className="auth-image">
           <img src={deliveryImg} alt="Delivery" />
           <div className="overlay">
             <h3>Lightning Fast Delivery</h3>
-            <p>
-              Experience the best service in Dewas with real-time tracking.
-            </p>
+            <p>Experience the best service in your city.</p>
           </div>
         </div>
 
