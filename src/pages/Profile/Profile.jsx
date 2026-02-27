@@ -1,37 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react"; // 👈 useRef import kiya
 import Sidebar from "./components/Sidebar";
 import PersonalInfo from "./components/PersonalInfo";
-import MyOrders from "./components/MyOrders";
 import ManageAddress from "./components/ManageAddress";
-import PaymentMethod from "./components/PaymentMethod";
 import PasswordManager from "./components/PasswordManager";
 import LogoutPanel from "./components/LogoutPanel";
-import "./profile1.css";
+import Wallet from "./components/Wallet";
+import AboutUs from "./components/AboutUs";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsConditions from "./components/TermsConditions";
 
+import "./profile1.css";
 function Profile() {
   const [activeTab, setActiveTab] = useState("personal");
+  
+  // ✅ 1. Ek Reference banaya jo page ke top ko point karega
+  const profileTopRef = useRef(null);
+
+  // ✅ 2. Universal Scroll Fix
+  useEffect(() => {
+    // Thoda sa (50ms) delay diya taaki naya tab DOM me load ho sake
+    setTimeout(() => {
+      if (profileTopRef.current) {
+        profileTopRef.current.scrollIntoView({ 
+          behavior: "smooth", 
+          block: "start" 
+        });
+      }
+    }, 50);
+  }, [activeTab]);
 
   const renderContent = () => {
     switch (activeTab) {
-      case "personal":
-        return <PersonalInfo />;
-      case "orders":
-        return <MyOrders />;
-      case "address":
-        return <ManageAddress />;
-      case "payment":
-        return <PaymentMethod />;
-      case "password":
-        return <PasswordManager />;
-      case "logout":
-        return <LogoutPanel />;
-      default:
-        return <PersonalInfo />;
+      case "personal": return <PersonalInfo />;
+      case "address": return <ManageAddress />;
+      case "wallet": return <Wallet />;
+      case "password": return <PasswordManager />;
+      case "about": return <AboutUs />;
+      case "privacy": return <PrivacyPolicy />;
+      case "terms": return <TermsConditions />;
+      case "logout": return <LogoutPanel />;
+      default: return <PersonalInfo />;
     }
   };
 
   return (
-    <div className="account-page">
+    // ✅ 3. Ref ko main div par lagaya. 
+    // scrollMarginTop isliye taaki aapka sticky Navbar content ke upar overlap na kare.
+    <div className="account-page" ref={profileTopRef} style={{ scrollMarginTop: "100px" }}>
       <div className="account-header">
         <h1>My Account</h1>
         <p>Home / My Account</p>
@@ -39,7 +54,9 @@ function Profile() {
 
       <div className="account-layout container">
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div className="account-content">
+        
+        {/* Animation ke liye 'key' important hai */}
+        <div key={activeTab} className="account-content glass-panel">
           {renderContent()}
         </div>
       </div>

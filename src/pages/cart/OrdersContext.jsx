@@ -71,9 +71,16 @@ export const OrdersProvider = ({ children }) => {
     setOrders((prev) => [order, ...prev]);
   };
 
+  // ✅ ADD THIS LINE
+  const updateOrders = (updatedOrders) => {
+    setOrders(updatedOrders);
+  };
+
   return (
-    <OrdersContext.Provider value={{ orders, addOrder }}>
+    <OrdersContext.Provider value={{ orders, addOrder ,updateOrders}}>
       {children}
     </OrdersContext.Provider>
   );
 };
+
+

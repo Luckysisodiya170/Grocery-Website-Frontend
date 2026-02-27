@@ -1,25 +1,42 @@
+import { useState } from "react";
+import { toast } from "react-toastify";
+
 function PasswordManager() {
+  const [passwords, setPasswords] = useState({ current: "", new: "", confirm: "" });
+
+  const handleChange = (e) => setPasswords({ ...passwords, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (passwords.new.length < 6) return toast.error("New password must be at least 6 characters.");
+    if (passwords.new !== passwords.confirm) return toast.error("New passwords do not match!");
+    
+    toast.success("Password updated successfully!");
+    setPasswords({ current: "", new: "", confirm: "" });
+  };
+
   return (
-    <>
-      <h2>Password Manager</h2>
+    <form onSubmit={handleSubmit}>
+      <h2 className="section-title">Password Manager</h2>
+      <p className="section-subtitle">Ensure your account is using a long, random password to stay secure.</p>
 
-      <div className="form-group">
-        <label>Password *</label>
-        <input type="password" placeholder="Enter Password" />
+      <div className="form-group" style={{ maxWidth: "400px" }}>
+        <label>Current Password *</label>
+        <input type="password" name="current" value={passwords.current} onChange={handleChange} required />
       </div>
 
-      <div className="form-group">
+      <div className="form-group" style={{ maxWidth: "400px" }}>
         <label>New Password *</label>
-        <input type="password" placeholder="Enter Password" />
+        <input type="password" name="new" value={passwords.new} onChange={handleChange} required />
       </div>
 
-      <div className="form-group">
+      <div className="form-group" style={{ maxWidth: "400px" }}>
         <label>Confirm New Password *</label>
-        <input type="password" placeholder="Enter Password" />
+        <input type="password" name="confirm" value={passwords.confirm} onChange={handleChange} required />
       </div>
 
-      <button className="primary-btn">Update Password</button>
-    </>
+      <button type="submit" className="primary-btn">Update Password</button>
+    </form>
   );
 }
 

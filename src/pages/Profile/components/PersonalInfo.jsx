@@ -1,9 +1,14 @@
 import { useState, useRef } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import { toast } from "react-toastify";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined"; // 👈 Edit Icon imported
 
 function PersonalInfo() {
   const { user, updateUser } = useAuth();
   const fileInputRef = useRef(null);
+  
+  // State to manage lock/unlock edit mode
+  const [isEditing, setIsEditing] = useState(false);
 
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -14,13 +19,14 @@ function PersonalInfo() {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleImageClick = () => {
+    // Prevent image upload if profile is locked
+    if (!isEditing) {
+      return toast.info("Please click 'Edit Profile' to change your photo.", { position: "top-center" });
+    }
     fileInputRef.current.click();
   };
 
@@ -35,18 +41,54 @@ function PersonalInfo() {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email) {
+      return toast.error("Name and Email are required!");
+    }
+    
     updateUser(formData);
+    setIsEditing(false); // Lock the profile again after saving
+    toast.success("Profile updated successfully!");
+  };
+
+  const handleCancel = () => {
+    // Revert form data back to original user data if cancelled
+    setFormData({
+      name: user?.name || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      gender: user?.gender || "",
+      avatar: user?.avatar || "",
+    });
+    setIsEditing(false); // Lock the profile
   };
 
   return (
-    <>
-      <h2>Personal Information</h2>
+    <form onSubmit={handleSubmit} className="profile-form">
+      
+      {/* Header with Title and Edit Button */}
+      <div className="section-header-action">
+        <h2 className="section-title" style={{ marginBottom: 0 }}>Personal Information</h2>
+        
+        {!isEditing && (
+          <button 
+            type="button" 
+            className="edit-icon-btn" 
+            onClick={() => setIsEditing(true)}
+          >
+            <EditOutlinedIcon fontSize="small" /> Edit Profile
+          </button>
+        )}
+      </div>
 
       {/* Avatar Upload */}
-      <div className="profile-upload-section">
-        <div className="profile-avatar-large" onClick={handleImageClick}>
-          <img src={formData.avatar} alt="Profile" />
+      <div className="profile-upload-section" style={{ marginTop: "20px" }}>
+        <div 
+          className={`profile-avatar-large ${!isEditing ? 'disabled-avatar' : ''}`} 
+          onClick={handleImageClick}
+        >
+          {formData.avatar ? <img src={formData.avatar} alt="Profile" /> : <span>Upload</span>}
         </div>
 
         <input
@@ -55,11 +97,13 @@ function PersonalInfo() {
           ref={fileInputRef}
           onChange={handleImageChange}
           hidden
+          disabled={!isEditing}
         />
 
-        <p className="upload-hint">Click image to upload profile photo</p>
+        {isEditing && <p className="upload-hint">Click image to upload profile photo</p>}
       </div>
 
+      {/* Form Fields */}
       <div className="grid-2">
         <div className="form-group">
           <label>Full Name *</label>
@@ -67,45 +111,68 @@ function PersonalInfo() {
             name="name"
             value={formData.name}
             onChange={handleChange}
+            required
+            disabled={!isEditing}
+            className={!isEditing ? "input-disabled" : ""}
           />
         </div>
 
         <div className="form-group">
           <label>Email *</label>
           <input
+            type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
+            required
+            disabled={!isEditing}
+            className={!isEditing ? "input-disabled" : ""}
           />
         </div>
       </div>
 
-      <div className="form-group">
-        <label>Phone</label>
-        <input
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-        />
+      <div className="grid-2">
+        <div className="form-group">
+          <label>Phone</label>
+          <input
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            maxLength="10"
+            disabled={!isEditing}
+            className={!isEditing ? "input-disabled" : ""}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Gender</label>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            disabled={!isEditing}
+            className={!isEditing ? "input-disabled" : ""}
+          >
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
       </div>
 
-      <div className="form-group">
-        <label>Gender</label>
-        <select
-          name="gender"
-          value={formData.gender}
-          onChange={handleChange}
-        >
-          <option value="">Select</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-      </div>
-
-      <button className="primary-btn" onClick={handleSubmit}>
-        Update Changes
-      </button>
-    </>
+      {/* Action Buttons (Only visible when editing) */}
+      {isEditing && (
+        <div className="form-actions">
+          <button type="button" className="cancel-btn" onClick={handleCancel}>
+            Cancel
+          </button>
+          <button type="submit" className="primary-btn" style={{ marginTop: 0 }}>
+            Save Changes
+          </button>
+        </div>
+      )}
+    </form>
   );
 }
 

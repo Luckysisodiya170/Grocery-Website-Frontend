@@ -1,6 +1,7 @@
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify"; // ✅ Toast import kiya
 import "./VendorRegister.css";
 
 // Tere exact components import kar rahe hain
@@ -10,10 +11,14 @@ import BusinessIds from "./steps/BusinessIds";
 import BankDetails from "./steps/BankDetails";
 
 function VendorRegister() {
-  const { user, login } = useAuth();
+  const { user } = useAuth(); // (Auto login hata diya kyunki ab direct login screen pe bhejenge)
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(1);
+  
+  // ✅ ADDED MISSING STATES FOR ERROR AND LOADING
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Master State Data - Saara data yahan aayega
   const [vendorData, setVendorData] = useState({
@@ -33,12 +38,41 @@ function VendorRegister() {
     setVendorData({ ...vendorData, [e.target.name]: e.target.value });
   };
 
-  const nextStep = () => setCurrentStep((prev) => prev + 1);
-  const prevStep = () => setCurrentStep((prev) => prev - 1);
+  // ==========================================
+  // ✅ VENDOR SUBMIT WITH VALIDATION & REDIRECT
+  // ==========================================
+  const handleVendorSubmit = () => {
+    // 1. VALIDATION CHECKS
+    if (!vendorData.businessName || !vendorData.ownerName || !vendorData.email || !vendorData.password) {
+      return setError("Basic Info is incomplete. Please fill all fields.");
+    }
+    if (!vendorData.contactNumber || vendorData.contactNumber.length < 10) {
+      return setError("Please enter a valid Contact Number.");
+    }
+    if (!vendorData.address || !vendorData.city || !vendorData.pincode) {
+      return setError("Location details are incomplete.");
+    }
+    if (!vendorData.bankName || !vendorData.accountNumber || !vendorData.ifscCode) {
+      return setError("Bank details are incomplete.");
+    }
 
-  const completeRegistration = () => {
-    login({ ...user, vendorDetails: vendorData, vendorProfileCompleted: true });
-    navigate("/"); // Redirect to home/dashboard
+    // Agar sab theek hai toh aage badho
+    setError("");
+    setLoading(true);
+
+    // Simulate API Call
+    setTimeout(() => {
+      setLoading(false);
+      
+      // Success Message
+      toast.success("Vendor Registered Successfully! Please login.", {
+        position: "top-center"
+      });
+
+      // 2. REDIRECT TO LOGIN (Without automatically logging in)
+      navigate("/login");
+      
+    }, 1000);
   };
 
   if (!user) return null;
@@ -81,15 +115,43 @@ function VendorRegister() {
         </div>
 
         <div className="wizard-footer">
-          {currentStep > 1 ? (
-             <button className="secondary-btn" onClick={prevStep}>← Previous</button>
-          ) : <div></div>}
+          {/* ✅ VENDOR ERROR DISPLAY */}
+          {error && <p className="error" style={{ textAlign: "center", marginBottom: "15px", color: "var(--danger)", fontWeight: "600" }}>{error}</p>}
 
-          {currentStep < 4 ? (
-            <button className="primary-btn" onClick={nextStep}>Next Step →</button>
-          ) : (
-            <button className="success-btn" onClick={completeRegistration}>Finish Registration ✓</button>
-          )}
+          {/* ✅ CLEANED UP BUTTONS (Removed Duplicates) */}
+          <div style={{ display: "flex", gap: "15px", width: "100%" }}>
+            {currentStep > 1 && (
+              <button 
+                type="button" 
+                className="submit-btn" 
+                style={{ background: "#e2e8f0", color: "#333", flex: 0.4 }} 
+                onClick={() => { setError(""); setCurrentStep(prev => prev - 1); }}
+              >
+                Previous
+              </button>
+            )}
+
+            {currentStep < 4 ? (
+              <button 
+                type="button" 
+                className="submit-btn" 
+                style={{ flex: 1, background: "var(--primary)" }} 
+                onClick={() => { setError(""); setCurrentStep(prev => prev + 1); }}
+              >
+                Next Step
+              </button>
+            ) : (
+              <button 
+                type="button" 
+                className="submit-btn" 
+                style={{ flex: 1, background: "var(--success)" }} 
+                onClick={handleVendorSubmit} 
+                disabled={loading}
+              >
+                {loading ? "Processing..." : "Register as Vendor"}
+              </button>
+            )}
+          </div>
         </div>
 
       </div>

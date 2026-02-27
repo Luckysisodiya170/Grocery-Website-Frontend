@@ -1,39 +1,140 @@
+import { useState } from "react";
+import { toast } from "react-toastify";
+import mockData from "../../../data/mockData.json"; // 👈 Update path according to your folder structure
+
+// Icons
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddIcon from "@mui/icons-material/Add";
+
 function ManageAddress() {
+  // Load initial addresses from JSON
+  const [addresses, setAddresses] = useState(mockData.locations);
+  const [showForm, setShowForm] = useState(false);
+
+  // Form State
+  const [formData, setFormData] = useState({
+    label: "",
+    address: "",
+    zip: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const getIcon = (label) => {
+    const lower = label.toLowerCase();
+    if (lower.includes("home")) return <HomeOutlinedIcon />;
+    if (lower.includes("office") || lower.includes("work")) return <BusinessOutlinedIcon />;
+    return <LocationOnOutlinedIcon />;
+  };
+
+  const handleDelete = (id) => {
+    setAddresses(addresses.filter((addr) => addr.id !== id));
+    toast.info("Address deleted successfully", { position: "top-center" });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.label || !formData.address || !formData.zip) {
+      return toast.error("Please fill all required fields", { position: "top-center" });
+    }
+
+    const newAddress = {
+      id: Date.now(), // Generate a unique ID
+      label: formData.label,
+      address: formData.address,
+      zip: formData.zip,
+      icon: "custom",
+    };
+
+    setAddresses([...addresses, newAddress]); // Add to list
+    setFormData({ label: "", address: "", zip: "" }); // Reset form
+    setShowForm(false); // Go back to list view
+    toast.success("New address added successfully!", { position: "top-center" });
+  };
+
   return (
-    <>
-      <h2>Manage Address</h2>
-
-      <div className="grid-2">
-        <div className="form-group">
-          <label>First Name *</label>
-          <input placeholder="Ex. John" />
-        </div>
-
-        <div className="form-group">
-          <label>Last Name *</label>
-          <input placeholder="Ex. Doe" />
-        </div>
+    <div className="manage-address-section">
+      <div className="section-header-action">
+        <h2 className="section-title" style={{ marginBottom: 0 }}>Saved Addresses</h2>
+        
+        {/* Toggle Button for Add Address */}
+        {!showForm && (
+          <button 
+            type="button" 
+            className="edit-icon-btn" 
+            onClick={() => setShowForm(true)}
+          >
+            <AddIcon fontSize="small" /> Add New
+          </button>
+        )}
       </div>
 
-      <div className="form-group">
-        <label>Street Address *</label>
-        <input placeholder="Enter Street Address" />
-      </div>
+      {/* VIEW 1: ADD NEW ADDRESS FORM */}
+      {showForm ? (
+        <form onSubmit={handleSubmit} className="add-address-form form-slide-in">
+          <p className="section-subtitle">Enter details for your new delivery location.</p>
+          
+          <div className="grid-2">
+            <div className="form-group">
+              <label>Address Label (e.g. Home, Office, Gym) *</label>
+              <input name="label" value={formData.label} onChange={handleChange} placeholder="Ex. Home" required />
+            </div>
+            <div className="form-group">
+              <label>Pincode / Zip Code *</label>
+              <input type="text" name="zip" value={formData.zip} onChange={handleChange} placeholder="6-digit code" maxLength="6" required />
+            </div>
+          </div>
 
-      <div className="grid-2">
-        <div className="form-group">
-          <label>City *</label>
-          <input placeholder="Select City" />
+          <div className="form-group">
+            <label>Complete Address *</label>
+            <input name="address" value={formData.address} onChange={handleChange} placeholder="House No, Building, Street, Area" required />
+          </div>
+
+          <div className="form-actions">
+            <button type="button" className="cancel-btn" onClick={() => setShowForm(false)}>
+              Cancel
+            </button>
+            <button type="submit" className="primary-btn" style={{ marginTop: 0 }}>
+              Save Address
+            </button>
+          </div>
+        </form>
+      ) : (
+        /* VIEW 2: SAVED ADDRESSES GRID */
+        <div className="address-cards-grid">
+          {addresses.map((loc) => (
+            <div className="profile-address-card" key={loc.id}>
+              <div className="addr-icon">{getIcon(loc.label)}</div>
+              <div className="addr-details">
+                <h4>{loc.label}</h4>
+                <p>{loc.address}</p>
+                <span>Pin: {loc.zip}</span>
+              </div>
+              <button 
+                className="delete-addr-btn" 
+                onClick={() => handleDelete(loc.id)}
+                title="Delete Address"
+              >
+                <DeleteOutlineIcon fontSize="small" />
+              </button>
+            </div>
+          ))}
+
+          {/* Add New Address Card Placeholder */}
+          <div className="profile-address-card add-new-card" onClick={() => setShowForm(true)}>
+            <div className="add-circle">
+              <AddIcon />
+            </div>
+            <h4>Add New Address</h4>
+          </div>
         </div>
-
-        <div className="form-group">
-          <label>State *</label>
-          <input placeholder="Select State" />
-        </div>
-      </div>
-
-      <button className="primary-btn">Add Address</button>
-    </>
+      )}
+    </div>
   );
 }
 

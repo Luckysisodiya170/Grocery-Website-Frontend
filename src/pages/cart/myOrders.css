@@ -1,0 +1,138 @@
+/* =========================================
+   MY ORDERS PAGE PREMIUM STYLES
+========================================= */
+
+/* =========================================
+   MY ORDERS PAGE PREMIUM STYLES
+========================================= */
+
+.orders-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 80px 20px;
+  min-height: 80vh;
+  /* ❌ Yahan se font-size: 200px hata diya hai kyunki wo layout break kar dega */
+}
+
+.orders-container h1 {
+  font-size: 45px; /* ✅ 96px ki jagah wapas 45px kar diya jaisa aap chahte the */
+  font-weight: 900;
+  color: white;    /* ✅ Text color pure white kar diya */
+  margin-bottom: 40px;
+  text-align: center;
+  letter-spacing: -1px;
+}
+
+/* Yahan se aage ka aapka baaki .order-card wala CSS bilkul theek hai, usey waise hi rehne dein! */
+
+/* =========================================
+   ORDER CARD DESIGN
+========================================= */
+
+.order-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--radius-xl, 20px);
+  padding: 25px 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  
+  /* Initial state for animation */
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUpFade 0.5s ease forwards;
+}
+
+/* Staggered animation effect for the first few cards */
+.order-card:nth-child(2) { animation-delay: 0.1s; }
+.order-card:nth-child(3) { animation-delay: 0.2s; }
+.order-card:nth-child(4) { animation-delay: 0.3s; }
+.order-card:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes slideUpFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.order-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary, #005f73);
+}
+
+/* =========================================
+   CARD CONTENT TYPOGRAPHY
+========================================= */
+
+.order-card h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main, #111);
+  margin: 0;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed var(--border, #e2e8f0);
+}
+
+.order-card p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-muted, #555);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+/* Enhancing the Status and Total values */
+.order-card p strong {
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--bg-soft, #f1f5f9);
+  color: var(--primary, #005f73);
+}
+
+/* Targeting the specific "Total" text to make the price pop */
+.order-card p:last-child {
+  margin-top: 5px;
+}
+
+.order-card p:last-child::after {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text-main, #000);
+}
+
+/* =========================================
+   RESPONSIVE DESIGN (MOBILE)
+========================================= */
+
+@media (max-width: 600px) {
+  .orders-container {
+    padding: 40px 15px;
+  }
+  
+  .orders-container h1 {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+  
+  .order-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .order-card h3 {
+    font-size: 18px;
+  }
+}

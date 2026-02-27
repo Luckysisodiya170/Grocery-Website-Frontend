@@ -1,7 +1,6 @@
 /* =====================================================
    AUTH PAGE LAYOUT
 ===================================================== */
-
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -11,13 +10,9 @@
   background: linear-gradient(135deg, #f8fafc, #eef2ff);
 }
 
-/* =====================================================
-   CARD
-===================================================== */
-
 .auth-card {
   width: 100%;
-  max-width: 900px;
+  max-width: 850px; /* Compact Size */
   display: flex;
   border-radius: 18px;
   background: var(--card-bg);
@@ -30,7 +25,6 @@
 /* =====================================================
    LEFT SIDE (FORM)
 ===================================================== */
-
 .auth-form {
   flex: 1;
   padding: 35px 40px;
@@ -55,24 +49,24 @@
 /* =====================================================
    ROLE TOGGLE
 ===================================================== */
-
 .role-toggle {
   display: flex;
   background: var(--bg-soft);
-  border-radius: 50px;
-  padding: 3px;
-  margin-bottom: 16px;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+  height: 42px; /* Matches input height */
+  border: 1.5px solid var(--border);
 }
 
 .role-toggle button {
   flex: 1;
   border: none;
-  padding: 6px 0;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: 0.3s ease;
   background: transparent;
   color: var(--text-muted);
 }
@@ -84,9 +78,8 @@
 }
 
 /* =====================================================
-   FORM
+   UNIFIED FORM INPUTS (COMPACT 42px)
 ===================================================== */
-
 form {
   display: flex;
   flex-direction: column;
@@ -105,49 +98,63 @@ form {
   color: var(--text-light);
 }
 
-/* =====================================================
-   INPUT WITH ICON
-===================================================== */
-
 .input-with-icon {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.input-icon {
+.input-icon-wrapper {
   position: absolute;
-  left: 16px;
-  font-size: 16px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-muted);
   pointer-events: none;
+  z-index: 2;
+  transition: 0.3s;
+  height: 100%;
+  top: 0;
 }
 
-.input-with-icon input {
-  width: 100%;
-  height: 42px;
-  padding-left: 48px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--bg-soft);
-  font-size: 13px;
-  transition: 0.2s ease;
+.input-with-icon input,
+.input-with-icon select,
+.form-group input,
+.form-group select {
+  width: 100% !important;
+  height: 42px !important; /* Fixed Compact Height */
+  padding-left: 44px !important;
+  padding-right: 14px !important;
+  border-radius: 12px !important;
+  border: 1.5px solid var(--border) !important;
+  background: var(--bg-soft) !important;
+  font-size: 13px !important;
+  color: var(--text-main) !important;
+  transition: all 0.3s ease !important;
+  outline: none;
 }
 
-.input-with-icon input:focus {
-  border-color: var(--primary);
-  background: #fff;
-  box-shadow: 0 0 0 2px rgba(0, 95, 115, 0.12);
+.input-with-icon input:focus,
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(0, 95, 115, 0.15) !important;
+}
+
+.input-with-icon:focus-within .input-icon-wrapper {
+  color: var(--primary);
 }
 
 /* =====================================================
-   PHONE INPUT
+   PHONE INPUT FIXES
 ===================================================== */
-
 .phone-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  z-index: 50; /* Keeps dropdown above everything */
 }
 
 .react-tel-input {
@@ -157,33 +164,56 @@ form {
 .react-tel-input .form-control {
   width: 100% !important;
   height: 42px !important;
-  padding-left: 90px !important;
+  padding-left: 55px !important; 
   border-radius: 12px !important;
-  border: 1px solid var(--border) !important;
+  border: 1.5px solid var(--border) !important;
   background: var(--bg-soft) !important;
   font-size: 13px !important;
+  transition: all 0.3s ease !important;
+}
+
+.react-tel-input .form-control:focus {
+  border-color: var(--primary) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(0, 95, 115, 0.15) !important;
 }
 
 .react-tel-input .flag-dropdown {
+  border: none !important;
+  background: transparent !important;
+  border-right: 1px solid var(--border) !important;
   border-radius: 12px 0 0 12px !important;
-  border: 1px solid var(--border) !important;
-  border-right: none !important;
-  background: var(--bg-soft) !important;
+}
+
+.react-tel-input .country-list {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+  z-index: 1000 !important;
+  text-align: left;
+}
+
+.react-tel-input .country-list .country {
+  padding: 10px 15px !important;
+}
+
+.react-tel-input .country-list .country-name {
+  color: #111111 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.react-tel-input .country-list .dial-code {
+  color: #64748b !important;
+}
+
+.react-tel-input .country-list .country:hover {
+  background: #f1f5f9 !important;
 }
 
 /* =====================================================
-   ERROR
+   BUTTONS & LINKS
 ===================================================== */
-
-.error {
-  font-size: 11px;
-  color: var(--danger);
-}
-
-/* =====================================================
-   BUTTON
-===================================================== */
-
 .submit-btn {
   height: 42px;
   border-radius: 12px;
@@ -194,6 +224,7 @@ form {
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
+  margin-top: 5px;
 }
 
 .submit-btn:hover {
@@ -206,9 +237,10 @@ form {
   cursor: not-allowed;
 }
 
-/* =====================================================
-   SWITCH LINK
-===================================================== */
+.error {
+  font-size: 11px;
+  color: var(--danger);
+}
 
 .switch-text {
   margin-top: 12px;
@@ -222,79 +254,158 @@ form {
   font-weight: 600;
 }
 
-/* =====================================================
-   RIGHT SIDE IMAGE
-===================================================== */
+.resend-link, .back-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: right;
+  margin-top: 4px;
+  padding: 0;
+}
 
+.back-link {
+  text-align: center;
+  color: var(--text-muted);
+  margin-top: 15px;
+}
+
+.back-link:hover, .resend-link:hover {
+  text-decoration: underline;
+}
+
+/* =====================================================
+   RIGHT SECTION (IMAGE, COLOR COVER & CENTERED TEXT)
+===================================================== */
 .auth-image {
   flex: 1;
-  position: relative;
-  overflow: hidden;
+  position: relative; 
+  overflow: hidden;   
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .auth-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 0;
 }
 
+/* Primary Color layer (Image ke theek upar) */
 .auth-image::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: var(--glass-overlay);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 95, 115, 0.75); /* Primary Color OPACITY */
   z-index: 1;
 }
 
+/* Text Container exactly in the center */
 .overlay {
-  position: absolute;
-  z-index: 2;
-  color: #fff;
-  padding: 30px;
-  max-width: 80%;
+  position: relative; 
+  z-index: 2; 
+  color: #ffffff;
+  text-align: center;
+  width: 85%;
+  padding: 20px;
 }
 
 .overlay h3 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 6px;
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 12px;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
 }
 
 .overlay p {
-  font-size: 12px;
+  font-size: 15px;
+  font-weight: 500;
   opacity: 0.95;
+  line-height: 1.6;
 }
 
 /* =====================================================
-   RESPONSIVE
+   VENDOR MODE OVERRIDES
 ===================================================== */
+.vendor-mode {
+  max-width: 1050px !important; 
+}
+
+.vendor-mode .auth-image {
+  display: flex !important;
+  flex: 1 1 45%;
+  max-width: 45%;
+}
+
+.vendor-mode .auth-form {
+  flex: 1 1 55%;
+  max-width: 55%;
+}
+
+/* =====================================================
+   MULTI-SELECT CHIPS (BUSINESS CATEGORY)
+===================================================== */
+.category-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.chip-btn {
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.chip-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Active State (When Selected) */
+.chip-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 95, 115, 0.25);
+}
+
+/* =====================================================
+   ANIMATIONS & RESPONSIVE
+===================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 @media (max-width: 992px) {
-  .auth-card {
+  .auth-card, .vendor-mode {
     flex-direction: column;
-    max-width: 420px;
+    max-width: 450px !important;
   }
-
-  .auth-image {
-    display: none;
+  .auth-image, .vendor-mode .auth-image {
+    display: none !important;
   }
-
-  .auth-form {
+  .auth-form, .vendor-mode .auth-form {
     padding: 25px;
-  }
-}
-
-/* =====================================================
-   ANIMATION
-===================================================== */
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    max-width: 100%;
   }
 }

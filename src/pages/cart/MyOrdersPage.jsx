@@ -30,8 +30,7 @@ const MyOrdersPage = () => {
 
   return (
     <div className="orders-container">
-      <h1>My Orders</h1>
-
+     <h1 style={{ fontSize: "45px", color: "white" }}>My Orders</h1>
       {orders.map((order) => (
         <div key={order.id} className="order-card">
           <h3>Order #{order.id}</h3>
@@ -44,3 +43,4 @@ const MyOrdersPage = () => {
 };
 
 export default MyOrdersPage;
+

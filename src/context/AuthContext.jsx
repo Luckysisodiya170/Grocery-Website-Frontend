@@ -9,20 +9,8 @@ export const AuthProvider = ({ children }) => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-    } else {
-      // Default mock user (for testing)
-      const defaultUser = {
-        id: 101,
-        name: "Rahul Sharma",
-        email: "rahul.sharma@example.com",
-        phone: "",
-        gender: "",
-        avatar: "https://i.pravatar.cc/150?img=12",
-        isLoggedIn: true,
-      };
-      localStorage.setItem("user", JSON.stringify(defaultUser));
-      setUser(defaultUser);
     }
+    // REMOVED the 'else' block that was forcing "Rahul Sharma" to log in
   }, []);
 
   const login = (userData) => {

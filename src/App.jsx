@@ -25,6 +25,7 @@ import { WishlistProvider } from "./pages/wishlist/WishlistContext";
 import { OrdersProvider } from "./pages/cart/OrdersContext";
 import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./components/common/ScrollToTop";
+import OrderSuccess from "./pages/cart/OrderSuccess";
 
 function App() {
   return (
@@ -64,7 +65,9 @@ function App() {
                 </Route>
 
                 <Route path="*" element={<Notfound />} />
-
+                <Route path="/order-success" element={
+                  <OrderSuccess/>
+                }/>
               </Routes>
             </CartProvider>
           </WishlistProvider>

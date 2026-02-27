@@ -42,17 +42,18 @@ const CheckoutPage = () => {
     toast.success("Address Added Successfully");
   };
 
-  // ==========================
-  // Place Order
+// ==========================
+  // Place Order (Instant Redirect & Top-Center Toast)
   // ==========================
   const handlePlaceOrder = () => {
     if (!cart.length) {
-      toast.error("Cart is empty");
+      // Error toast also in top-center
+      toast.error("Cart is empty", { position: "top-center" }); 
       return;
     }
 
     const newOrder = {
-      id: Date.now(),
+      id: `ORD${Math.floor(Math.random() * 100000)}`, 
       items: cart,
       total: grandTotal,
       paymentMethod,
@@ -60,16 +61,20 @@ const CheckoutPage = () => {
       createdAt: new Date().toISOString(),
     };
 
-    addOrder(newOrder);
-    clearCart();
+    addOrder(newOrder); // Saves to your OrdersContext
+    clearCart();        // Clears the cart
 
-    toast.success("Order Placed Successfully 🎉");
+    // ✅ TOP-CENTER TOAST
+    toast.success("Order Placed Successfully 🎉", {
+      position: "top-center",
+      autoClose: 2000, // Automatically close after 2 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+    });
 
-    setTimeout(() => {
-      navigate("/orders");
-    }, 1500);
+    // ✅ INSTANT REDIRECT (setTimeout hata diya hai)
+    navigate("/order-success", { state: { orderId: newOrder.id } }); 
   };
-
   return (
     <div className="checkout-page-root">
       <div className="checkout-max-width">
@@ -101,9 +106,8 @@ const CheckoutPage = () => {
                   {addresses.map((loc) => (
                     <div
                       key={loc.id}
-                      className={`address-card ${
-                        selectedAddress === loc.id ? "selected" : ""
-                      }`}
+                      className={`address-card ${selectedAddress === loc.id ? "selected" : ""
+                        }`}
                       onClick={() => setSelectedAddress(loc.id)}
                     >
                       <h4>{loc.label}</h4>
