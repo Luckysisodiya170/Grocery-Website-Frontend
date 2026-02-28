@@ -30,12 +30,25 @@ const MyOrdersPage = () => {
 
   return (
     <div className="orders-container">
-     <h1 style={{ fontSize: "45px", color: "white" }}>My Orders</h1>
+      <h1>My Orders</h1>
+
+      {orders.length === 0 && (
+        <p className="empty-orders">No orders found.</p>
+      )}
+
       {orders.map((order) => (
         <div key={order.id} className="order-card">
           <h3>Order #{order.id}</h3>
-          <p>Status: <strong>{order.status}</strong></p>
-          <p>Total: ₹{order.total}</p>
+
+          <p>
+            Status
+            <strong>{order.status}</strong>
+          </p>
+
+          <p>
+            Total
+            <strong>₹{order.total}</strong>
+          </p>
         </div>
       ))}
     </div>
@@ -43,4 +56,3 @@ const MyOrdersPage = () => {
 };
 
 export default MyOrdersPage;
-

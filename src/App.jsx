@@ -8,7 +8,7 @@ import Help from "./pages/Help/Help";
 import Home from "./pages/Home/Home";
 import LoginRegister from "./pages/auth/Login-Register/Login-Register";
 import Verify from "./pages/auth/OTP/OTP-Verify";
-import VendorRegister from "./pages/vendor/VendorRegister";
+import VendorRegister from "./pages/auth/vendor/VendorRegister";
 
 import ProductDetails from "./components/Product/ProductDetails/ProductDetails";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";

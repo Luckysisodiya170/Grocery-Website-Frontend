@@ -311,7 +311,7 @@
     top: 0;
     left: -300px; /* Hide off-screen to the left */
     width: 280px;
-    height: 100vh;
+height: 100dvh;
     background: var(--card-bg); /* Solid background for sidebar */
     flex-direction: column;
     padding: 20px;

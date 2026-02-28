@@ -4,7 +4,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "./Login-Register.css";
 import { toast } from "react-toastify";
-import "../../vendor/VendorRegister.css";
+import "../vendor/VendorRegister.css";
 import deliveryImg from "../../../assets/deliveryimage.jpg";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -16,10 +16,10 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
 // Steps Import
-import BasicInfo from "../../vendor/steps/BasicInfo";
-import Location from "../../vendor/steps/Location";
-import BusinessIds from "../../vendor/steps/BusinessIds";
-import BankDetails from "../../vendor/steps/BankDetails";
+import BasicInfo from "../vendor/steps/BasicInfo";
+import Location from "../vendor/steps/Location";
+import BusinessIds from "../vendor/steps/BusinessIds";
+import BankDetails from "../vendor/steps/BankDetails";
 
 function LoginRegister() {
   const location = useLocation();
