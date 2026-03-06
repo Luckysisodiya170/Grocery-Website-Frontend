@@ -86,7 +86,7 @@ const OrderHistory = () => {
   return (
     <div className="orders-page container">
       <h1 className="page-main-title">
-        My <span className="text-gradient">Orders</span>
+        <span className="text-gradient"> My Orders</span>
       </h1>
 
       <div className="orders-grid">
