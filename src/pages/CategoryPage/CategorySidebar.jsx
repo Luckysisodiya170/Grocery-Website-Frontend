@@ -1,5 +1,5 @@
 import React from "react";
-import "./categoryPage.css"; // Ensure this matches your file path
+import "./categoryPage.css"; 
 
 const CategorySidebar = ({ subCategoriesData = [], activeSub, setActiveSub }) => {
   if (!subCategoriesData || subCategoriesData.length === 0) return null;
@@ -30,6 +30,7 @@ const CategorySidebar = ({ subCategoriesData = [], activeSub, setActiveSub }) =>
                   <img 
                     src={finalImagePath} 
                     alt={sub?.name || "Category"} 
+                    loading="lazy"
                     onError={(e) => {
                       e.target.onerror = null; 
                       e.target.src = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Crect width='60' height='60' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%2394a3b8'%3ENo Img%3C/text%3E%3C/svg%3E";

@@ -106,11 +106,10 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-
-
   scroll-behavior: smooth;
   line-height: 1.6;
 }
+
 /* Make sure headings inherit correct color */
 h1, h2, h3, h4, h5, h6 {
   color:inherit; /* Dark background ke liye white */
@@ -133,7 +132,7 @@ p {
   max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 20px;
-  width: 100%;
+  /* width: 100%; */
 }
 
 a {
@@ -141,6 +140,39 @@ a {
   color: inherit;
 }
 
+
+/* =========================================
+   GLOBAL RESPONSIVE OVERRIDES
+========================================= */
+
+@media (max-width: 1024px) {
+  .cart-grid, .checkout-max-width {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .cart-summary, .invoice-container {
+    position: relative;
+    top: 0;
+    order: -1; /* Total summary comes first on mobile */
+  }
+}
+
+@media (max-width: 600px) {
+  .cart-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  .cart-card img {
+    width: 150px;
+    height: 150px;
+  }
+  .price { font-size: 26px; }
+  .summary-total { font-size: 32px; }
+  .form-surface { padding: 30px 20px; }
+  .input-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: span 1; }
+}
 
 /* =========================================================
    GLOBAL UTILITIES

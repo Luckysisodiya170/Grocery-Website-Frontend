@@ -11,6 +11,204 @@
   margin-top: 40px;
   width: 100%;
 }
+/* =========================================================
+   ORDERS PAGE — ULTRA PREMIUM GLASS (1800px to Mobile)
+========================================================= */
+
+.orders-page {
+  padding: 80px 20px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* 🔥 BIG SCREEN CONTAINER 🔥 */
+.orders-container-max {
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (min-width: 1800px) {
+  .orders-container-max {
+    max-width: 1600px;
+  }
+}
+
+/* GRID SYSTEM */
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+  margin-top: 50px;
+}
+
+/* COLUMN (Glass Panel) */
+.orders-column {
+  background: rgba(255, 255, 255, 0.98); /* High contrast white */
+  padding: 40px;
+  border-radius: 32px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  min-width: 0;
+}
+
+.column-title {
+  font-size: 26px;
+  font-weight: 900;
+  margin-bottom: 35px;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.column-title::before {
+  content: "";
+  width: 6px;
+  height: 24px;
+  background: #00f2fe;
+  border-radius: 10px;
+}
+
+/* ORDER CARD (Polished Item) */
+.order-card {
+  background: #f8fafc;
+  padding: 25px;
+  border-radius: 24px;
+  margin-bottom: 25px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1.5px solid #f1f5f9;
+  position: relative;
+}
+
+.order-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  background: #ffffff;
+  border-color: #00f2fe;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.order-id {
+  font-weight: 800;
+  font-size: 15px;
+  color: #0f172a;
+  background: #f1f5f9;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+.order-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* PRODUCT THUMBNAILS */
+.order-item-images {
+  display: flex;
+  gap: 12px;
+  margin: 15px 0;
+  padding-bottom: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.order-item-images::-webkit-scrollbar { display: none; }
+
+.product-img-wrapper {
+  width: 70px;
+  height: 70px;
+  flex-shrink: 0;
+  border: 2px solid #f1f5f9;
+  border-radius: 14px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  transition: 0.3s;
+}
+
+.order-card:hover .product-img-wrapper {
+  border-color: rgba(0, 242, 254, 0.3);
+  transform: rotate(-3deg);
+}
+
+.product-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ITEM TEXT */
+.order-items-names {
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 15px;
+  display: block;
+}
+
+/* BOTTOM AREA */
+.order-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.order-bottom .price {
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+/* STATUS PILLS (VIBRANT) */
+.status-pill {
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-placed { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.status-shipped { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.status-out-for-delivery { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+.status-delivered { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.status-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+/* =========================================
+   RESPONSIVE FIXES
+========================================= */
+
+@media (max-width: 1100px) {
+  .orders-grid { gap: 25px; }
+  .orders-column { padding: 30px; }
+}
+
+@media (max-width: 900px) {
+  .orders-grid { grid-template-columns: 1fr; }
+  .orders-page { padding: 40px 15px; }
+}
+
+@media (max-width: 480px) {
+  .column-title { font-size: 22px; }
+  .order-card { padding: 18px; border-radius: 18px; }
+  .order-bottom .price { font-size: 18px; }
+  .status-pill { padding: 6px 12px; font-size: 10px; }
+}
 
 @media (max-width: 900px) {
   .orders-grid {

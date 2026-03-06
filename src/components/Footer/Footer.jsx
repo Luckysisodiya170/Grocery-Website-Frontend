@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 import logo from "../../assets/logosvg.svg";
 
@@ -7,11 +8,11 @@ function Footer() {
     <footer className="footer-section">
       <div className="footer-gradient-border"></div>
 
-      <div className="container">
+      <div className="container-max">
         <div className="footer-top">
           <div className="brand-area">
             <div className="logo-flex">
-              <img src={logo} alt="OrganicStore" className="footer-brand-img" />
+              <img src={logo} alt="Shipzyy" className="footer-brand-img" />
               <h2 className="footer-brand-text">Ship<span>zyy</span></h2>
             </div>
             <p className="brand-desc">
@@ -20,42 +21,41 @@ function Footer() {
             </p>
             
             <div className="app-buttons">
-              <button className="app-btn">
+              <a href="https://apple.com" target="_blank" rel="noreferrer" className="app-btn">
                 <span className="icon"></span>
                 <div className="text">
                   <small>Download on the</small>
                   <strong>App Store</strong>
                 </div>
-              </button>
-              <button className="app-btn">
+              </a>
+              <a href="https://play.google.com" target="_blank" rel="noreferrer" className="app-btn">
                 <span className="icon">▶</span>
                 <div className="text">
                   <small>Get it on</small>
                   <strong>Google Play</strong>
                 </div>
-              </button>
+              </a>
             </div>
           </div>
 
-          {/* Links Area (Cleaned up) */}
           <div className="footer-links-grid">
             <div className="link-col">
               <h4>Support</h4>
               <ul>
-                <li><a href="#">Help Center</a></li>
-                <li><a href="#">Terms of Service</a></li>
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Return Policy</a></li>
+                <li><Link to="/help">Help Center</Link></li>
+                <li><Link to="/terms">Terms of Service</Link></li>
+                <li><Link to="/privacy">Privacy Policy</Link></li>
+                <li><Link to="/return-policy">Return Policy</Link></li>
               </ul>
             </div>
 
             <div className="link-col">
               <h4>Categories</h4>
               <ul>
-                <li><a href="#">Fresh Food</a></li>
-                <li><a href="#">Electronics</a></li>
-                <li><a href="#">Fashion</a></li>
-                <li><a href="#">Beauty</a></li>
+                <li><Link to="/shop?category=grocery">Fresh Food</Link></li>
+                <li><Link to="/shop?category=electronics">Electronics</Link></li>
+                <li><Link to="/shop?category=fashion">Fashion</Link></li>
+                <li><Link to="/shop?category=beauty">Beauty</Link></li>
               </ul>
             </div>
           </div>
@@ -64,7 +64,14 @@ function Footer() {
         <div className="divider"></div>
 
         <div className="footer-bottom">
-          <p>© 2026 QuickDrop Inc. All rights reserved.</p>
+          <div className="copyright-area">
+            <p>© 2026 Shippzyy Inc. All rights reserved.</p>
+            {/* 🔥 Design Credit Line Added 🔥 */}
+            <p className="developer-credit">
+              Designed and developed by <span>Blackcube Solutions LLC</span>
+            </p>
+          </div>
+          
           <div className="payment-icons">
             <span className="pay-card">Visa</span>
             <span className="pay-card">Mastercard</span>

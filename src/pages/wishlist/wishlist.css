@@ -1,30 +1,96 @@
+/* =========================================================
+   WISHLIST PAGE — PREMIUM GLASS THEME (RESPONSIVE)
+========================================================= */
+
 .wishlist-page {
-  padding: 60px 20px;
-  min-height: 70vh; /* 👈 This pushes the footer down */
+  padding: 80px 20px;
+  min-height: 80vh; 
   margin-top: 20px;
+  width: 100%;
+}
+
+/* 🔥 BIG SCREEN (1800px+) SUPPORT 🔥 */
+.wishlist-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1800px) {
+  .wishlist-container {
+    max-width: 1600px; /* Expands gracefully on ultrawide */
+  }
 }
 
 .wishlist-title {
   color: #ffffff;
-  font-size: 32px;
+  font-size: 42px; /* Bigger font for impact */
   font-weight: 900;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
   text-align: left;
+  letter-spacing: -1px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
+/* --- EMPTY STATE (POLISHED GLASS) --- */
 .empty-wishlist-box {
-  padding: 80px 20px;
+  padding: 100px 30px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03); /* Subtle glass */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 32px;
   border: 1px dashed rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  max-width: 700px;
+  margin: 40px auto;
+  transition: all 0.3s ease;
+}
+
+.empty-wishlist-box:hover {
+  border-color: #00f2fe; /* Glowing border on hover */
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .empty-wishlist-box h3 {
   color: #fff;
-  margin-bottom: 10px;
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 15px;
 }
 
 .empty-wishlist-box p {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* --- WISHLIST GRID (Consistent with Shop Page) --- */
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+/* =========================================
+   MOBILE & TABLET RESPONSIVENESS
+========================================= */
+
+@media (max-width: 1024px) {
+  .wishlist-title { font-size: 34px; }
+  .wishlist-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .wishlist-page { padding: 40px 15px; }
+  .wishlist-title { font-size: 28px; text-align: center; margin-bottom: 30px; }
+  .empty-wishlist-box { padding: 60px 20px; border-radius: 20px; }
+  .wishlist-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+}
+
+@media (max-width: 480px) {
+  .wishlist-title { font-size: 24px; }
+  .wishlist-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } /* 2 cards per row on mobile */
+  .empty-wishlist-box h3 { font-size: 20px; }
+  .empty-wishlist-box p { font-size: 14px; }
 }

@@ -17,7 +17,7 @@ const CategoryRow = ({ categories, activeCategory, onSelectCategory }) => {
             onClick={() => onSelectCategory(cat.name)}
           >
             <div className="cat-icon-box">
-              <img src={`/category/${cat.image}`} alt={cat.name} />
+              <img src={`/category/${cat.image}`} alt={cat.name} loading="lazy" />
             </div>
             <span className="cat-name">{cat.name}</span>
           </button>

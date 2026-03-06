@@ -52,6 +52,51 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
+/* ================= HERO TEXT STYLING ================= */
+.hero-text-content {
+  position: absolute;
+  bottom: 25%; /* Puts text above the dots */
+  left: 5%;    /* Indents from the left */
+  z-index: 5;
+  color: white;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease 0.3s; /* Delay for smooth entry */
+}
+
+/* Animations jab slide active ho */
+.hero-slide-wrapper.active .hero-text-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 900;
+  margin: 0 0 10px 0;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Mobile responsive for text */
+@media (max-width: 768px) {
+  .hero-text-content { bottom: 20%; left: 8%; }
+  .hero-title { font-size: 32px; }
+  .hero-subtitle { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .hero-title { font-size: 24px; }
+  .hero-subtitle { font-size: 12px; }
+}
+
 .hero-slider { position: relative; width: 100%; height: 100%; }
 .hero-slide-wrapper {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -235,6 +280,341 @@
   transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 242, 254, 0.4);
 }
 
+/* ================= GLOBAL HOME ================= */
+.home.cinematic-bg {
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 60px;
+  overflow-x: hidden;
+  background: transparent; /* Lets the starry background show */
+}
+
+/* 🔥 BIG SCREEN CONTAINER MAX WIDTH 🔥 */
+.container-max {
+  width: 100%;
+  max-width: 1400px; /* Standard large screen */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media (min-width: 1800px) {
+  .container-max {
+    max-width: 1600px; /* Ultrawide monitors */
+  }
+}
+
+.editorial-header {
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.editorial-header.center {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.overline {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #00f2fe; /* Glowing Neon Cyan */
+  margin-bottom: 12px;
+  display: block;
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
+}
+
+.section-title-elite {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff; /* Crisp white */
+  letter-spacing: -1px;
+  line-height: 1.1;
+  position: relative;
+  display: inline-block;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* ================= CINEMATIC HERO SLIDER ================= */
+.hero-elite {
+  width: 100%;
+  padding: 40px 20px 0; /* Ensures it stays within bounds */
+}
+
+.hero-slider { 
+  height: 500px; 
+  position: relative;
+  border-radius: var(--radius-xl, 24px); 
+  overflow: hidden;
+  background: transparent;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.hero-slide-wrapper {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  transition: opacity 0.8s ease;
+  overflow: hidden;
+  border-radius: var(--radius-xl, 24px);
+}
+
+.hero-slide-img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.15); transition: transform 6s linear; 
+}
+
+.hero-slide-wrapper.active .hero-slide-img { transform: scale(1); }
+
+/* Darker vignette for the space theme */
+.hero-vignette {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, transparent 50%);
+  z-index: 2; pointer-events: none;
+}
+
+/* Animated Progress Dots */
+.elite-slider-dots {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 15px; z-index: 10;
+  background: rgba(0, 0, 0, 0.4); 
+  padding: 10px 20px;
+  border-radius: var(--radius-pill, 50px); 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.elite-dot {
+  width: 10px; height: 10px; border-radius: var(--radius-pill, 50px);
+  background: rgba(255, 255, 255, 0.3); cursor: pointer;
+  position: relative; overflow: hidden; transition: all 0.4s ease;
+}
+
+.elite-dot.active { width: 35px; background: rgba(255, 255, 255, 0.1); }
+.dot-progress {
+  position: absolute; top: 0; left: 0; height: 100%; width: 100%;
+  background: #00f2fe; border-radius: var(--radius-pill, 50px);
+  animation: fillProgress 4s linear infinite; 
+}
+
+@keyframes fillProgress {
+  0% { transform: scaleX(0); transform-origin: left; }
+  100% { transform: scaleX(1); transform-origin: left; }
+}
+
+/* ================= BENTO SUBCATEGORIES (GLASS TILE FIX) ================= */
+.subcategory-elite { margin: 60px auto; } /* Increased spacing for breathing room */
+
+.bento-grid {
+  display: flex !important;       
+  flex-wrap: nowrap !important;   
+  overflow-x: auto !important;    
+  gap: 20px;
+  padding: 10px 5px 25px 5px;     
+  scroll-behavior: smooth;
+  scrollbar-width: none;          
+  -webkit-overflow-scrolling: touch; 
+}
+
+.bento-grid::-webkit-scrollbar { display: none; }
+
+.bento-card {
+  min-width: 260px; /* Slightly wider for better image display */
+  flex: 0 0 auto !important;      
+  border-radius: var(--radius-xl, 24px);
+  padding: 24px; /* Slightly more padding */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+  
+  /* Frosted Glass Tile */
+  background: rgba(255, 255, 255, 0.03); /* Slightly more transparent */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncier hover */
+}
+
+.bento-card:hover { 
+  transform: translateY(-8px); 
+  border-color: rgba(0, 242, 254, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 15px 35px rgba(0, 242, 254, 0.15); 
+}
+
+.bento-card.active { 
+  border: 2px solid #00f2fe; 
+  background: rgba(0, 242, 254, 0.1); 
+  box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);
+}
+
+.bento-header { display: flex; justify-content: space-between; align-items: center; }
+.bento-title { font-size: 16px; font-weight: 800; color: #ffffff; }
+.bento-arrow { color: rgba(255, 255, 255, 0.3); transition: 0.3s; font-weight: bold; }
+.bento-card:hover .bento-arrow { transform: translateX(4px); color: #00f2fe; }
+
+.bento-image-grid {
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.3); /* Recessed dark background */
+  padding: 12px; 
+  border-radius: var(--radius-lg, 16px);
+  border: 1px inset rgba(255, 255, 255, 0.05);
+}
+
+.bento-img-box { 
+  background: rgba(255, 255, 255, 0.02); 
+  border-radius: var(--radius-md, 12px); 
+  padding: 8px; 
+  aspect-ratio: 1; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative; 
+  overflow: hidden;
+}
+
+.bento-img-box img { 
+  width: 100%; height: 100%; object-fit: contain; 
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); 
+}
+
+.bento-card:hover .bento-img-box img { transform: scale(1.12); }
+.more-box img { filter: blur(3px) brightness(0.6); transform: scale(1.1); } /* Darkened for better text reading */
+
+.more-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-md, 12px); z-index: 1;
+}
+.more-overlay span {
+  color: #ffffff; font-size: 14px; font-weight: 900; 
+  letter-spacing: 0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); z-index: 2;
+}
+
+/* ================= HEAVY GLASS PRODUCTS AREA ================= */
+.glass-panel-heavy {
+  background: transparent; border: none; box-shadow: none;
+  padding: 0; margin: 60px auto; width: 100%;
+}
+
+.product-grid-elite {
+  display: grid; 
+  /* Responsive grid that works perfectly from 1800px down to mobile */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  justify-content: center; 
+  gap: 30px; 
+  margin-top: 40px; 
+  width: 100%;
+}
+
+/* ================= EMPTY STATE & LOAD MORE ================= */
+.empty-state-box {
+  text-align: center; padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg, 16px);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  margin-top: 30px;
+}
+.empty-state-box h3 { color: #ffffff; margin-bottom: 10px; }
+.empty-state-box p { color: rgba(255, 255, 255, 0.6); }
+
+.load-more-container { text-align: center; margin-top: 50px; }
+.btn-load-more {
+  padding: 16px 40px; border-radius: var(--radius-pill, 50px);
+  background: rgba(0, 242, 254, 0.05); 
+  color: #00f2fe; font-weight: 800; letter-spacing: 0.5px;
+  font-size: 15px; border: 1px solid rgba(0, 242, 254, 0.3);
+  cursor: pointer; transition: all 0.3s ease;
+}
+.btn-load-more:hover {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  color: #0f172a; border-color: transparent;
+  transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
+}
+
+/* ===== APP IMAGE WRAPPER ===== */
+.app-image-container { 
+  width: 100%; 
+  margin: 80px auto; 
+  display: flex; 
+  justify-content: center; 
+}
+.app-download-link { 
+  display: block; 
+  width: 100%; 
+  max-width: 1200px; /* 🔥 Prevents stretching on 1800px+ monitors 🔥 */
+  transition: transform 0.3s ease;
+}
+.app-download-link:hover {
+  transform: scale(1.02);
+}
+.app-banner-img { 
+  width: 100%; height: auto; 
+  border-radius: var(--radius-xl, 24px); 
+  display: block; object-fit: cover;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.recommended-spacing {
+  margin-top: 80px;
+}
+
+/* ================= LARGE SCREENS (1400px - 1800px+) ================= */
+@media (min-width: 1400px) {
+  .hero-slider { height: 600px; } /* Taller hero on big screens */
+  .section-title-elite { font-size: 46px; }
+  .product-grid-elite { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+
+/* ================= MOBILE & TABLET RESPONSIVENESS ================= */
+@media (max-width: 992px) {
+  .hero-slider { height: 400px; }
+  .product-grid-elite { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+}
+
+@media (max-width: 768px) {
+  .hero-elite { padding: 20px 16px 0; }
+  .hero-slider { height: 320px; border-radius: 20px; }
+  .section-title-elite { font-size: 28px; }
+  
+  .glass-panel-heavy { padding: 0; margin: 30px 0; }
+  
+  .bento-grid { gap: 16px; padding-bottom: 20px; }
+  .bento-card { min-width: 220px; padding: 16px; gap: 12px; border-radius: 20px; }
+  
+  .product-grid-elite { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+  
+  .app-image-container { margin: 50px auto; }
+}
+
+@media (max-width: 480px) {
+  .hero-elite { padding: 16px 12px 0; }
+  .hero-slider { height: 240px; border-radius: 16px; }
+  .elite-slider-dots { bottom: 15px; padding: 6px 12px; }
+  .elite-dot { width: 6px; height: 6px; }
+  .elite-dot.active { width: 24px; }
+  
+  .section-title-elite { font-size: 24px; }
+  
+  .product-grid-elite { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  
+  .bento-grid { gap: 12px; padding-bottom: 15px; }
+  .bento-card { min-width: 180px; padding: 12px; border-radius: 16px; }
+  .bento-title { font-size: 14px; }
+  .bento-image-grid { padding: 8px; border-radius: 12px; gap: 6px; }
+  
+  .btn-load-more { padding: 12px 24px; font-size: 14px; width: 100%; }
+}
 /* ===== APP IMAGE WRAPPER ===== */
 .app-image { width: 100%; margin: 60px auto; padding: 0; display: flex; justify-content: center; }
 .app-image a { display: block; width: 100%; }

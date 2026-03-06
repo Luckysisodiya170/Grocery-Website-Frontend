@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useLocation, useSearchParams } from "react-router-dom"; // 🔴 ADDED useSearchParams
+import { useLocation, useSearchParams } from "react-router-dom"; 
 import "./categoryPage.css";
 
 import categories from "../../data/category";
@@ -13,7 +13,7 @@ import ProductGrid from "./ProductGrid";
 const CategoryPage = () => {
   const location = useLocation();
   
-  // 🔴 1. GLOBAL SEARCH STATE (Listens to Navbar)
+  // 1. GLOBAL SEARCH STATE (Listens to Navbar)
   const [searchParams, setSearchParams] = useSearchParams();
   const globalSearchTerm = searchParams.get("search") || "";
 
@@ -25,7 +25,7 @@ const CategoryPage = () => {
   const [activeCategory, setActiveCategory] = useState(uniqueCategories[0]?.name || "Electronics");
   const [activeSub, setActiveSub] = useState("All");
   
-  // 🔴 3. SORTING STATE
+  // 3. SORTING STATE
   const [sortOrder, setSortOrder] = useState("featured");
 
   // Handle Navigation state
@@ -56,8 +56,7 @@ const CategoryPage = () => {
     })
   ];
 
-  // 🔴 4. THE MASTER FILTER & SORT ENGINE
-  // useMemo ensures this only runs when filters actually change
+  // 4. THE MASTER FILTER & SORT ENGINE
   const processedProducts = useMemo(() => {
     // Step A: Filter
     let filtered = products.filter((p) => {
@@ -95,7 +94,9 @@ const CategoryPage = () => {
 
   return (
     <div className="cat-page-wrapper">
-      <div className="container">
+      {/* Container max handles the 1800px+ scaling safely */}
+      <div className="container-max"> 
+        
         {/* Hide Top Row if Searching Globally */}
         {!globalSearchTerm && (
           <CategoryRow
@@ -117,12 +118,12 @@ const CategoryPage = () => {
           )}
 
           <ProductGrid
-            products={processedProducts} // 🔴 Passed the sorted/filtered list
+            products={processedProducts} 
             activeCategory={globalSearchTerm ? "Search Results" : activeCategory}
             activeSub={globalSearchTerm ? `"${globalSearchTerm}"` : activeSub}
             clearFilters={handleClearFilters}
-            sortOrder={sortOrder}       // 🔴 Passed down to control the dropdown
-            setSortOrder={setSortOrder} // 🔴 Passed down to update state
+            sortOrder={sortOrder}       
+            setSortOrder={setSortOrder} 
           />
         </div>
       </div>

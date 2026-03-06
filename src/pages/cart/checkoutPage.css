@@ -11,7 +11,74 @@
   gap: 50px;
   align-items: start;
 }
+/* =========================================================
+   CART & CHECKOUT — ULTRA PREMIUM POLISH (1800px Support)
+========================================================= */
 
+.cart-container, .checkout-page-root {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 80px 20px;
+}
+
+@media (min-width: 1800px) {
+  .cart-container, .checkout-max-width {
+    max-width: 1600px;
+    gap: 100px;
+  }
+}
+
+/* --- CART CARDS (Premium Glass) --- */
+.cart-card {
+  display: flex;
+  gap: 25px;
+  padding: 25px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+
+.cart-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+}
+
+/* --- HIGH CONTRAST INVOICE (SIDEBAR) --- */
+.invoice-container, .cart-summary {
+  background: #ffffff;
+  color: #0f172a;
+  padding: 45px;
+  border-radius: 40px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+  position: sticky;
+  top: 100px;
+  border: 1px solid #f1f5f9;
+}
+
+.summary-total, .total-value {
+  font-size: 42px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- STEP INDICATOR --- */
+.checkout-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.step-pill.active {
+  color: #00f2fe;
+  border-bottom: 3px solid #00f2fe;
+  padding-bottom: 10px;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+}
 /* --- Step Indicator --- */
 .premium-step-bar {
   display: flex;

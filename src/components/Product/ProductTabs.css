@@ -152,7 +152,198 @@
   line-height: 1.8;
   font-size: 15px;
 }
+/* =========================================================
+   PRODUCT PAGE & TABS — ULTRA PREMIUM GLASS THEME (SAFE POLISH)
+========================================================= */
 
+/* ---------- PAGE WRAPPER ---------- */
+.product-page {
+  min-height: 100vh;
+  padding: 60px 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+/* ---------- MAIN CONTAINER (REFINED GLASS) ---------- */
+.product-container, 
+.product-tabs.container {
+  max-width: 1200px; /* Standard Premium Width */
+  width: 95%;
+  margin: auto;
+  padding: 50px;
+  
+  background: rgba(15, 23, 42, 0.75); 
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+}
+
+/* 🔥 BIG SCREEN (Ultrawide) 1800px+ Support 🔥 */
+@media (min-width: 1800px) {
+  .product-container, 
+  .product-tabs.container {
+    max-width: 1450px;
+    padding: 70px;
+  }
+}
+
+/* ---------- TAB HEADER (CLEAN & NEON) ---------- */
+.tab-header {
+  display: flex;
+  gap: 50px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 45px;
+}
+
+.tab-header button {
+  border: none;
+  background: none;
+  padding: 15px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #64748b; /* Faded slate for modern feel */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.tab-header button:hover {
+  color: #e2e8f0;
+}
+
+.tab-header button.active {
+  color: #00f2fe; /* Glowing Neon */
+  text-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+}
+
+.tab-header button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #00f2fe, #00c2ff);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+}
+
+/* ---------- REVIEW LAYOUT ---------- */
+.reviews-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 60px;
+}
+
+/* ---------- RATING SUMMARY ---------- */
+.rating-summary h2 {
+  font-size: 72px; /* Bigger impactful rating */
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.rating-summary .stars {
+  margin: 15px 0;
+  color: #facc15;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+/* ---------- PROGRESS BARS ---------- */
+.rating-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rating-row span { width: 45px; }
+
+.bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, #facc15, #eab308);
+  box-shadow: 0 0 15px rgba(250, 204, 21, 0.3);
+  border-radius: 20px;
+}
+
+/* ---------- REVIEW ITEMS ---------- */
+.review-item {
+  padding: 30px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.3s ease;
+}
+
+.review-item:first-child { border-top: none; }
+
+.review-item p {
+  color: #cbd5e1; /* Professional soft gray */
+  font-size: 16px;
+  line-height: 1.8;
+  margin-top: 12px;
+}
+
+.write-review {
+  margin-top: 20px;
+  padding: 14px 32px;
+  border-radius: 100px;
+  border: 1.5px solid #00f2fe;
+  background: rgba(0, 242, 254, 0.05);
+  color: #00f2fe;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.write-review:hover {
+  background: #00f2fe;
+  color: #0f172a;
+  box-shadow: 0 15px 30px rgba(0, 242, 254, 0.4);
+  transform: translateY(-5px);
+}
+
+/* ---------- RESPONSIVE FIXES ---------- */
+@media (max-width: 1024px) {
+  .product-container, .product-tabs.container {
+    padding: 35px;
+  }
+  .reviews-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .rating-summary h2 { font-size: 60px; }
+}
+
+@media (max-width: 768px) {
+  .product-page { padding: 30px 15px; }
+  .product-container { grid-template-columns: 1fr; }
+  .tab-header { gap: 25px; }
+  .tab-header button { font-size: 15px; }
+  .rating-summary h2 { font-size: 48px; }
+}
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 768px) {
   .product-tabs.container {

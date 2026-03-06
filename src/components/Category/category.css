@@ -133,3 +133,31 @@
   .app-cat-img-box { width: 85px; height: 85px; padding: 12px; }
   .app-cat-title { font-size: 12px; }
 }
+
+/* ================= BIG SCREEN RESPONSIVENESS ================= */
+@media (min-width: 1200px) {
+  .category-section.container {
+    max-width: 1400px; /* Container ko bada kiya */
+    margin: 0 auto;
+  }
+  .app-cat-item { 
+    min-width: 180px; /* Item ki width badhayi */
+    gap: 16px; 
+  }
+  .app-cat-img-box { 
+    width: 150px; /* Glass circle bada kiya */
+    height: 150px; 
+    padding: 30px; 
+  }
+  .category-title { 
+    font-size: 40px; /* Title bada kiya */
+  }
+  .app-cat-title { 
+    font-size: 18px; /* Text thoda bada aur clear kiya */
+  }
+}
+
+/* Scrollbar hide karne ka ek aur fail-safe */
+.category-scroll::-webkit-scrollbar { 
+  display: none; 
+}
