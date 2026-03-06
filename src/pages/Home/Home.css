@@ -5,6 +5,8 @@
   padding-bottom: 60px;
   overflow-x: hidden;
   background: transparent; /* Lets the starry background show */
+      /* margin-top: -100px; */
+
 }
 
 .editorial-header {
@@ -50,6 +52,7 @@
   overflow: hidden;
   background: transparent;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+
 }
 
 /* ================= HERO TEXT STYLING ================= */
