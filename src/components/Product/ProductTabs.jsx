@@ -1,7 +1,7 @@
 import { useState } from "react";
-import RatingBreakdown from "./RatingBreakdown"; 
-import ReviewList from "./ReviewList";           
-// import "./ProductTabs.css"; // Ensure your CSS is linked!
+import RatingBreakdown from "./RatingBreakdown";
+import ReviewList from "./ReviewList";
+import "./ProductTabs.css";
 
 function ProductTabs() {
   const [tab, setTab] = useState("reviews");
@@ -27,18 +27,20 @@ function ProductTabs() {
         </div>
 
         {/* TAB CONTENT */}
-        {tab === "reviews" && (
-          <div className="reviews-layout">
-            <RatingBreakdown />
-            <ReviewList />
-          </div>
-        )}
+        <div className="tab-content" key={tab}>
+          {tab === "reviews" && (
+            <div className="reviews-layout">
+              <RatingBreakdown />
+              <ReviewList />
+            </div>
+          )}
 
-        {tab === "desc" && (
-          <p className="desc-text">
-            High quality product guaranteed to deliver the best freshness. Carefully sourced and rigorously checked to ensure premium standards. Store in a cool, dry place to maintain optimal quality.
-          </p>
-        )}
+          {tab === "desc" && (
+            <p className="desc-text">
+              High quality product guaranteed to deliver the best freshness. Carefully sourced and rigorously checked to ensure premium standards. Store in a cool, dry place to maintain optimal quality.
+            </p>
+          )}
+        </div>
 
       </div>
     </div>

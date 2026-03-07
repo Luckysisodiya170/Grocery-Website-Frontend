@@ -19,46 +19,143 @@
   }
 }
 
-/* ================= TOP CATEGORY ROW (GLASS EFFECT) ================= */
-.main-cat-section { margin-bottom: 50px; width: 100%; }
-.section-header-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; padding: 0 4px; }
-
-/* Light text for dark background */
-.section-subtitle { font-size: 15px; color: rgba(255, 255, 255, 0.85); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 800; margin: 0; }
-.swipe-hint { font-size: 12px; color: rgba(255, 255, 255, 0.5); font-weight: 600; }
-
-.main-cat-row { display: flex; gap: 24px; overflow-x: auto; padding: 10px 4px 24px 4px; scrollbar-width: none; }
-.main-cat-row::-webkit-scrollbar { display: none; }
-
-.main-cat-btn { display: flex; flex-direction: column; align-items: center; background: transparent; border: none; cursor: pointer; min-width: 100px; outline: none; padding: 0; }
-/* 🌟 TRANSLUCENT GLASS BOXES (TOP CATEGORIES - NOW WHITE) 🌟 */
-.cat-icon-box {
-  width: 96px; height: 96px;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.95); /* 🔥 Changed to bright white */
-  backdrop-filter: blur(16px); 
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.8); 
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+/* ================= ULTRA PREMIUM CATEGORY ROW ================= */
+.premium-cat-wrapper {
+  width: 100%;
+  margin-bottom: 45px;
 }
 
-.cat-icon-box img { width: 65%; height: 65%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); transition: all 0.4s ease; }
-.cat-name { font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, 0.7); margin-top: 14px; transition: 0.3s; text-align: center; }
+.cat-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
 
+.cat-heading-modern {
+  font-size: 24px;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.cat-swipe-badge {
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.premium-cat-scroll {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 10px 10px 25px 10px;
+  scrollbar-width: none; 
+  cursor: grab;
+  scroll-behavior: smooth;
+}
+.premium-cat-scroll::-webkit-scrollbar { display: none; }
+.premium-cat-scroll.is-dragging { cursor: grabbing; scroll-behavior: auto; }
+
+/* The Modern Pill Card */
+.premium-cat-card {
+  min-width: 120px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 60px; /* Fully rounded pill */
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cat-img-bg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.cat-img-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none; 
+}
+
+.cat-title-modern {
+  font-size: 15px;
+  font-weight: 700;
+  color: #cbd5e1;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+/* Hover Effect */
+.premium-cat-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+.premium-cat-card:hover .cat-img-bg img { transform: scale(1.15); }
+.premium-cat-card:hover .cat-title-modern { color: #ffffff; }
+
+/* Active Effect (The Brand Pop) */
+.premium-cat-card.active {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  border-color: transparent;
+  box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
+  transform: translateY(-3px);
+}
+.premium-cat-card.active .cat-title-modern {
+  color: #0f172a;
+  font-weight: 900;
+}
+.premium-cat-card.active .cat-img-bg {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Active Effect (Cyan/Blue Glow) */
+.premium-cat-card.active .cat-img-bg {
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  border-color: transparent;
+  box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+  transform: translateY(-5px);
+}
+.premium-cat-card.active .cat-title-modern {
+  color: #0ea5e9;
+  font-weight: 800;
+}
 /* Hover States */
-.main-cat-btn:hover .cat-icon-box { background: #5c5b5b; border-color: #ffffff; transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); }
-.main-cat-btn:hover .cat-name { color: #ffffff; }
+/* .main-cat-btn:hover .cat-icon-box { background: #5c5b5b; border-color: #ffffff; transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); }
+.main-cat-btn:hover .cat-name { color: #ffffff; } */
 
 /* Active State */
-.main-cat-btn.active .cat-icon-box {
+/* .main-cat-btn.active .cat-icon-box {
   background: #5d5c5c; 
-  border: 2px solid #00f2fe; /* Cyan border so it pops */
-  box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4);
+  border: 2px solid #00f2fe;  */
+  /* Cyan border so it pops */
+  /* box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4);
 }
 .main-cat-btn.active .cat-icon-box img { transform: scale(1.15); }
-.main-cat-btn.active .cat-name { color: #00f2fe; font-weight: 800; transform: scale(1.05); }
+.main-cat-btn.active .cat-name { color: #00f2fe; font-weight: 800; transform: scale(1.05); } */
 
 
 /* 🌟 SIDEBAR GLASS BOXES (SUBCATEGORIES - NOW WHITE) 🌟 */
@@ -87,6 +184,98 @@
   border: 2px solid #10b981; /* Green border so it pops */
   box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3); 
 }
+/* ================= 3D CATEGORY ROW (DRAG & ARROWS) ================= */
+.main-cat-section { margin-bottom: 50px; width: 100%; }
+
+.section-header-row { 
+  display: flex; justify-content: space-between; align-items: flex-end; 
+  margin-bottom: 25px; padding: 0 10px; 
+}
+
+.section-subtitle { 
+  font-size: 18px; color: #ffffff; text-transform: uppercase; 
+  letter-spacing: 1.5px; font-weight: 800; margin: 0; 
+}
+
+/* Navigation Arrows & Hint */
+.cat-nav-buttons { display: flex; align-items: center; gap: 15px; }
+.swipe-hint { font-size: 12px; color: rgba(255, 255, 255, 0.5); font-weight: 600; text-transform: uppercase; }
+.nav-arrow {
+  background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white; width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+}
+.nav-arrow:hover { background: #00f2fe; color: #000; transform: scale(1.1); }
+
+/* 🌟 3D Perspective Setup */
+.cat-perspective-wrapper {
+  perspective: 1000px; /* Gives the 3D depth */
+  width: 100%;
+}
+
+.main-cat-row { 
+  display: flex; gap: 24px; overflow-x: auto; 
+  padding: 20px 10px 40px 10px; scrollbar-width: none; 
+  cursor: grab; /* Mouse pointer changes to grab hand */
+  scroll-behavior: auto; /* Required for JS smooth scroll */
+}
+.main-cat-row.dragging { cursor: grabbing; scroll-behavior: auto; }
+.main-cat-row::-webkit-scrollbar { display: none; }
+
+/* 🌟 3D Floating Cards */
+.cat-3d-card { 
+  background: transparent; border: none; outline: none; padding: 0;
+  min-width: 110px; 
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cat-3d-content {
+  display: flex; flex-direction: column; align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 20px 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease;
+  transform: translateZ(0); /* Hardware acceleration */
+}
+
+.cat-icon-box {
+  width: 70px; height: 70px; margin-bottom: 15px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 4px 10px rgba(255,255,255,0.2);
+  transition: all 0.4s ease;
+}
+
+.cat-icon-box img { 
+  width: 60%; height: 60%; object-fit: contain; 
+  filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4)); 
+  transition: all 0.4s ease; pointer-events: none; /* Prevents ghost dragging image */
+}
+
+.cat-name { font-size: 14px; font-weight: 700; color: rgba(255, 255, 255, 0.6); transition: 0.3s; text-align: center; }
+
+/* 🚀 Hover Effects (Card tilts and lifts!) */
+.cat-3d-card:hover { transform: translateY(-10px) rotateX(10deg); z-index: 10; }
+.cat-3d-card:hover .cat-3d-content { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+.cat-3d-card:hover .cat-icon-box { background: #ffffff; transform: translateZ(30px); /* Image pops out in 3D */ }
+.cat-3d-card:hover .cat-icon-box img { transform: scale(1.2); }
+.cat-3d-card:hover .cat-name { color: #ffffff; transform: translateZ(20px); }
+
+/* 🔥 Active State (Neon Glow) */
+.cat-3d-card.active { transform: translateY(-5px) scale(1.05); }
+.cat-3d-card.active .cat-3d-content {
+  background: linear-gradient(145deg, rgba(0, 242, 254, 0.15), rgba(79, 172, 254, 0.2));
+  border: 1.5px solid #00f2fe;
+  box-shadow: 0 15px 35px rgba(0, 242, 254, 0.3);
+}
+.cat-3d-card.active .cat-icon-box { background: #ffffff; }
+.cat-3d-card.active .cat-name { color: #00f2fe; }
 .sub-cat-btn-rail.active .sub-cat-name { color: #10b981; font-weight: 800; }
 /* ================= SPLIT LAYOUT ================= */
 .cat-content-split { display: grid; grid-template-columns: 120px 1fr; gap: 50px; align-items: start; }
@@ -170,36 +359,39 @@
 .sort-dropdown:hover { border-color: rgba(255,255,255,0.6); background-color: rgba(255, 255, 255, 0.15); }
 .sort-dropdown option { background: #0f172a; color: #ffffff; padding: 10px; } 
 
-/* ================= PRODUCT GRID ================= */
+/* ================= PRODUCT GRID FIX ================= */
 .cat-product-grid { 
   display: grid; 
-  grid-template-columns: repeat(5, 1fr); 
-  gap: 24px; 
+  /* 5 ki jagah 4 cards kiye, taaki card ko space mile */
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 25px; 
   width: 100%; 
   align-items: stretch; 
 }
 
-/* ================= BEAUTIFUL EMPTY STATE ================= */
-.cat-empty-state {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 80px 20px; text-align: center;
-  background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px);
-  border-radius: 24px; border: 1px dashed rgba(255, 255, 255, 0.3);
-  margin-top: 20px;
+/* BIG SCREEN FIX */
+@media (min-width: 1400px) {
+  .cat-product-grid { 
+    grid-template-columns: repeat(5, 1fr); /* Bade monitor par 5 cards */
+    gap: 30px;
+  } 
 }
-.empty-icon-wrapper {
-  width: 90px; height: 90px;
-  background: rgba(255, 255, 255, 0.1); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-.empty-icon { font-size: 40px; }
-.cat-empty-state h3 { font-size: 24px; font-weight: 800; color: #ffffff; margin-bottom: 12px; }
-.cat-empty-state p { color: rgba(255,255,255,0.7); font-size: 16px; margin-bottom: 30px; }
-.btn-primary { background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 15px; }
-.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4); }
 
+@media (max-width: 1200px) { 
+  .cat-product-grid { grid-template-columns: repeat(3, 1fr); } 
+}
+
+@media (max-width: 900px) {
+  .cat-product-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) { 
+  .cat-product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } 
+}
+
+@media (max-width: 400px) {
+  .cat-product-grid { grid-template-columns: 1fr; gap: 15px; } /* Mobile me 1 card */
+}
 /* ================= RESPONSIVE ================= */
 @media (min-width: 1400px) {
   .cat-product-grid { grid-template-columns: repeat(6, 1fr); gap: 30px;} /* Extra column for big screens */

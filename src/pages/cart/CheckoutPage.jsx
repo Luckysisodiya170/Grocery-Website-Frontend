@@ -42,18 +42,18 @@ const CheckoutPage = () => {
     toast.success("Address Added Successfully");
   };
 
-// ==========================
+  // ==========================
   // Place Order (Instant Redirect & Top-Center Toast)
   // ==========================
   const handlePlaceOrder = () => {
     if (!cart.length) {
       // Error toast also in top-center
-      toast.error("Cart is empty", { position: "top-center" }); 
+      toast.error("Cart is empty", { position: "top-center" });
       return;
     }
 
     const newOrder = {
-      id: `ORD${Math.floor(Math.random() * 100000)}`, 
+      id: `ORD${Math.floor(Math.random() * 100000)}`,
       items: cart,
       total: grandTotal,
       paymentMethod,
@@ -73,180 +73,188 @@ const CheckoutPage = () => {
     });
 
     // ✅ INSTANT REDIRECT (setTimeout hata diya hai)
-    navigate("/order-success", { state: { orderId: newOrder.id } }); 
+    navigate("/order-success", { state: { orderId: newOrder.id } });
   };
   return (
     <div className="checkout-page-root">
       <div className="checkout-max-width">
 
-        {/* ================= LEFT SIDE ================= */}
+        {/* ================= LEFT SIDE (Accordion) ================= */}
         <main>
-
-          {/* Step Indicator */}
-          <header className="checkout-nav-header">
-            <div className={`step-pill ${step === 1 ? "active" : "completed"}`}>
-              01 Shipping
-            </div>
-            <div className="step-line"></div>
-            <div className={`step-pill ${step === 2 ? "active" : ""}`}>
-              02 Payment
-            </div>
+          <header className="checkout-header-main">
+            <h1>Secure Checkout</h1>
+            <p className="checkout-subtitle">Complete your order in 2 simple steps</p>
           </header>
 
-          <section className="form-surface glass-panel">
-
-            {/* ================= STEP 1 ================= */}
-            {step === 1 && (
-              <>
-                <h1 className="step-title">
-                  Select <span className="light">Delivery Address</span>
-                </h1>
-
-                <div className="address-grid">
-                  {addresses.map((loc) => (
-                    <div
-                      key={loc.id}
-                      className={`address-card ${selectedAddress === loc.id ? "selected" : ""
-                        }`}
-                      onClick={() => setSelectedAddress(loc.id)}
-                    >
-                      <h4>{loc.label}</h4>
-                      <p>{loc.address}</p>
-                      <span>{loc.zip}</span>
-                    </div>
-                  ))}
-
-                  <div
-                    className="address-card add-new"
-                    onClick={() => setShowNewAddress(true)}
-                  >
-                    + Add New Address
-                  </div>
+          <section className="checkout-accordion-container">
+            {/* ================= STEP 1 ACCORDION ================= */}
+            <div className={`accordion-step ${step === 1 ? "active" : "completed"}`}>
+              <div
+                className="accordion-header"
+                onClick={() => step > 1 && setStep(1)}
+              >
+                <div className="step-indicator">
+                  {step > 1 ? "✓" : "1"}
                 </div>
-
-                {showNewAddress && (
-                  <form className="new-address-form" onSubmit={handleAddAddress}>
-                    <input name="label" placeholder="Label (Home/Office)" required />
-                    <input name="address" placeholder="Full Address" required />
-                    <input name="zip" placeholder="Zip Code" required />
-                    <button type="submit" className="primary-action-btn">
-                      Save Address
-                    </button>
-                  </form>
+                <h2>Delivery Address</h2>
+                {step > 1 && (
+                  <span className="edit-link">Edit</span>
                 )}
+              </div>
 
-                <button
-                  className="primary-action-btn"
-                  disabled={!selectedAddress}
-                  onClick={() => setStep(2)}
-                >
-                  Continue to Payment
-                </button>
-              </>
-            )}
-
-            {/* ================= STEP 2 ================= */}
-            {step === 2 && (
-              <>
-                <h1 className="step-title dark">
-                  Select <span className="light">Payment Method</span>
-                </h1>
-
-                {/* Payment Options */}
-                <div className="payment-methods">
-                  <div
-                    className={`payment-option ${paymentMethod === "card" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("card")}
-                  >
-                    💳 Credit / Debit Card
-                  </div>
-
-                  <div
-                    className={`payment-option ${paymentMethod === "upi" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("upi")}
-                  >
-                    📱 UPI Payment
-                  </div>
-
-                  <div
-                    className={`payment-option ${paymentMethod === "cod" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("cod")}
-                  >
-                    💵 Cash on Delivery
-                  </div>
-                </div>
-
-                {/* Card Form */}
-                {paymentMethod === "card" && (
-                  <div className="payment-form">
-                    <div className="input-grid">
-                      <div className="full-width">
-                        <input placeholder="Card Number" />
+              {step === 1 && (
+                <div className="accordion-content form-slide-in">
+                  <div className="address-grid">
+                    {addresses.map((loc) => (
+                      <div
+                        key={loc.id}
+                        className={`address-card ${selectedAddress === loc.id ? "selected" : ""}`}
+                        onClick={() => setSelectedAddress(loc.id)}
+                      >
+                        <div className="address-card-header">
+                          <h4>{loc.label}</h4>
+                          {selectedAddress === loc.id && <div className="selected-dot"></div>}
+                        </div>
+                        <p>{loc.address}</p>
+                        <span>{loc.zip}</span>
                       </div>
-                      <input placeholder="MM/YY" />
-                      <input placeholder="CVC" />
+                    ))}
+
+                    <div
+                      className="address-card add-new"
+                      onClick={() => setShowNewAddress(true)}
+                    >
+                      <span className="add-icon">+</span>
+                      <span>Add New Address</span>
                     </div>
                   </div>
-                )}
 
-                {/* UPI */}
-                {paymentMethod === "upi" && (
-                  <div className="payment-form">
-                    <input
-                      className="upi-input"
-                      placeholder="Enter UPI ID (example@upi)"
-                    />
-                  </div>
-                )}
+                  {showNewAddress && (
+                    <form className="new-address-form slide-down" onSubmit={handleAddAddress}>
+                      <div className="input-group">
+                        <label>Label</label>
+                        <input name="label" placeholder="e.g. Home, Office" required />
+                      </div>
+                      <div className="input-group">
+                        <label>Full Address</label>
+                        <input name="address" placeholder="Enter full address" required />
+                      </div>
+                      <div className="input-group">
+                        <label>Zip Code</label>
+                        <input name="zip" placeholder="Enter ZIP code" required />
+                      </div>
+                      <button type="submit" className="save-address-btn">
+                        Save Address
+                      </button>
+                    </form>
+                  )}
 
-                {/* COD */}
-                {paymentMethod === "cod" && (
-                  <div className="cod-box">
-                    Pay in cash when your order is delivered.
-                  </div>
-                )}
-
-                {/* Payment Summary */}
-                <div className="payment-summary">
-                  <div className="summary-line">
-                    <span>Subtotal</span>
-                    <span>₹{subtotal}</span>
-                  </div>
-
-                  <div className="summary-line">
-                    <span>Shipping</span>
-                    <span>
-                      {shippingCharge === 0 ? "FREE" : `₹${shippingCharge}`}
-                    </span>
-                  </div>
-
-                  <div className="summary-line total">
-                    <span>Grand Total</span>
-                    <span>₹{grandTotal}</span>
-                  </div>
+                  <button
+                    className="primary-action-btn"
+                    disabled={!selectedAddress}
+                    onClick={() => setStep(2)}
+                  >
+                    Continue to Payment →
+                  </button>
                 </div>
+              )}
+            </div>
 
-                <button
-                  className="primary-action-btn"
-                  disabled={!cart.length}
-                  onClick={handlePlaceOrder}
-                >
-                  Pay ₹{grandTotal}
-                </button>
+            {/* ================= STEP 2 ACCORDION ================= */}
+            <div className={`accordion-step ${step === 2 ? "active" : "locked"}`}>
+              <div className="accordion-header">
+                <div className="step-indicator">2</div>
+                <h2>Payment Method</h2>
+              </div>
 
-                <button
-                  className="back-link-btn dark"
-                  onClick={() => setStep(1)}
-                >
-                  Edit Address
-                </button>
-              </>
-            )}
+              {step === 2 && (
+                <div className="accordion-content form-slide-in">
+                  {/* Payment Options */}
+                  <div className="payment-methods-grid">
+                    <div
+                      className={`payment-option ${paymentMethod === "card" ? "active" : ""}`}
+                      onClick={() => setPaymentMethod("card")}
+                    >
+                      <span className="pay-icon">💳</span>
+                      <span>Credit / Debit Card</span>
+                    </div>
 
+                    <div
+                      className={`payment-option ${paymentMethod === "upi" ? "active" : ""}`}
+                      onClick={() => setPaymentMethod("upi")}
+                    >
+                      <span className="pay-icon">📱</span>
+                      <span>UPI Payment</span>
+                    </div>
+
+                    <div
+                      className={`payment-option ${paymentMethod === "cod" ? "active" : ""}`}
+                      onClick={() => setPaymentMethod("cod")}
+                    >
+                      <span className="pay-icon">💵</span>
+                      <span>Cash on Delivery</span>
+                    </div>
+                  </div>
+
+                  {/* Card Form */}
+                  {paymentMethod === "card" && (
+                    <div className="payment-form">
+                      <div className="card-preview-modern">
+                        <div className="chip"></div>
+                        <div className="card-number-display">**** **** **** ****</div>
+                      </div>
+                      <div className="input-group">
+                        <label>Card Number</label>
+                        <input placeholder="Enter 16 digit card number" />
+                      </div>
+                      <div className="input-grid">
+                        <div className="input-group">
+                          <label>Expiry</label>
+                          <input placeholder="MM/YY" />
+                        </div>
+                        <div className="input-group">
+                          <label>CVC</label>
+                          <input type="password" placeholder="***" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* UPI */}
+                  {paymentMethod === "upi" && (
+                    <div className="payment-form">
+                      <div className="input-group">
+                        <label>UPI ID</label>
+                        <input
+                          className="upi-input"
+                          placeholder="Example: username@okhdfc"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* COD */}
+                  {paymentMethod === "cod" && (
+                    <div className="cod-alert-box">
+                      <strong>Cash on Delivery selected.</strong> You will pay when the order arrives at your address.
+                    </div>
+                  )}
+
+                  <button
+                    className="primary-action-btn place-order"
+                    disabled={!cart.length}
+                    onClick={handlePlaceOrder}
+                  >
+                    <span className="btn-text">Pay ₹{grandTotal}</span>
+                    <span className="btn-icon">🔒</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </section>
         </main>
 
-        {/* ================= RIGHT SIDE ================= */}
+        {/* ================= RIGHT SIDE (Sticky Order Summary) ================= */}
         <aside className="checkout-sidebar">
           <div className="invoice-container">
             <h2 className="invoice-title">Order Summary</h2>

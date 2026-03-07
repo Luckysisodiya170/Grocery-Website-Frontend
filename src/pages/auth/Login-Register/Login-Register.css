@@ -12,14 +12,14 @@
 
 .auth-card {
   width: 100%;
-  max-width: 850px; /* Compact Size */
+  max-width: 850px;
   display: flex;
   border-radius: 18px;
   background: var(--card-bg);
   box-shadow: var(--shadow-float);
   border: 1px solid var(--border);
   overflow: hidden;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.4s ease;
 }
 
 /* =====================================================
@@ -55,7 +55,7 @@
   border-radius: 12px;
   padding: 4px;
   margin-bottom: 20px;
-  height: 42px; /* Matches input height */
+  height: 42px;
   border: 1.5px solid var(--border);
 }
 
@@ -78,12 +78,12 @@
 }
 
 /* =====================================================
-   UNIFIED FORM INPUTS (COMPACT 42px)
+   FORM LAYOUT
 ===================================================== */
 form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .form-group {
@@ -92,12 +92,73 @@ form {
   gap: 4px;
 }
 
-.form-group label {
+/* Static label (for phone input) */
+.static-label {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-light);
 }
 
+/* =====================================================
+   FLOATING LABEL SYSTEM
+===================================================== */
+.form-group.floating .input-with-icon {
+  position: relative;
+}
+
+/* The floating label */
+.form-group.floating .input-with-icon label {
+  position: absolute;
+  left: 44px;
+  /* aligns with padded input text */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left center;
+  background: transparent;
+  padding: 0 2px;
+  z-index: 3;
+}
+
+/* Float up when input has a value OR is focused */
+.form-group.floating .input-with-icon input:focus~label,
+.form-group.floating .input-with-icon input:not(:placeholder-shown)~label {
+  top: 10px;
+  transform: translateY(0) scale(0.82);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* Input styles for floating label (taller to give room) */
+.form-group.floating .input-with-icon input {
+  width: 100% !important;
+  height: 52px !important;
+  /* taller for label clearance */
+  padding-top: 18px !important;
+  padding-left: 44px !important;
+  padding-right: 14px !important;
+  padding-bottom: 6px !important;
+  border-radius: 12px !important;
+  border: 1.5px solid var(--border) !important;
+  background: var(--bg-soft) !important;
+  font-size: 13px !important;
+  color: var(--text-main) !important;
+  transition: all 0.3s ease !important;
+  outline: none;
+}
+
+.form-group.floating .input-with-icon input:focus {
+  border-color: var(--primary) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(0, 95, 115, 0.12) !important;
+}
+
+/* =====================================================
+   ICON WRAPPER
+===================================================== */
 .input-with-icon {
   position: relative;
   display: flex;
@@ -112,39 +173,115 @@ form {
   justify-content: center;
   color: var(--text-muted);
   pointer-events: none;
-  z-index: 2;
-  transition: 0.3s;
+  z-index: 4;
+  transition: color 0.3s;
   height: 100%;
   top: 0;
 }
 
-.input-with-icon input,
-.input-with-icon select,
-.form-group input,
-.form-group select {
-  width: 100% !important;
-  height: 42px !important; /* Fixed Compact Height */
-  padding-left: 44px !important;
-  padding-right: 14px !important;
-  border-radius: 12px !important;
-  border: 1.5px solid var(--border) !important;
-  background: var(--bg-soft) !important;
-  font-size: 13px !important;
-  color: var(--text-main) !important;
-  transition: all 0.3s ease !important;
-  outline: none;
-}
-
-.input-with-icon input:focus,
-.form-group input:focus,
-.form-group select:focus {
-  border-color: var(--primary) !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(0, 95, 115, 0.15) !important;
-}
-
 .input-with-icon:focus-within .input-icon-wrapper {
   color: var(--primary);
+}
+
+/* =====================================================
+   ERROR STATES (RED OUTLINE + SHAKE)
+===================================================== */
+.input-with-icon.input-error input {
+  border-color: #ef4444 !important;
+  background: #fff5f5 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+  animation: shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+.input-with-icon.input-error .input-icon-wrapper {
+  color: #ef4444;
+}
+
+/* Shake phone wrapper on mobile error */
+.field-has-error .phone-wrapper .react-tel-input .form-control {
+  border-color: #ef4444 !important;
+  background: #fff5f5 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+  animation: shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  15% {
+    transform: translateX(-6px);
+  }
+
+  30% {
+    transform: translateX(6px);
+  }
+
+  45% {
+    transform: translateX(-5px);
+  }
+
+  60% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-3px);
+  }
+
+  90% {
+    transform: translateX(3px);
+  }
+}
+
+/* Error message text */
+.error {
+  font-size: 11px;
+  color: #ef4444;
+  font-weight: 600;
+  padding: 2px 4px;
+}
+
+.shake-text {
+  animation: shakeText 0.4s ease;
+}
+
+@keyframes shakeText {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-4px);
+  }
+
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+/* =====================================================
+   SUCCESS FADE-OUT
+===================================================== */
+.auth-card.auth-success {
+  animation: authFadeOut 0.55s ease forwards;
+}
+
+@keyframes authFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
 }
 
 /* =====================================================
@@ -154,7 +291,7 @@ form {
   position: relative;
   display: flex;
   align-items: center;
-  z-index: 50; /* Keeps dropdown above everything */
+  z-index: 50;
 }
 
 .react-tel-input {
@@ -164,7 +301,7 @@ form {
 .react-tel-input .form-control {
   width: 100% !important;
   height: 42px !important;
-  padding-left: 55px !important; 
+  padding-left: 55px !important;
   border-radius: 12px !important;
   border: 1.5px solid var(--border) !important;
   background: var(--bg-soft) !important;
@@ -188,7 +325,7 @@ form {
 .react-tel-input .country-list {
   background: #ffffff !important;
   border-radius: 12px !important;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
   z-index: 1000 !important;
   text-align: left;
 }
@@ -215,31 +352,29 @@ form {
    BUTTONS & LINKS
 ===================================================== */
 .submit-btn {
-  height: 42px;
+  height: 44px;
   border-radius: 12px;
   border: none;
   background: var(--brand-gradient);
   color: #fff;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.2s ease;
-  margin-top: 5px;
+  transition: all 0.25s ease;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
 }
 
 .submit-btn:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
+  filter: brightness(1.05);
 }
 
 .submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.error {
-  font-size: 11px;
-  color: var(--danger);
+  transform: none;
 }
 
 .switch-text {
@@ -254,7 +389,8 @@ form {
   font-weight: 600;
 }
 
-.resend-link, .back-link {
+.resend-link,
+.back-link {
   background: none;
   border: none;
   color: var(--primary);
@@ -272,17 +408,18 @@ form {
   margin-top: 15px;
 }
 
-.back-link:hover, .resend-link:hover {
+.back-link:hover,
+.resend-link:hover {
   text-decoration: underline;
 }
 
 /* =====================================================
-   RIGHT SECTION (IMAGE, COLOR COVER & CENTERED TEXT)
+   RIGHT SECTION (IMAGE)
 ===================================================== */
 .auth-image {
   flex: 1;
-  position: relative; 
-  overflow: hidden;   
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -298,7 +435,6 @@ form {
   z-index: 0;
 }
 
-/* Primary Color layer (Image ke theek upar) */
 .auth-image::after {
   content: "";
   position: absolute;
@@ -306,14 +442,13 @@ form {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 95, 115, 0.75); /* Primary Color OPACITY */
+  background: rgba(0, 95, 115, 0.75);
   z-index: 1;
 }
 
-/* Text Container exactly in the center */
 .overlay {
-  position: relative; 
-  z-index: 2; 
+  position: relative;
+  z-index: 2;
   color: #ffffff;
   text-align: center;
   width: 85%;
@@ -324,7 +459,7 @@ form {
   font-size: 32px;
   font-weight: 900;
   margin-bottom: 12px;
-  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .overlay p {
@@ -335,10 +470,10 @@ form {
 }
 
 /* =====================================================
-   VENDOR MODE OVERRIDES
+   VENDOR MODE
 ===================================================== */
 .vendor-mode {
-  max-width: 1050px !important; 
+  max-width: 1050px !important;
 }
 
 .vendor-mode .auth-image {
@@ -380,7 +515,6 @@ form {
   color: var(--primary);
 }
 
-/* Active State (When Selected) */
 .chip-btn.active {
   background: var(--primary);
   border-color: var(--primary);
@@ -389,23 +523,49 @@ form {
 }
 
 /* =====================================================
-   ANIMATIONS & RESPONSIVE
+   ANIMATIONS
 ===================================================== */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* =====================================================
+   RESPONSIVE
+===================================================== */
 @media (max-width: 992px) {
-  .auth-card, .vendor-mode {
+
+  .auth-card,
+  .vendor-mode {
     flex-direction: column;
     max-width: 450px !important;
   }
-  .auth-image, .vendor-mode .auth-image {
+
+  .auth-image,
+  .vendor-mode .auth-image {
     display: none !important;
   }
-  .auth-form, .vendor-mode .auth-form {
-    padding: 25px;
+
+  .auth-form,
+  .vendor-mode .auth-form {
+    padding: 28px;
     max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-form {
+    padding: 22px 18px;
+  }
+
+  .auth-form h2 {
+    font-size: 20px;
   }
 }

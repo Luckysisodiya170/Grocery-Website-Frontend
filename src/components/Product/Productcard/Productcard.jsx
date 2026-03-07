@@ -23,13 +23,13 @@ const Card = ({ product }) => {
   const liked = isProductLiked(product.id);
 
   // 3. Login Protection Helper
- const requireLogin = () => {
-  if (!user) {
-    navigate("/login");
-    return false;
-  }
-  return true;
-};
+  const requireLogin = () => {
+    if (!user) {
+      navigate("/login");
+      return false;
+    }
+    return true;
+  };
 
   /* ---------------- QUANTITY CONTROLS ---------------- */
   const handleInitialAdd = (e) => {
@@ -83,10 +83,10 @@ const Card = ({ product }) => {
 
         {/* Image Box */}
         <div className="image-box" onClick={goToProduct}>
-         <img 
-  src={product?.image ? (product.image.startsWith('http') ? product.image : `/product/${product.image}`) : '/placeholder.jpg'} 
-  alt={product?.name || "Product"} 
-/>
+          <img
+            src={product?.image ? (product.image.startsWith('http') ? product.image : `/product/${product.image}`) : '/placeholder.jpg'}
+            alt={product?.name || "Product"}
+          />
         </div>
 
         {/* Info Section */}
@@ -108,7 +108,7 @@ const Card = ({ product }) => {
                 <span className="old">₹{product.originalPrice}</span>
               )}
             </div>
-            
+
             {/* Conditional Render for Add/Qty */}
             {quantity === 0 ? (
               <button className="add-btn" onClick={handleInitialAdd}>
@@ -146,14 +146,15 @@ const StyledWrapper = styled.div`
     flex-direction: column;
     height: 100%;
     width: 100%;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); /* Darker and softer base shadow */
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     cursor: pointer;
+    will-change: transform, box-shadow;
   }
 
   .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 242, 254, 0.15); /* Premium glowing shadow */
   }
 
   /* IMAGE */
@@ -267,6 +268,13 @@ const StyledWrapper = styled.div`
     margin-top: auto;
   }
 
+  .price-stack {
+    display: flex;
+    align-items: center; /* Align prices side-by-side */
+    gap: 8px; /* Space out old and new price */
+    flex-wrap: wrap; /* Allows wrapping on very small screens */
+  }
+
   .price {
     font-size: clamp(16px, 1.2vw, 20px);
     font-weight: 900;
@@ -275,8 +283,11 @@ const StyledWrapper = styled.div`
 
   .old {
     text-decoration: line-through;
-    font-size: clamp(11px, 0.8vw, 13px);
+    text-decoration-color: #ef4444; /* Red strikethrough */
+    text-decoration-thickness: 2px;
+    font-size: clamp(12px, 0.9vw, 14px);
     color: #94a3b8;
+    font-weight: 600;
   }
 
   /* ADD BUTTON */

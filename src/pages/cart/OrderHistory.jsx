@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useOrders } from "./OrdersContext";
+import { useOrders } from "../../pages/cart/OrdersContext";
 import "./orderHistory.css";
 
 const ACTIVE_STATUSES = ["Placed", "Shipped", "Out for Delivery"];
@@ -10,9 +10,6 @@ const formatCurrency = (amount) =>
     style: "currency",
     currency: "INR",
   }).format(amount);
-
-const formatStatusClass = (status) =>
-  `status-pill status-${status.toLowerCase().replace(/\s+/g, "-")}`;
 
 const OrderHistory = () => {
   const { orders = [], loading } = useOrders();
@@ -33,80 +30,96 @@ const OrderHistory = () => {
   }, [orders]);
 
   if (loading) {
-    return (
-      <div className="orders-page container">
-        <p>Loading orders...</p>
-      </div>
-    );
+    return <div className="loader-box">Loading your orders...</div>;
   }
 
-  const renderOrderCard = (order) => {
+  // 🌟 ULTRA CLEAN GRID ROW 
+  const renderCleanRow = (order) => {
     const { id, createdAt, status, items = [], total } = order;
+    const statusClass = status.toLowerCase().replace(/\s+/g, "-");
+    
+    // Clean items logic: Show only 1st item name + count of others
+    const firstItem = items[0];
+    const extraItemsCount = items.length - 1;
+    const itemsText = extraItemsCount > 0 
+      ? `${firstItem?.name} & ${extraItemsCount} more item${extraItemsCount > 1 ? 's' : ''}`
+      : firstItem?.name;
 
     return (
-      <div className="order-card" key={id}>
-        <div className="order-top">
-          <div>
-            <span className="order-id">#{id}</span>
-            <span className="order-date">
-              {new Date(createdAt).toLocaleDateString("en-IN")}
-            </span>
-          </div>
-          <span className={formatStatusClass(status)}>
-            {status}
+      <div className="clean-order-row" key={id}>
+        
+        {/* Column 1: Order ID & Date */}
+        <div className="col-info">
+          <span className="clean-id">#{id.replace('ORD', '')}</span>
+          <span className="clean-date">
+            {new Date(createdAt).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' })}
           </span>
         </div>
 
-        <div className="order-item-images">
-          {items.map((item) => (
-            <div key={item.id || item.name} className="product-img-wrapper">
-              <img
-                src={`/product/${item.image}`}
-                alt={item.name}
-                title={item.name}
-                className="product-thumbnail"
-                loading="lazy"
-              />
-            </div>
-          ))}
+        {/* Column 2: 1 Image + Clean Text */}
+        <div className="col-items">
+          <div className="clean-img-box">
+            <img src={`/product/${firstItem?.image}`} alt={firstItem?.name} loading="lazy" />
+          </div>
+          <span className="clean-item-text" title={items.map(i => i.name).join(", ")}>
+            {itemsText}
+          </span>
         </div>
 
-        <div className="order-items-names">
-          {items.map((item) => item.name).join(" • ")}
+        {/* Column 3: Status Pill */}
+        <div className="col-status">
+          <span className={`clean-pill ${statusClass}`}>{status}</span>
         </div>
 
-        <div className="order-bottom">
-          <span>Total</span>
-          <strong>{formatCurrency(total)}</strong>
+        {/* Column 4: Total Amount */}
+        <div className="col-total">
+          <span className="clean-amount">{formatCurrency(total)}</span>
         </div>
+
       </div>
     );
   };
 
   return (
     <div className="orders-page container">
-      <h1 className="page-main-title">
-        <span className="text-gradient"> My Orders</span>
-      </h1>
+      <div className="orders-header-wrapper">
+        <h1 className="page-main-title">My Orders</h1>
+      </div>
 
-      <div className="orders-grid">
-        <div className="orders-column">
-          <h2 className="column-title">Active Orders</h2>
-          {activeOrders.length === 0 ? (
-            <p className="empty-text">No active orders.</p>
-          ) : (
-            activeOrders.map(renderOrderCard)
-          )}
+      <div className="orders-grid-clean">
+        
+        {/* ACTIVE ORDERS */}
+        <div className="orders-section">
+          <div className="section-header-clean">
+            <h2>Active Orders</h2>
+            <span className="badge-count">{activeOrders.length}</span>
+          </div>
+          
+          <div className="orders-list-wrapper">
+            {activeOrders.length === 0 ? (
+              <div className="empty-clean">No active orders right now.</div>
+            ) : (
+              activeOrders.map(renderCleanRow)
+            )}
+          </div>
         </div>
 
-        <div className="orders-column">
-          <h2 className="column-title">Order History</h2>
-          {historyOrders.length === 0 ? (
-            <p className="empty-text">No past orders.</p>
-          ) : (
-            historyOrders.map(renderOrderCard)
-          )}
+        {/* ORDER HISTORY */}
+        <div className="orders-section">
+          <div className="section-header-clean">
+            <h2>Order History</h2>
+            <span className="badge-count history">{historyOrders.length}</span>
+          </div>
+
+          <div className="orders-list-wrapper">
+            {historyOrders.length === 0 ? (
+              <div className="empty-clean">Your past orders will appear here.</div>
+            ) : (
+              historyOrders.map(renderCleanRow)
+            )}
+          </div>
         </div>
+
       </div>
     </div>
   );

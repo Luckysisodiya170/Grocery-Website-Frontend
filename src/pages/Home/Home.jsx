@@ -93,16 +93,15 @@ function Home() {
 
       {/* ================= HERO SLIDER ================= */}
 
-      <section className="hero-elite container">
+      <section className="hero-elite container-max">
         <div className="hero-slider">
 
           {/* 🔥 MAP AB BANNERDATA SE HOGA TAALI TEXT BHI AAYE 🔥 */}
           {bannerData.map((item, index) => (
             <div
               key={index}
-              className={`hero-slide-wrapper ${
-                index === current ? "active" : ""
-              }`}
+              className={`hero-slide-wrapper ${index === current ? "active" : ""
+                }`}
               style={{
                 opacity: index === current ? 1 : 0,
                 zIndex: index === current ? 1 : 0,
@@ -129,9 +128,8 @@ function Home() {
             {banners.map((_, i) => (
               <div
                 key={i}
-                className={`elite-dot ${
-                  i === current ? "active" : ""
-                }`}
+                className={`elite-dot ${i === current ? "active" : ""
+                  }`}
                 onClick={() => setCurrent(i)}
               >
                 {i === current && (
@@ -210,11 +208,10 @@ function Home() {
 
                           return (
                             <div
-                              className={`bento-img-box ${
-                                isMoreSlot
-                                  ? "more-box"
-                                  : ""
-                              }`}
+                              className={`bento-img-box ${isMoreSlot
+                                ? "more-box"
+                                : ""
+                                }`}
                               key={p.id}
                             >
                               <img
@@ -258,12 +255,15 @@ function Home() {
           </div>
 
           {filteredProducts.length === 0 ? (
-            <div className="empty-state-box">
-              <h3>No product found.</h3>
-              <p>
-                We couldn't find any items in this
-                category right now.
-              </p>
+            <div className="premium-empty-state">
+              <div className="empty-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <h3 className="empty-title">We're searching the galaxy...</h3>
+              <p className="empty-subtitle">We couldn't find any products in this category right now, but check back soon as our universe expands!</p>
+              <button className="btn-empty-reset" onClick={() => handleCategorySelect(null)}>View All Categories</button>
             </div>
           ) : (
             <>
@@ -284,9 +284,8 @@ function Home() {
                     className="btn-load-more"
                     onClick={() =>
                       navigate(
-                        `/shop?category=${
-                          selectedCategory?.name ||
-                          ""
+                        `/shop?category=${selectedCategory?.name ||
+                        ""
                         }`
                       )
                     }

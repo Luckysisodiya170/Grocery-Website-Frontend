@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useWishlist } from "../../pages/wishlist/WishlistContext";
 import { useCart } from "../../pages/cart/CartContext";
 import { useAuth } from "../../context/AuthContext";
+import { useOrders } from "../../pages/cart/OrdersContext";
 import logo from "../../assets/logonew.jpeg";
 import HeaderSearch from "../common/HeaderSearch/HeaderSearch";
 
@@ -25,9 +26,10 @@ function Navbar() {
   const navigate = useNavigate();
   const { getCartCount } = useCart();
   const { wishlist } = useWishlist();
-  
+  const { orders } = useOrders();
+
   const [open, setOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // New state for Hamburger
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   // Close dropdown on outside click
@@ -48,7 +50,7 @@ function Navbar() {
   return (
     <header className="navbar glass-nav">
       <div className="container navbar__inner">
-        
+
         {/* Mobile Hamburger Button */}
         <button className="hamburger-btn" onClick={toggleMobileMenu}>
           <MenuIcon />
@@ -64,8 +66,8 @@ function Navbar() {
         </Link>
 
         {/* Mobile Overlay Background */}
-        <div 
-          className={`mobile-overlay ${isMobileMenuOpen ? "open" : ""}`} 
+        <div
+          className={`mobile-overlay ${isMobileMenuOpen ? "open" : ""}`}
           onClick={toggleMobileMenu}
         ></div>
 
@@ -103,15 +105,23 @@ function Navbar() {
         </nav>
 
         <div className="navbar__actions">
-          {/* Wishlist */}
-          <NavLink to="/wishlist" className={({ isActive }) => isActive ? "icon-btn active-icon" : "icon-btn"}>
-            <FavoriteBorderIcon />
-            {wishlist.length > 0 && <span className="cart-badge">{wishlist.length}</span>}
+          {/* 🔥 WISHLIST WITH TEXT 🔥 */}
+        {/* Wishlist */}
+          <NavLink to="/wishlist" className={({ isActive }) => isActive ? "clean-action-btn active" : "clean-action-btn"}>
+            <div className="icon-circle">
+              <FavoriteBorderIcon />
+              {wishlist?.length > 0 && <span className="cart-badge glowing-badge">{wishlist.length}</span>}
+            </div>
+            <span className="action-label">Wishlist</span>
           </NavLink>
 
           {/* Orders */}
-          <NavLink to="/orders" className={({ isActive }) => isActive ? "icon-btn active-icon" : "icon-btn"}>
-            <ShoppingBagOutlinedIcon />
+          <NavLink to="/orders" className={({ isActive }) => isActive ? "clean-action-btn active" : "clean-action-btn"}>
+            <div className="icon-circle">
+              <ShoppingBagOutlinedIcon />
+              {orders?.length > 0 && <span className="cart-badge glowing-badge dot-badge"></span>}
+            </div>
+            <span className="action-label">Orders</span>
           </NavLink>
 
           {/* Auth Section */}

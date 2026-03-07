@@ -14,7 +14,78 @@
   transition: all 0.3s ease;
   /* bottom : -100px; */
 }
+/* ================================
+   ACTION ITEMS WITH TEXT (Wishlist & Orders)
+================================ */
+/* ================================
+   CLEAN ACTION ICONS (Icon + Text)
+================================ */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 24px; /* Text ke liye thodi space badhayi hai */
+}
 
+.clean-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Icon aur text ke beech ka gap */
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.3s ease;
+}
+
+.icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%; /* Wapas perfect circle! */
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.action-label {
+  font-size: 15px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+/* Hover States - Text aur Icon dono chamkenge */
+.clean-action-btn:hover .icon-circle {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-float);
+  color: var(--primary);
+}
+.clean-action-btn:hover .action-label {
+  color: var(--primary);
+}
+
+/* Active States - Jab user us page par ho */
+.clean-action-btn.active .icon-circle {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff; /* Icon white ho jayega */
+  box-shadow: 0 6px 18px rgba(0, 95, 115, 0.25);
+}
+.clean-action-btn.active .action-label {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+
+/* Hide text on tablet/mobile so it doesn't break the layout */
+@media (max-width: 968px) {
+  .action-name {
+    display: none;
+  }
+}
 .navbar__inner {
   height: 80px;
   display: flex;
@@ -137,7 +208,7 @@
   position: absolute;
   top: -2px;
   right: -2px;
-  background: var(--danger);
+  background: var(--danger, #ef4444);
   color: #fff;
   font-size: 10px;
   font-weight: 800;
@@ -148,6 +219,51 @@
   justify-content: center;
   border-radius: 50%;
   border: 2px solid var(--card-bg);
+  transition: all 0.3s ease;
+}
+
+.glowing-badge {
+  animation: pulse-glow-danger 2s infinite;
+}
+
+.dot-badge {
+  width: 12px;
+  height: 12px;
+  top: 0px;
+  right: 0px;
+  background: var(--primary, #00f2fe);
+}
+
+.dot-badge.glowing-badge {
+  animation: pulse-glow-primary 2s infinite;
+}
+
+@keyframes pulse-glow-danger {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes pulse-glow-primary {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(0, 242, 254, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 242, 254, 0);
+  }
 }
 
 /* ================================
@@ -159,7 +275,8 @@
   padding-left: 20px;
   border-left: 1px solid var(--border);
 
-  min-width: 190px;              /* prevents layout shift */
+  min-width: 190px;
+  /* prevents layout shift */
   display: flex;
   justify-content: flex-end;
 }
@@ -292,7 +409,8 @@
 /* RESPONSIVE: Tablet & Mobile */
 @media (max-width: 968px) {
   .navbar__inner {
-    justify-content: flex-start; /* Adjust alignment */
+    justify-content: flex-start;
+    /* Adjust alignment */
     gap: 15px;
   }
 
@@ -303,17 +421,20 @@
   }
 
   .navbar__logo {
-    margin-right: auto; /* Push actions to the right */
+    margin-right: auto;
+    /* Push actions to the right */
   }
 
   /* SIDEBAR OVERLAY STYLING */
   .navbar__links {
     position: fixed;
     top: 0;
-    left: -300px; /* Hide off-screen to the left */
+    left: -300px;
+    /* Hide off-screen to the left */
     width: 280px;
-height: 100dvh;
-    background: var(--card-bg); /* Solid background for sidebar */
+    height: 100dvh;
+    background: var(--card-bg);
+    /* Solid background for sidebar */
     flex-direction: column;
     padding: 20px;
     gap: 15px;
@@ -323,7 +444,8 @@ height: 100dvh;
   }
 
   .navbar__links.mobile-active {
-    left: 0; /* Slide in */
+    left: 0;
+    /* Slide in */
   }
 
   .mobile-menu-header {
@@ -355,13 +477,15 @@ height: 100dvh;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1004;
     opacity: 0;
-    pointer-events: none; /* Can't click through when hidden */
+    pointer-events: none;
+    /* Can't click through when hidden */
     transition: opacity 0.3s ease;
   }
 
   .mobile-overlay.open {
     opacity: 1;
-    pointer-events: auto; /* Clickable to close */
+    pointer-events: auto;
+    /* Clickable to close */
   }
 
   /* Adjust Action Icons & Login Button for Mobile Space */
@@ -395,8 +519,15 @@ height: 100dvh;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* SEARCH WRAPPER */
@@ -412,12 +543,15 @@ height: 100dvh;
 /* RESPONSIVE (Updated) */
 
 @media (max-width: 968px) {
+
   /* Removed .navbar__links { display: none; } so the sidebar can render */
-  .navbar__links { 
-    display: flex; /* Ensure it stays a flex container for the sidebar */
+  .navbar__links {
+    display: flex;
+    /* Ensure it stays a flex container for the sidebar */
   }
-  .auth-section { 
-    padding-left: 10px; 
-    margin-left: 5px; 
+
+  .auth-section {
+    padding-left: 10px;
+    margin-left: 5px;
   }
 }

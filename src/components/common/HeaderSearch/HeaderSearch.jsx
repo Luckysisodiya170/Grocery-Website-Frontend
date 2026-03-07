@@ -17,8 +17,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 // Cart & Data
-import { useCart } from "../../../pages/cart/CartContext"; 
-import products from "../../../data/products.json"; 
+import { useCart } from "../../../pages/cart/CartContext";
+import products from "../../../data/products.json";
 
 import "./headerSearch.css";
 
@@ -26,7 +26,7 @@ function HeaderSearch() {
   const navigate = useNavigate();
   const location = useLocation();
   const { addToCart, setIsCartOpen } = useCart();
-  
+
   // --- LOCATION STATES ---
   const [selectedLocation, setSelectedLocation] = useState("New Delhi, 110001");
   const [showLocationModal, setShowLocationModal] = useState(false);
@@ -35,7 +35,7 @@ function HeaderSearch() {
   const [addressForm, setAddressForm] = useState({
     name: "", phone: "", street: "", landmark: "", city: "", state: "", pin: "", type: "Home"
   });
-  
+
   // --- SEARCH STATES ---
   const [query, setQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -52,28 +52,28 @@ function HeaderSearch() {
   }, []);
 
   // --- DROPDOWN DATA FILTERING ---
-  const matchingProducts = products.filter(p => 
-    p.name.toLowerCase().includes(query.toLowerCase()) || 
+  const matchingProducts = products.filter(p =>
+    p.name.toLowerCase().includes(query.toLowerCase()) ||
     p.category.toLowerCase().includes(query.toLowerCase())
-  ).slice(0, 6); 
+  ).slice(0, 6);
 
   const textSuggestions = Array.from(new Set(
     products
       .filter(p => p.name.toLowerCase().includes(query.toLowerCase()))
       .map(p => p.name)
-  )).slice(0, 5); 
+  )).slice(0, 5);
 
   // --- CLICK HANDLERS ---
   const goToProduct = (productId) => {
     setIsSearchFocused(false);
-    setQuery(""); 
+    setQuery("");
     navigate(`/product/${productId}`);
   };
 
   const handleAddToCart = (e, product) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     addToCart(product);
-    setIsCartOpen(true); 
+    setIsCartOpen(true);
   };
 
   const handleInputChange = (e) => {
@@ -92,8 +92,28 @@ function HeaderSearch() {
   };
 
   const executeSearch = (searchTerm) => {
-    setQuery(searchTerm);
     setIsSearchFocused(false);
+
+    // Check if it's an exact product name match
+    const matchedProduct = products.find(p => p.name.toLowerCase() === searchTerm.toLowerCase());
+    if (matchedProduct) {
+      setQuery("");
+      navigate(`/product/${matchedProduct.id}`);
+      return;
+    }
+
+    // Check if it's an exact category match
+    const matchedCategory = products.find(p => p.category.toLowerCase() === searchTerm.toLowerCase() || (p.parentCategory && p.parentCategory.toLowerCase() === searchTerm.toLowerCase()));
+    if (matchedCategory) {
+      setQuery(searchTerm);
+      const categoryToUse = matchedCategory.parentCategory && matchedCategory.parentCategory.toLowerCase() === searchTerm.toLowerCase()
+        ? matchedCategory.parentCategory
+        : matchedCategory.category;
+      navigate(`/shop?category=${encodeURIComponent(categoryToUse)}`);
+      return;
+    }
+
+    setQuery(searchTerm);
     navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
   };
 
@@ -114,7 +134,7 @@ function HeaderSearch() {
           setLoading(false);
           setShowLocationModal(false);
           toast.success("Location updated successfully!");
-        }, 800); 
+        }, 800);
       },
       () => {
         setLoading(false);
@@ -170,7 +190,7 @@ function HeaderSearch() {
     <>
       <div className="header-search" ref={searchContainerRef}>
         <div className="container header-search__inner">
-          
+
           <button className="location-pill premium-hover" onClick={() => setShowLocationModal(true)}>
             <div className="loc-icon-wrapper">
               <LocationOnIcon className="pin-icon" fontSize="small" />
@@ -184,18 +204,18 @@ function HeaderSearch() {
 
           <div className="search-pill-container">
             <SearchIcon className="search-icon" />
-            <input 
-              type="text" 
-              className="search-input" 
-              placeholder="Search for Fresh Spinach, Milk..." 
-              value={query} 
-              onChange={handleInputChange} 
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search for Fresh Spinach, Milk..."
+              value={query}
+              onChange={handleInputChange}
               onFocus={handleFocus}
               onKeyDown={handleKeyDown}
             />
             {query && (
-              <button className="clear-search" onClick={() => { 
-                setQuery(""); 
+              <button className="clear-search" onClick={() => {
+                setQuery("");
                 navigate("/shop");
               }}>
                 <CloseIcon fontSize="small" />
@@ -208,13 +228,13 @@ function HeaderSearch() {
         {query && isSearchFocused && (
           <div className="zepto-dropdown-overlay">
             <div className="container zepto-dropdown-inner">
-              
+
               {textSuggestions.length > 0 && (
                 <div className="zepto-suggestions-list">
                   {textSuggestions.map((name, i) => {
                     const matchedProduct = products.find(p => p.name === name);
                     const safeImage = matchedProduct?.image || "default.png";
-                    
+
                     return (
                       <div key={i} className="zepto-suggestion-item" onClick={() => executeSearch(name)}>
                         <div className="sugg-img-placeholder">
@@ -244,22 +264,22 @@ function HeaderSearch() {
                           {product.isNew && !product.discount && <span className="new-badge">NEW</span>}
                           <img src={`/product/${product.image}`} alt={product.name} />
                         </div>
-                        
+
                         <div className="delivery-time">
-                          <AccessTimeIcon style={{fontSize: "10px"}} /> 8 MINS
+                          <AccessTimeIcon style={{ fontSize: "10px" }} /> 8 MINS
                         </div>
-                        
+
                         <div className="mini-title">{product.name}</div>
-                        <div className="weight-selector">1 pc <KeyboardArrowDownIcon style={{fontSize: "14px"}} /></div>
-                        
+                        <div className="weight-selector">1 pc <KeyboardArrowDownIcon style={{ fontSize: "14px" }} /></div>
+
                         <div className="price-add-row">
                           <div className="price-block">
                             <span className="current-price">₹{product.price}</span>
                             {product.originalPrice && <span className="old-price">₹{product.originalPrice}</span>}
                           </div>
-                          
-                          <button 
-                            className="mini-add-btn" 
+
+                          <button
+                            className="mini-add-btn"
                             onClick={(e) => handleAddToCart(e, product)}
                           >
                             ADD
@@ -283,7 +303,7 @@ function HeaderSearch() {
           setIsAddingAddress(false);
         }}>
           <div className="location-modal glass-panel" onClick={(e) => e.stopPropagation()}>
-            
+
             <div className="modal-header">
               <div>
                 {isAddingAddress ? (
@@ -343,7 +363,7 @@ function HeaderSearch() {
                   <label>Area, Street, Sector, Village (Optional)</label>
                   <input type="text" name="landmark" value={addressForm.landmark} onChange={handleAddressChange} />
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label>Town / City *</label>

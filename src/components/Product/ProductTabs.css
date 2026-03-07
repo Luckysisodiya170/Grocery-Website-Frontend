@@ -1,194 +1,50 @@
 /* =========================================================
-   PRODUCT TABS & REVIEWS (PREMIUM STAR-GLASS THEME)
+   PRODUCT TABS & REVIEWS — PREMIUM GLASS THEME
 ========================================================= */
 
 /* ---------- OUTER WRAPPER ---------- */
 .product-tabs-wrapper {
-  padding: 40px 0 60px;
-  background: transparent; /* Lets the starry background show through */
-}
-
-/* ---------- CONTAINER (GLASS PANEL) ---------- */
-.product-tabs.container {
-  max-width: 1100px;
-  margin: auto;
-  
-  /* Frosted Glass Effect */
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 40px;
-  border-radius: var(--radius-xl, 24px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-  color: #ffffff;
-}
-
-/* ---------- TAB HEADER ---------- */
-.tab-header {
-  display: flex;
-  gap: 40px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle glass divider */
-  margin-bottom: 30px;
-}
-
-.tab-header button {
-  border: none;
-  background: none;
-  padding: 14px 0;
-  font-size: 16px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.5); /* Faded white for inactive tabs */
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.tab-header button:hover {
-  color: #ffffff;
-}
-
-.tab-header .active {
-  color: #00f2fe; /* Glowing Neon Cyan */
-  text-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
-  border-bottom: 3px solid #00f2fe;
-}
-
-/* ---------- REVIEW LAYOUT ---------- */
-.reviews-layout {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 40px;
-  margin-bottom: 30px;
-}
-
-/* ---------- LEFT SUMMARY ---------- */
-.rating-summary h2 {
-  font-size: 48px;
-  font-weight: 900;
-  color: #ffffff;
-  margin: 0;
-  line-height: 1;
-}
-
-.rating-summary .stars {
-  margin: 12px 0;
-  color: #facc15; /* Bright gold for stars */
-}
-
-/* ---------- RIGHT BARS ---------- */
-.rating-bars {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.rating-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.rating-row span {
-  width: 40px;
-}
-
-.bar {
-  flex: 1;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1); /* Dark track */
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.fill {
-  height: 100%;
-  background: #facc15;
-  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); /* Glowing yellow fill */
-}
-
-/* ---------- REVIEW LIST ---------- */
-.review-list {
-  margin-top: 30px;
-}
-
-.write-review {
-  margin: 12px 0 20px;
-  padding: 12px 24px;
-  border-radius: var(--radius-pill, 50px);
-  border: 1px solid #00f2fe;
-  background: rgba(0, 242, 254, 0.1);
-  color: #00f2fe;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.write-review:hover {
-  background: #00f2fe;
-  color: #0f172a;
-  box-shadow: 0 8px 20px rgba(0, 242, 254, 0.3);
-  transform: translateY(-2px);
-}
-
-.review-item {
-  padding: 20px 0;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-}
-
-.review-item p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-/* ---------- DESCRIPTION ---------- */
-.desc-text {
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.8;
-  font-size: 15px;
-}
-/* =========================================================
-   PRODUCT PAGE & TABS — ULTRA PREMIUM GLASS THEME (SAFE POLISH)
-========================================================= */
-
-/* ---------- PAGE WRAPPER ---------- */
-.product-page {
-  min-height: 100vh;
-  padding: 60px 0;
+  padding: 0;
   background: transparent;
-  display: flex;
-  flex-direction: column;
-  gap: 50px;
 }
 
-/* ---------- MAIN CONTAINER (REFINED GLASS) ---------- */
-.product-container, 
+/* ---------- TABS CONTAINER (GLASS PANEL) ---------- */
 .product-tabs.container {
-  max-width: 1200px; /* Standard Premium Width */
+  max-width: 1200px;
   width: 95%;
   margin: auto;
   padding: 50px;
-  
-  background: rgba(15, 23, 42, 0.75); 
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 32px;
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
   color: #ffffff;
 }
 
-/* 🔥 BIG SCREEN (Ultrawide) 1800px+ Support 🔥 */
 @media (min-width: 1800px) {
-  .product-container, 
   .product-tabs.container {
     max-width: 1450px;
     padding: 70px;
+  }
+}
+
+/* ---------- TAB CONTENT ANIMATION ---------- */
+.tab-content {
+  animation: fadeInTab 0.4s ease forwards;
+}
+
+@keyframes fadeInTab {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -206,7 +62,8 @@
   padding: 15px 0;
   font-size: 18px;
   font-weight: 700;
-  color: #64748b; /* Faded slate for modern feel */
+  color: #64748b;
+  /* Faded slate for modern feel */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -217,7 +74,8 @@
 }
 
 .tab-header button.active {
-  color: #00f2fe; /* Glowing Neon */
+  color: #00f2fe;
+  /* Glowing Neon */
   text-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
 }
 
@@ -242,7 +100,8 @@
 
 /* ---------- RATING SUMMARY ---------- */
 .rating-summary h2 {
-  font-size: 72px; /* Bigger impactful rating */
+  font-size: 72px;
+  /* Bigger impactful rating */
   font-weight: 900;
   color: #ffffff;
   line-height: 1;
@@ -272,7 +131,9 @@
   font-weight: 600;
 }
 
-.rating-row span { width: 45px; }
+.rating-row span {
+  width: 45px;
+}
 
 .bar {
   flex: 1;
@@ -296,10 +157,13 @@
   transition: background 0.3s ease;
 }
 
-.review-item:first-child { border-top: none; }
+.review-item:first-child {
+  border-top: none;
+}
 
 .review-item p {
-  color: #cbd5e1; /* Professional soft gray */
+  color: #cbd5e1;
+  /* Professional soft gray */
   font-size: 16px;
   line-height: 1.8;
   margin-top: 12px;
@@ -327,23 +191,44 @@
 
 /* ---------- RESPONSIVE FIXES ---------- */
 @media (max-width: 1024px) {
-  .product-container, .product-tabs.container {
+
+  .product-container,
+  .product-tabs.container {
     padding: 35px;
   }
+
   .reviews-layout {
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .rating-summary h2 { font-size: 60px; }
+
+  .rating-summary h2 {
+    font-size: 60px;
+  }
 }
 
 @media (max-width: 768px) {
-  .product-page { padding: 30px 15px; }
-  .product-container { grid-template-columns: 1fr; }
-  .tab-header { gap: 25px; }
-  .tab-header button { font-size: 15px; }
-  .rating-summary h2 { font-size: 48px; }
+  .product-page {
+    padding: 30px 15px;
+  }
+
+  .product-container {
+    grid-template-columns: 1fr;
+  }
+
+  .tab-header {
+    gap: 25px;
+  }
+
+  .tab-header button {
+    font-size: 15px;
+  }
+
+  .rating-summary h2 {
+    font-size: 48px;
+  }
 }
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 768px) {
   .product-tabs.container {
@@ -359,7 +244,7 @@
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  
+
   .rating-summary h2 {
     font-size: 38px;
   }

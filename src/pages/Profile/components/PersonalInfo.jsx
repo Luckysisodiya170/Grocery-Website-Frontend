@@ -6,7 +6,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined"; // 👈 Edit Ic
 function PersonalInfo() {
   const { user, updateUser } = useAuth();
   const fileInputRef = useRef(null);
-  
+
   // State to manage lock/unlock edit mode
   const [isEditing, setIsEditing] = useState(false);
 
@@ -46,7 +46,7 @@ function PersonalInfo() {
     if (!formData.name || !formData.email) {
       return toast.error("Name and Email are required!");
     }
-    
+
     updateUser(formData);
     setIsEditing(false); // Lock the profile again after saving
     toast.success("Profile updated successfully!");
@@ -66,15 +66,15 @@ function PersonalInfo() {
 
   return (
     <form onSubmit={handleSubmit} className="profile-form">
-      
+
       {/* Header with Title and Edit Button */}
       <div className="section-header-action">
         <h2 className="section-title" style={{ marginBottom: 0 }}>Personal Information</h2>
-        
+
         {!isEditing && (
-          <button 
-            type="button" 
-            className="edit-icon-btn" 
+          <button
+            type="button"
+            className="edit-icon-btn"
             onClick={() => setIsEditing(true)}
           >
             <EditOutlinedIcon fontSize="small" /> Edit Profile
@@ -84,8 +84,8 @@ function PersonalInfo() {
 
       {/* Avatar Upload */}
       <div className="profile-upload-section" style={{ marginTop: "20px" }}>
-        <div 
-          className={`profile-avatar-large ${!isEditing ? 'disabled-avatar' : ''}`} 
+        <div
+          className={`profile-avatar-large ${!isEditing ? 'disabled-avatar' : ''}`}
           onClick={handleImageClick}
         >
           {formData.avatar ? <img src={formData.avatar} alt="Profile" /> : <span>Upload</span>}
@@ -106,47 +106,49 @@ function PersonalInfo() {
       {/* Form Fields */}
       <div className="grid-2">
         <div className="form-group">
-          <label>Full Name *</label>
           <input
             name="name"
             value={formData.name}
             onChange={handleChange}
             required
+            placeholder=" "
             disabled={!isEditing}
             className={!isEditing ? "input-disabled" : ""}
           />
+          <label>Full Name *</label>
         </div>
 
         <div className="form-group">
-          <label>Email *</label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             required
+            placeholder=" "
             disabled={!isEditing}
             className={!isEditing ? "input-disabled" : ""}
           />
+          <label>Email *</label>
         </div>
       </div>
 
       <div className="grid-2">
         <div className="form-group">
-          <label>Phone</label>
           <input
             type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
             maxLength="10"
+            placeholder=" "
             disabled={!isEditing}
             className={!isEditing ? "input-disabled" : ""}
           />
+          <label>Phone</label>
         </div>
 
         <div className="form-group">
-          <label>Gender</label>
           <select
             name="gender"
             value={formData.gender}
@@ -154,10 +156,11 @@ function PersonalInfo() {
             disabled={!isEditing}
             className={!isEditing ? "input-disabled" : ""}
           >
-            <option value="">Select</option>
+            <option value="" disabled hidden></option> /* Added empty option for floating label state */
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
+          <label>Gender</label>
         </div>
       </div>
 

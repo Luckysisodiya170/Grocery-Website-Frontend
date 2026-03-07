@@ -31,7 +31,8 @@
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 40px;
-  align-items: start; /* ✅ YEH LINE MAGIC HAI: Isse stretching band ho jayegi */
+  align-items: start;
+  /* ✅ YEH LINE MAGIC HAI: Isse stretching band ho jayegi */
 }
 
 /* =========================================================
@@ -77,9 +78,11 @@
 .account-content {
   background: var(--card-bg);
   border-radius: var(--radius-lg);
-  padding: 28px 32px;   /* reduced from 40px */
+  padding: 28px 32px;
+  /* reduced from 40px */
   box-shadow: var(--shadow-sm);
-  min-height: 450px; /* ✅ Ek standard height dedi taaki logout jaise chote page bhi aache dikhein */
+  min-height: 450px;
+  /* ✅ Ek standard height dedi taaki logout jaise chote page bhi aache dikhein */
 }
 
 /* =========================================================
@@ -120,8 +123,10 @@
 
 /* Disabled Input Styles (When locked) */
 .input-disabled {
-  background: #f8fafc !important; /* Light grey background */
-  color: #94a3b8 !important; /* Muted text */
+  background: #f8fafc !important;
+  /* Light grey background */
+  color: #94a3b8 !important;
+  /* Muted text */
   border-color: #e2e8f0 !important;
   cursor: not-allowed;
   opacity: 0.8;
@@ -291,8 +296,15 @@
 }
 
 @keyframes slideInFade {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
@@ -307,10 +319,10 @@
 .account-content {
   background: var(--card-bg);
   border-radius: var(--radius-lg);
-  padding: 35px 40px; 
+  padding: 35px 40px;
   box-shadow: var(--shadow-sm);
   min-height: 450px;
-  
+
   /* ✅ MAGIC ANIMATION: Har tab click par upar se aayega */
   animation: slideDownFromTop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -319,50 +331,73 @@
 @keyframes slideDownFromTop {
   from {
     opacity: 0;
-    transform: translateY(-30px); /* Upar se start hoga */
+    transform: translateY(-30px);
+    /* Upar se start hoga */
   }
+
   to {
     opacity: 1;
-    transform: translateY(0); /* Apni jagah par fit ho jayega */
+    transform: translateY(0);
+    /* Apni jagah par fit ho jayega */
   }
 }
+
 /* =========================================================
-   FORM SYSTEM
+   FORM SYSTEM — FLOATING LABELS
 ========================================================= */
 .form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 14px;  /* reduced from 12+25 spacing */
+  position: relative;
+  margin-bottom: 24px;
 }
 
 .form-group label {
-  font-size: 13px;      /* smaller label */
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 6px;
-  color: var(--text-light);
-  letter-spacing: 0.2px;
+  color: #94a3b8;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  background: white;
+  padding: 0 4px;
 }
 
 /* INPUT BASE */
 .form-group input,
 .form-group select {
-  height: 40px;                     /* reduced from 48px */
-  border-radius: 10px;
-  border: 1.2px solid var(--border);
-  padding: 0 14px;                  /* FIXED missing padding */
-  font-size: 13px;
-  background: var(--bg-soft);
-  color: var(--text-main);
-  transition: all 0.2s ease;
+  width: 100%;
+  height: 52px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  padding: 16px 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+  background: transparent;
+  color: #0f172a;
+  transition: all 0.3s ease;
   outline: none;
 }
 
 .form-group input:focus,
-.form-group select:focus {
-  border-color: var(--primary);
-  background: var(--card-bg);
-  box-shadow: 0 0 0 2px rgba(0, 95, 115, 0.12);
+.form-group input:not(:placeholder-shown),
+.form-group select:focus,
+.form-group select:not([value=""]) {
+  border-color: #0f172a;
+  background: transparent;
 }
+
+.form-group input:focus+label,
+.form-group input:not(:placeholder-shown)+label,
+.form-group select:focus+label,
+.form-group select:not([value=""])+label {
+  top: 0;
+  font-size: 11px;
+  color: #0f172a;
+  font-weight: 800;
+}
+
 .form-group select {
   appearance: none;
   -webkit-appearance: none;
@@ -374,13 +409,15 @@
   background-size: 16px;
   padding-right: 36px;
 }
+
 /* =========================================================
    BUTTONS
 ========================================================= */
 
 .primary-btn {
   margin-top: 18px;
-  height: 40px;                    /* reduced from 48px */
+  height: 40px;
+  /* reduced from 48px */
   border-radius: 999px;
   border: none;
   background: var(--brand-gradient);
@@ -391,6 +428,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 .primary-btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-float);
@@ -464,7 +502,8 @@
 
 .sidebar-item:hover .sidebar-icon,
 .sidebar-item.active .sidebar-icon {
-  color: var(--primary); /* Adjust to your theme's active color */
+  color: var(--primary);
+  /* Adjust to your theme's active color */
 }
 
 /* Grid Layouts for Forms */
@@ -492,39 +531,99 @@
   box-shadow: var(--shadow-float);
 }
 
-.wallet-card p { font-size: 14px; opacity: 0.9; margin-bottom: 5px; }
-.wallet-card h3 { font-size: 36px; font-weight: 900; margin: 0; }
-.wallet-card .outline-btn { border-color: white; color: white; }
-.wallet-card .outline-btn:hover { background: white; color: var(--primary); }
-
-.transaction-list { display: flex; flex-direction: column; gap: 10px; }
-.transaction-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 15px 20px; background: var(--bg-soft); border-radius: var(--radius-md);
+.wallet-card p {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 5px;
 }
-.transaction-item strong { color: var(--text-main); font-size: 14px; }
-.transaction-item p { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
-.transaction-item .success { color: #16a34a; font-weight: 800; }
-.transaction-item .danger { color: #dc2626; font-weight: 800; }
+
+.wallet-card h3 {
+  font-size: 36px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.wallet-card .outline-btn {
+  border-color: white;
+  color: white;
+}
+
+.wallet-card .outline-btn:hover {
+  background: white;
+  color: var(--primary);
+}
+
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
+}
+
+.transaction-item strong {
+  color: var(--text-main);
+  font-size: 14px;
+}
+
+.transaction-item p {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.transaction-item .success {
+  color: #16a34a;
+  font-weight: 800;
+}
+
+.transaction-item .danger {
+  color: #dc2626;
+  font-weight: 800;
+}
 
 /* Static Pages (Privacy, Terms, About) */
 .static-content h4 {
-  font-size: 16px; font-weight: 700; color: var(--text-main); margin: 20px 0 10px;
-}
-.static-content p {
-  font-size: 14px; color: var(--text-muted); line-height: 1.7;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 20px 0 10px;
 }
 
-.static-list{
+.static-content p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.static-list {
   text-decoration: none;
-  font-size: 14px; color: var(--text-muted); line-height: 1.7;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .grid-3 { grid-template-columns: 1fr; gap: 10px; }
-  .wallet-card { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .grid-3 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .wallet-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
 }
+
 /* =========================================================
    ORDER CARD
 ========================================================= */
@@ -599,6 +698,7 @@
   font-size: 13px;
   color: var(--text-muted);
 }
+
 /* =========================================================
    ACCOUNT PAGE — ULTRA PREMIUM GLASS (1800px to Mobile)
 ========================================================= */
@@ -644,7 +744,8 @@
 
 .account-layout {
   display: grid;
-  grid-template-columns: 300px 1fr; /* Slightly wider sidebar */
+  grid-template-columns: 300px 1fr;
+  /* Slightly wider sidebar */
   gap: 40px;
   align-items: start;
 }
@@ -689,7 +790,8 @@
 }
 
 .sidebar-item.active {
-  background: #00f2fe; /* Shippzy Neon Cyan */
+  background: #00f2fe;
+  /* Shippzy Neon Cyan */
   color: #0f172a;
   box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
 }
@@ -706,7 +808,8 @@
 /* ================= CONTENT PANEL (Clean High Contrast) ================= */
 
 .account-content {
-  background: #ffffff; /* Solid White for maximum readability */
+  background: #ffffff;
+  /* Solid White for maximum readability */
   border-radius: 32px;
   padding: 50px;
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
@@ -716,8 +819,15 @@
 }
 
 @keyframes slideDownFromTop {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ================= FORM SYSTEM ================= */
@@ -745,7 +855,8 @@
   letter-spacing: 1px;
 }
 
-.form-group input, .form-group select {
+.form-group input,
+.form-group select {
   height: 52px;
   border-radius: 14px;
   border: 2px solid #f1f5f9;
@@ -777,7 +888,11 @@
   margin-bottom: 40px;
 }
 
-.wallet-card h3 { font-size: 48px; font-weight: 900; margin: 0; }
+.wallet-card h3 {
+  font-size: 48px;
+  font-weight: 900;
+  margin: 0;
+}
 
 .transaction-item {
   padding: 20px;
@@ -788,7 +903,10 @@
   transition: 0.2s;
 }
 
-.transaction-item:hover { transform: scale(1.01); background: #f1f5f9; }
+.transaction-item:hover {
+  transform: scale(1.01);
+  background: #f1f5f9;
+}
 
 /* ================= ADDRESS CARDS ================= */
 
@@ -802,15 +920,18 @@
 
 .profile-address-card:hover {
   border-color: #00f2fe;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
   transform: translateY(-5px);
 }
 
 /* ================= RESPONSIVE ================= */
 
 @media (max-width: 1024px) {
-  .account-layout { grid-template-columns: 1fr; gap: 30px; }
-  
+  .account-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
   .account-sidebar {
     position: relative;
     top: 0;
@@ -820,9 +941,11 @@
     border-radius: 20px;
     scrollbar-width: none;
   }
-  
-  .account-sidebar::-webkit-scrollbar { display: none; }
-  
+
+  .account-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
   .sidebar-item {
     white-space: nowrap;
     padding: 12px 20px;
@@ -831,11 +954,26 @@
 }
 
 @media (max-width: 768px) {
-  .account-content { padding: 30px 20px; border-radius: 24px; }
-  .section-title { font-size: 22px; }
-  .grid-2 { grid-template-columns: 1fr; }
-  .wallet-card { flex-direction: column; text-align: center; gap: 20px; }
+  .account-content {
+    padding: 30px 20px;
+    border-radius: 24px;
+  }
+
+  .section-title {
+    font-size: 22px;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .wallet-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
 }
+
 /* =========================================================
    RESPONSIVE
 ========================================================= */

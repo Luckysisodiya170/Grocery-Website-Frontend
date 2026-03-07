@@ -130,11 +130,13 @@
 .primary-btn {
   background: linear-gradient(135deg, #005f73 0%, #14b8a6 100%);
   color: #fff;
-  padding: 16px;
+  padding: 25px;
+  align-items: center;
   border-radius: 12px;
   font-weight: 800;
   text-decoration: none;
   transition: 0.3s;
+  height:60px;
 }
 
 .primary-btn:hover {
@@ -186,4 +188,22 @@
 .primary-btn:hover {
   transform: scale(1.05);
   box-shadow: 0 15px 30px rgba(0, 242, 254, 0.4);
+    background: linear-gradient(135deg, #269c79 0%, #70d38a 100%);
+
 }
+
+.order-success-page { min-height: 90vh; display: flex; align-items: center; justify-content: center; position: relative; }
+.success-glow-bg { position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; animation: pulseGlow 3s infinite alternate; }
+@keyframes pulseGlow { from { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); } to { opacity: 1; transform: translate(-50%, -50%) scale(1.2); } }
+
+.premium-glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); padding: 50px 40px; border-radius: 30px; text-align: center; width: 100%; max-width: 450px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+.tick-wrapper { width: 90px; height: 90px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; border: 1px solid rgba(16,185,129,0.3); }
+.success-title { font-size: 26px; color: #fff; margin-bottom: 10px; }
+.success-subtitle { color: #94a3b8; font-size: 15px; margin-bottom: 30px; }
+.dark-glass-box { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 20px; text-align: left; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; }
+.detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #cbd5e1; font-size: 15px; }
+.detail-row:last-child { margin-bottom: 0; }
+.detail-row strong { color: #fff; }
+.pulse-green { color: #10b981; font-weight: 800; background: rgba(16,185,129,0.15); padding: 4px 12px; border-radius: 20px; }
+.secondary-text-btn { display: block; color: #94a3b8; margin-top: 20px; text-decoration: none; transition: 0.3s; }
+.secondary-text-btn:hover { color: #fff; }

@@ -61,12 +61,12 @@ function ManageAddress() {
     <div className="manage-address-section">
       <div className="section-header-action">
         <h2 className="section-title" style={{ marginBottom: 0 }}>Saved Addresses</h2>
-        
+
         {/* Toggle Button for Add Address */}
         {!showForm && (
-          <button 
-            type="button" 
-            className="edit-icon-btn" 
+          <button
+            type="button"
+            className="edit-icon-btn"
             onClick={() => setShowForm(true)}
           >
             <AddIcon fontSize="small" /> Add New
@@ -78,21 +78,21 @@ function ManageAddress() {
       {showForm ? (
         <form onSubmit={handleSubmit} className="add-address-form form-slide-in">
           <p className="section-subtitle">Enter details for your new delivery location.</p>
-          
+
           <div className="grid-2">
             <div className="form-group">
-              <label>Address Label (e.g. Home, Office, Gym) *</label>
-              <input name="label" value={formData.label} onChange={handleChange} placeholder="Ex. Home" required />
+              <input name="label" value={formData.label} onChange={handleChange} placeholder=" " required />
+              <label>Address Label (e.g. Home, Office) *</label>
             </div>
             <div className="form-group">
+              <input type="text" name="zip" value={formData.zip} onChange={handleChange} placeholder=" " maxLength="6" required />
               <label>Pincode / Zip Code *</label>
-              <input type="text" name="zip" value={formData.zip} onChange={handleChange} placeholder="6-digit code" maxLength="6" required />
             </div>
           </div>
 
           <div className="form-group">
+            <input name="address" value={formData.address} onChange={handleChange} placeholder=" " required />
             <label>Complete Address *</label>
-            <input name="address" value={formData.address} onChange={handleChange} placeholder="House No, Building, Street, Area" required />
           </div>
 
           <div className="form-actions">
@@ -115,8 +115,8 @@ function ManageAddress() {
                 <p>{loc.address}</p>
                 <span>Pin: {loc.zip}</span>
               </div>
-              <button 
-                className="delete-addr-btn" 
+              <button
+                className="delete-addr-btn"
                 onClick={() => handleDelete(loc.id)}
                 title="Delete Address"
               >
