@@ -1,13 +1,16 @@
 function RatingBreakdown() {
   return (
     <div className="rating-breakdown">
-      
+
       <div className="rating-summary">
         <h2>4.5</h2>
+
         <div className="stars">★★★★★</div>
-        <p style={{ color: "rgba(255,255,255,0.6)", marginTop: "4px", fontSize: "14px" }}>
+
+        <p className="review-count">
           (245 verified reviews)
         </p>
+
       </div>
 
       <div className="rating-bars">
@@ -19,10 +22,16 @@ function RatingBreakdown() {
           { stars: 1, fill: "0%" }
         ].map((item) => (
           <div key={item.stars} className="rating-row">
+
             <span>{item.stars}★</span>
+
             <div className="bar">
-              <div className="fill" style={{ width: item.fill }} />
+              <div
+                className="fill"
+                style={{ width: item.fill }}
+              />
             </div>
+
           </div>
         ))}
       </div>

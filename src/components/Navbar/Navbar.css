@@ -12,7 +12,7 @@
   border-bottom: 1px solid var(--glass-border);
   box-shadow: var(--shadow-glass), var(--glass-highlight);
   transition: all 0.3s ease;
-  /* bottom : -100px; */
+  margin-bottom : 37px;
 }
 /* ================================
    ACTION ITEMS WITH TEXT (Wishlist & Orders)
@@ -541,17 +541,173 @@
 /* RESPONSIVE */
 
 /* RESPONSIVE (Updated) */
+/* ================================================
+   MOBILE & TABLET CLEAN LAYOUT (968px to Mobile)
+================================================ */
 
 @media (max-width: 968px) {
+    /* Navbar height aur padding adjustment */
+    .navbar__inner {
+        height: 70px;
+        padding: 0 15px;
+        gap: 10px;
+    }
 
-  /* Removed .navbar__links { display: none; } so the sidebar can render */
-  .navbar__links {
-    display: flex;
-    /* Ensure it stays a flex container for the sidebar */
-  }
+    /* Logo scaling taaki space bache */
+    .logo-text {
+        font-size: 18px;
+    }
+    .logo-img-wrapper {
+        width: 34px;
+        height: 34px;
+    }
 
-  .auth-section {
-    padding-left: 10px;
-    margin-left: 5px;
-  }
+    /* Action buttons (Wishlist/Orders) spacing fix */
+    .navbar__actions {
+        gap: 8px; /* Gap kam kiya taaki overlap na ho */
+    }
+
+    .clean-action-btn {
+        gap: 0; /* Text hide hoga toh gap zero */
+    }
+
+    .icon-circle {
+        width: 36px; /* Icons thode chote */
+        height: 36px;
+    }
+
+    .action-label {
+        display: none !important; /* Mobile par sirf icon dikhega */
+    }
+
+    /* Profile Pill setup for small screens */
+    .profile-pill {
+        height: 36px;
+        padding: 0 4px;
+        min-width: 36px;
+        justify-content: center;
+    }
+
+    .profile-name {
+        display: none; /* Mobile par naam gayab, sirf Avatar dikhega */
+    }
+
+    .auth-section {
+        min-width: auto;
+        padding-left: 5px;
+        margin-left: 0;
+        border-left: none;
+    }
+
+    /* Badge scaling */
+    .cart-badge {
+        width: 16px;
+        height: 16px;
+        font-size: 9px;
+        top: -4px;
+        right: -4px;
+    }
+}
+
+/* Extra Choti Screens ke liye (iPhone SE / Fold) */
+@media (max-width: 380px) {
+    .navbar__inner {
+        gap: 5px;
+    }
+    .navbar__logo {
+        gap: 6px;
+    }
+    .logo-text {
+        display: none; /* Ekdum chote phones par sirf icon dikhega */
+    }
+}
+/* ================================================
+   1800px RESPONSIVE OPTIMIZATION
+================================================ */
+
+/* Container ko bade screens par center aur wide rakhne ke liye */
+.container {
+    width: 100%;
+    max-width: 1400px; /* Standard Desktop */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Jab screen 1800px ya usse badi ho */
+@media (min-width: 1800px) {
+    .container {
+        max-width: 1700px; /* Bade screens par zyada width */
+    }
+
+    .navbar__inner {
+        height: 100px; /* Height thodi badhayi premium look ke liye */
+    }
+
+    /* Links ke beech ka gap badhaya */
+    .navbar__links {
+        gap: 25px;
+    }
+
+    .nav-item {
+        font-size: 17px; /* Text size thoda bada */
+        padding: 12px 22px;
+    }
+
+    /* Logo aur Branding ko thoda scale kiya */
+    .logo-text {
+        font-size: 30px;
+    }
+
+    .logo-img-wrapper {
+        width: 54px;
+        height: 54px;
+    }
+
+    /* Action items (Wishlist/Orders) spacing */
+    .navbar__actions {
+        gap: 32px;
+    }
+
+    .action-label {
+        font-size: 17px;
+    }
+
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+    }
+
+    /* Auth Section spacing */
+    .auth-section {
+        min-width: 220px;
+        padding-left: 40px;
+    }
+
+    .profile-pill {
+        height: 50px;
+        padding: 0 20px 0 8px;
+    }
+
+    .profile-pill span {
+        max-width: 150px; /* Bade screen par pura naam dikhega */
+        font-size: 16px;
+    }
+}
+
+/* ================================================
+   EXISTING LAYOUT FIXES (ALIGNMENT)
+================================================ */
+
+/* Ensure text doesn't hide on laptop sizes */
+@media (min-width: 969px) {
+    .action-label {
+        display: inline-block !important;
+    }
+}
+
+/* Navbar search wrapper padding for big screens */
+@media (min-width: 1400px) {
+    .navbar-search-wrapper {
+        padding: 15px 0;
+    }
 }

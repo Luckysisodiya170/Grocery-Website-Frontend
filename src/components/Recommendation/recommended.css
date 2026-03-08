@@ -1,163 +1,192 @@
-/* ================= RECOMMENDED SPOTLIGHT ================= */
-.recommended-spotlight {
-  padding: 80px 0 40px;
-  margin-top: 40px;
-  position: relative;
-  /* Updated to brighter, subtle neon radial gradients that look amazing on dark backgrounds */
-  background: radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(20, 184, 166, 0.05) 0%, transparent 40%);
-  border-top: 1px solid rgba(255, 255, 255, 0.15); /* Soft glass edge */
-  border-radius: 26px;
+/* =========================================
+   RECOMMENDED PRODUCTS SECTION
+========================================= */
+
+.recommended-spotlight .editorial-header{
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+text-align:left;
 }
 
-/* Header with Refined Spacing */
-.editorial-header.space-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 30px;
+/* =========================================
+   HEADER
+========================================= */
+
+.recommended-spotlight .editorial-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+width:100%;
 }
 
-/* Brightened Gradient for Dark Background */
-.text-gradient {
-  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 900;
-  /* Adds a subtle drop shadow to lift the text off the starry background */
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+.recommended-spotlight .text-gradient{
+font-size:24px;
+font-weight:900;
+color:#fff;
 }
 
-/* Magnetic Control Buttons (Now with Glassmorphism) */
-.elite-controls {
-  display: flex;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.08); /* Frosted glass instead of solid white */
-  padding: 6px;
-  border-radius: 100px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+
+/* =========================================
+   SLIDER CONTROLS
+========================================= */
+
+.elite-controls{
+display:flex;
+gap:10px;
 }
 
-.control-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.1); /* Translucent background */
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff; /* Bright white icons */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.control-btn{
+width:36px;
+height:36px;
+border-radius:6px;
+border:1px solid rgba(255,255,255,0.25);
+background:rgba(255,255,255,0.08);
+cursor:pointer;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+transition:0.25s;
+color:white;
 }
 
-.control-btn:hover {
-  background: var(--brand-gradient, linear-gradient(135deg, #0ea5e9, #2563eb));
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
-  border-color: rgba(255, 255, 255, 0.3);
+.control-btn:hover{
+background:linear-gradient(135deg,#00f2fe,#4facfe);
+color:#0f172a;
+border:none;
 }
 
-/* ================= FULL WIDTH TRACK FIX ================= */
-.spotlight-full-wrapper {
-  width: 100%;
-  position: relative;
-  padding: 20px 0 60px;
+
+/* =========================================
+   PRODUCT TRACK
+========================================= */
+
+.spotlight-full-wrapper{
+width:100%;
+position:relative;
 }
 
-/* ================= ALIGNMENT FIX ================= */
-.spotlight-track {
-  display: flex;
-  gap: 30px; 
-  overflow-x: auto;
-  padding-left: max(20px, calc((100% - var(--container-width)) / 2 + 20px));
-  padding-right: 40px;
-  padding-top: 20px; 
-  scrollbar-width: none;
-  scroll-behavior: smooth;
+.spotlight-track{
+display:flex;
+gap:20px;
+overflow-x:auto;
+scroll-behavior:smooth;
+padding-bottom:10px;
+
+scrollbar-width:none;
 }
 
-.spotlight-track::-webkit-scrollbar {
-  display: none;
+.spotlight-track::-webkit-scrollbar{
+display:none;
 }
 
-/* Spotlight Item Elevation */
-.spotlight-item {
-  flex: 0 0 280px; 
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-  height: auto; 
-  margin-top: 10px; 
+
+/* =========================================
+   PRODUCT CARD WRAPPER
+========================================= */
+
+.spotlight-item{
+flex:0 0 230px;
+transition:transform .25s ease;
 }
 
-.spotlight-item:hover {
-  transform: translateY(-10px);
+.spotlight-item:hover{
+transform:translateY(-6px);
 }
 
-/* Premium Badge */
-.badge-exclusive {
-  position: absolute;
-  top: -14px;
-  left: 50%; 
-  transform: translateX(-50%); 
-  background: linear-gradient(135deg, #10b981, #059669); /* Vivid Emerald Green to pop against space */
-  padding: 6px 16px;
-  border-radius: 50px; 
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #ffffff;
-  box-shadow: 0 8px 15px rgba(16, 185, 129, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 20;
-  pointer-events: none;
-  white-space: nowrap; 
+
+/* =========================================
+   EXCLUSIVE BADGE
+========================================= */
+
+.badge-exclusive{
+position:absolute;
+top:10px;
+left:10px;
+
+background:#22c55e;
+color:white;
+
+font-size:10px;
+font-weight:800;
+
+padding:4px 8px;
+border-radius:4px;
+
+text-transform:uppercase;
 }
 
-/* ================= RESPONSIVE ================= */
-@media (max-width: 968px) {
-  .editorial-header.space-between {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  }
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width:768px){
+
+.recommended-spotlight{
+padding:30px 0;
 }
 
-@media (max-width: 768px) {
-  .recommended-spotlight {
-    padding: 50px 0 20px;
-  }
-  
-  .spotlight-track {
-    gap: 15px;
-    padding-left: 20px; 
-  }
-
-  .spotlight-item {
-    flex: 0 0 220px; 
-  }
-
-  .control-btn {
-    width: 38px;
-    height: 38px;
-  }
+.spotlight-track{
+gap:15px;
 }
 
-@media (max-width: 480px) {
-  .spotlight-item {
-    flex: 0 0 180px; 
-  }
-  
-  .badge-exclusive {
-    font-size: 9px;
-    padding: 4px 10px;
-    top: -8px;
-    left: 50%;
-  }
+.spotlight-item{
+flex:0 0 180px;
+}
+
+.control-btn{
+width:32px;
+height:32px;
+}
+
+}
+
+@media (max-width:480px){
+
+.spotlight-item{
+flex:0 0 150px;
+}
+
+}
+
+/* FORCE HEADER ALIGNMENT */
+
+.editorial-header.space-between{
+display:flex;
+justify-content:space-between;
+align-items:center;
+text-align:left;
+width:100%;
+}
+
+.editorial-header.space-between .title-area{
+text-align:left;
+}
+
+.editorial-header.space-between .elite-controls{
+margin-left:auto;
+}/* FIX HEADER LAYOUT */
+
+.recommended-spotlight .editorial-header{
+display:flex;
+flex-direction:row;
+justify-content:space-between;
+align-items:center;
+width:100%;
+}
+
+.recommended-spotlight .title-area{
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+}
+
+.recommended-spotlight .elite-controls{
+display:flex;
+gap:10px;
+margin-left:auto;
 }

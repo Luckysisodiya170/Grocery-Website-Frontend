@@ -25,11 +25,11 @@ function Recommended({ products = [] }) {
     <section className="recommended-spotlight">
       {/* Header inside the standard container */}
       <div className="container">
-        <div className="editorial-header space-between">
+        <div className="editorial-header">
           <div className="title-area">
-            <span className="overline">Handpicked</span>
+           
             <h2 className="section-title-elite">
-              Recommended <span className="text-gradient">Selection</span>
+              Recommended Selection
             </h2>
           </div>
           

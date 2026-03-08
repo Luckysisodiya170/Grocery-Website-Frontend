@@ -19,7 +19,6 @@ import toys from "../../assets/bannerimages/health11.jpg";
 function Home() {
   const navigate = useNavigate();
 
-  // 🔥 SIRF YEH ARRAY ADD KIYA HAI FOR TEXT 🔥
   const bannerData = [
     { img: beauty, title: "Radiant Beauty", subtitle: "Premium skincare essentials" },
     { img: electronics, title: "Next-Gen Tech", subtitle: "Upgrade your lifestyle today" },
@@ -38,7 +37,7 @@ function Home() {
     .filter((p) => p.rating >= 4.5)
     .slice(0, 8);
 
-  /* ================= HERO AUTO SLIDER ================= */
+  /* HERO AUTO SLIDER */
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -48,7 +47,7 @@ function Home() {
     return () => clearInterval(timer);
   }, [banners.length]);
 
-  /* ================= CATEGORY SELECT ================= */
+  /* CATEGORY SELECT */
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -61,7 +60,7 @@ function Home() {
     }, 100);
   };
 
-  /* ================= SUBCATEGORY CLICK ================= */
+  /* SUBCATEGORY CLICK */
 
   const handleSubSelect = (sub) => {
     window.scrollTo({
@@ -69,12 +68,10 @@ function Home() {
       behavior: "instant",
     });
 
-    navigate(
-      `/shop?category=${selectedCategory.name}&sub=${sub}`
-    );
+    navigate(`/shop?category=${selectedCategory.name}&sub=${sub}`);
   };
 
-  /* ================= FILTER PRODUCTS ================= */
+  /* FILTER PRODUCTS */
 
   const filteredProducts = products.filter((p) => {
     if (!selectedCategory) return true;
@@ -86,22 +83,18 @@ function Home() {
   const hasMoreProducts =
     visibleCount < filteredProducts.length;
 
-  /* ================= UI ================= */
-
   return (
     <div className="home cinematic-bg">
 
-      {/* ================= HERO SLIDER ================= */}
+      {/* HERO SLIDER */}
 
       <section className="hero-elite container-max">
         <div className="hero-slider">
 
-          {/* 🔥 MAP AB BANNERDATA SE HOGA TAALI TEXT BHI AAYE 🔥 */}
           {bannerData.map((item, index) => (
             <div
               key={index}
-              className={`hero-slide-wrapper ${index === current ? "active" : ""
-                }`}
+              className={`hero-slide-wrapper ${index === current ? "active" : ""}`}
               style={{
                 opacity: index === current ? 1 : 0,
                 zIndex: index === current ? 1 : 0,
@@ -115,7 +108,6 @@ function Home() {
 
               <div className="hero-vignette"></div>
 
-              {/* 🔥 YEH NAYA TEXT DIV ADD KIYA HAI 🔥 */}
               <div className="hero-text-content">
                 <h1 className="hero-title">{item.title}</h1>
                 <p className="hero-subtitle">{item.subtitle}</p>
@@ -128,8 +120,7 @@ function Home() {
             {banners.map((_, i) => (
               <div
                 key={i}
-                className={`elite-dot ${i === current ? "active" : ""
-                  }`}
+                className={`elite-dot ${i === current ? "active" : ""}`}
                 onClick={() => setCurrent(i)}
               >
                 {i === current && (
@@ -144,14 +135,14 @@ function Home() {
 
       <div className="container">
 
-        {/* ================= CATEGORY SECTION ================= */}
+        {/* CATEGORY SECTION */}
 
         <Category
           data={categories}
           onSelect={handleCategorySelect}
         />
 
-        {/* ================= SUBCATEGORY GRID ================= */}
+        {/* SUBCATEGORY GRID */}
 
         {selectedCategory?.subcategories && (
           <section
@@ -239,70 +230,39 @@ function Home() {
           </section>
         )}
 
-        {/* ================= TRENDING PRODUCTS ================= */}
+        {/* TRENDING PRODUCTS */}
 
         <section className="glass-panel-heavy products-elite">
 
-          <div className="editorial-header center">
-            <span className="overline">
-              Curated Collection
-            </span>
+          {/* 🔥 FIXED HERE */}
 
+          <div className="editorial-header">
+          
             <h2 className="section-title-elite">
               {selectedCategory?.name ||
                 "Trending Selection"}
             </h2>
+             
           </div>
 
-          {filteredProducts.length === 0 ? (
-            <div className="premium-empty-state">
-              <div className="empty-icon-wrapper">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <h3 className="empty-title">We're searching the galaxy...</h3>
-              <p className="empty-subtitle">We couldn't find any products in this category right now, but check back soon as our universe expands!</p>
-              <button className="btn-empty-reset" onClick={() => handleCategorySelect(null)}>View All Categories</button>
-            </div>
-          ) : (
-            <>
-              <div className="product-grid-elite">
+          <div className="product-grid-elite">
 
-                {displayProducts.map((item) => (
-                  <Card
-                    key={item.id}
-                    product={item}
-                  />
-                ))}
+            {displayProducts.map((item) => (
+              <Card
+                key={item.id}
+                product={item}
+              />
+            ))}
 
-              </div>
+          </div>
 
-              {hasMoreProducts && (
-                <div className="load-more-container">
-                  <button
-                    className="btn-load-more"
-                    onClick={() =>
-                      navigate(
-                        `/shop?category=${selectedCategory?.name ||
-                        ""
-                        }`
-                      )
-                    }
-                  >
-                    Explore More
-                  </button>
-                </div>
-              )}
-            </>
-          )}
         </section>
 
-        {/* ================= RECOMMENDED ================= */}
+        {/* RECOMMENDED */}
 
         <Recommended products={recommendedItems} />
 
-        {/* ================= APP DOWNLOAD ================= */}
+        {/* APP DOWNLOAD */}
 
         <div className="app-image">
           <a
