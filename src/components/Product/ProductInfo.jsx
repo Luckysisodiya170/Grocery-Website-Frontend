@@ -1,13 +1,28 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate import karein
 import { useCart } from "../../pages/cart/CartContext"; 
-import { toast } from "react-toastify"; // 1. Toast import karein
+import { useAuth } from "../../context/AuthContext"; // AuthContext import karein
+import { toast } from "react-toastify";
 
 function ProductInfo({ product }) {
+  const navigate = useNavigate();
+  const { user } = useAuth(); // User status check karne ke liye
+  const { addToCart } = useCart();
+  
   const [qty, setQty] = useState(1);
   const [weight, setWeight] = useState("1kg"); 
 
-  const { addToCart } = useCart();
+  // --- LOGIN CHECK LOGIC ---
+  const requireLogin = () => {
+    if (!user) {
+      toast.warn("Please login to add items to cart"); // User ko batane ke liye
+      navigate("/login");
+      return false;
+    }
+    return true;
+  };
 
+  // --- PRICE MATH ---
   const weightMultipliers = {
     "500g": 0.5,
     "1kg": 1,
@@ -18,7 +33,11 @@ function ProductInfo({ product }) {
   const currentMultiplier = weightMultipliers[weight] || 1;
   const currentPrice = Math.round(product.price * currentMultiplier);
 
+  // --- ADD TO CART HANDLER ---
   const handleAddToCart = () => {
+    // 🌟 FIX: Login check yahan add kiya
+    if (!requireLogin()) return; 
+
     const uniqueId = `${product.id}-${weight}`; 
 
     addToCart({ 
@@ -29,11 +48,7 @@ function ProductInfo({ product }) {
       quantity: qty 
     });
 
-    // 2. Success message dikhayein
-    toast.success(`${product.name} (${weight}) added to cart!`, {
-      position: "bottom-right",
-      autoClose: 2000,
-    });
+    toast.success(`${product.name} (${weight}) added to cart!`);
   };
 
   return (
@@ -47,8 +62,16 @@ function ProductInfo({ product }) {
 
       <div className="price-row">
         <span className="price">₹{currentPrice}</span>
+        {product.originalPrice && (
+            <span className="old">₹{Math.round(product.originalPrice * currentMultiplier)}</span>
+        )}
       </div>
 
+      <p className="desc">
+        Sourced for peak freshness and quality. Perfect for your daily needs.
+      </p>
+
+      {/* WEIGHT SELECTOR */}
       <div className="weight-section">
         <p className="weight-title">Select Weight</p>
         <div className="weight-options">
@@ -67,6 +90,7 @@ function ProductInfo({ product }) {
         </div>
       </div>
 
+      {/* QUANTITY CONTROLS */}
       <div className="qty-box">
         <button className="qty-btn" onClick={() => setQty(qty > 1 ? qty - 1 : 1)}>−</button>
         <span className="qty-value">{qty}</span>
@@ -75,7 +99,7 @@ function ProductInfo({ product }) {
 
       <div className="actions">
         <button className="add" onClick={handleAddToCart}>Add to Cart</button>
-        <button className="buy">Buy Now</button>
+        <button className="buy" onClick={() => requireLogin() && console.log("Proceed to Buy")}>Buy Now</button>
       </div>
 
       <div className="delivery">
