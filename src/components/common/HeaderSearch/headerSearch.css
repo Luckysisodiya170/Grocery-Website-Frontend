@@ -202,21 +202,213 @@
 .type-chip:hover { border-color: var(--text-light, #64748b); color: var(--text-main, #334155); }
 .type-chip.active { background: var(--bg-soft, #f1f5f9); border-color: var(--primary, #005f73); color: var(--primary, #005f73); }
 
-.form-row { display: flex; gap: 12px; width: 100%; box-sizing: border-box; }
-.form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
-.form-group label { font-size: 12px; font-weight: 600; color: var(--text-light, #64748b); }
-.form-group input { width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: var(--radius-md, 12px); border: 1px solid var(--border, #e2e8f0); background: var(--bg-soft, #f1f5f9); font-size: 14px; color: var(--text-main, #334155); transition: 0.2s; outline: none; }
-.form-group input::placeholder { color: var(--text-light, #64748b); opacity: 0.5; }
-.form-group input:focus { border-color: var(--primary, #005f73); background: var(--card-bg, #ffffff); }
+/* 🌟 FIX FOR OVERLAPPING START 🌟 */
+.form-row { 
+  display: flex; 
+  gap: 12px; 
+  width: 100%; 
+  box-sizing: border-box; 
+}
+
+.form-group { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  flex: 1; 
+  min-width: 0; 
+  align-items: flex-start; 
+}
+
+.form-group label { 
+  font-size: 11px; 
+  font-weight: 700; 
+  color: var(--text-light, #64748b); 
+  text-transform: uppercase;
+  position: static !important; /* Ye overlap hone se rokega */
+  transform: none !important;  /* Ye kisi bhi global animation ko rokega */
+  margin: 0;
+  padding: 0;
+  letter-spacing: 0.5px;
+}
+
+.form-group input { 
+  width: 100%; 
+  box-sizing: border-box; 
+  padding: 12px 14px; 
+  border-radius: var(--radius-md, 12px); 
+  border: 1px solid var(--border, #e2e8f0); 
+  background: var(--bg-soft, #f1f5f9); 
+  font-size: 14px; 
+  color: var(--text-main, #334155); 
+  transition: 0.2s; 
+  outline: none; 
+  position: relative !important;
+}
+
+.form-group input::placeholder { 
+  color: var(--text-light, #64748b); 
+  opacity: 0.6; 
+}
+
+.form-group input:focus { 
+  border-color: var(--primary, #005f73); 
+  background: var(--card-bg, #ffffff); 
+  box-shadow: 0 0 0 3px rgba(0, 95, 115, 0.1);
+}
+/* 🌟 FIX FOR OVERLAPPING END 🌟 */
 
 .save-address-btn { margin-top: 10px; padding: 14px; background: var(--primary, #005f73); color: white; border: none; border-radius: var(--radius-lg, 16px); font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.3s ease; width: 100%; }
 .save-address-btn:hover { transform: translateY(-2px); }
+/* ==========================================================================
+   🌐 RESPONSIVE DESIGN (1800px to Mobile)
+   ========================================================================== */
 
-/* ================= MOBILE RESPONSIVENESS ================= */
-@media (max-width: 768px) {
-  .header-search__inner { flex-direction: column; align-items: stretch; gap: 16px; }
-  .location-pill, .search-pill-container { width: 100%; }
-  .modal-overlay { align-items: flex-end; }
-  .location-modal { width: 100%; height: auto; max-height: 90vh; padding: 24px 20px 40px; border-radius: var(--radius-xl, 24px) var(--radius-xl, 24px) 0 0; animation: slideUpMobile 0.3s ease forwards; }
+/* 🖥️ 1. Ultra Wide Screens (1440px to 1800px+) */
+@media (min-width: 1440px) {
+  .header-search__inner {
+    gap: 32px;
+  }
+  .search-pill-container {
+    max-width: 1000px; /* Search bar bade screen par jyada failega */
+  }
+  .location-pill {
+    min-width: 280px;
+    padding: 8px 20px 8px 8px;
+  }
+  .loc-value {
+    max-width: 220px;
+    font-size: 15px;
+  }
+  .zepto-mini-card {
+    min-width: 160px;
+    width: 160px;
+  }
+  .zepto-mini-card .img-box {
+    height: 120px;
+  }
 }
-@keyframes slideUpMobile { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* 💻 2. Small Laptops & Tablets Landscape (Max-width: 1024px) */
+@media (max-width: 1024px) {
+  .header-search__inner {
+    gap: 16px;
+  }
+  .location-pill {
+    min-width: 200px;
+    padding: 6px 12px 6px 6px;
+  }
+  .loc-value {
+    max-width: 120px; /* Text overlap hone se rokega */
+  }
+  .search-pill-container {
+    max-width: 600px;
+  }
+}
+
+/* 📱 3. Tablets Portrait & Large Mobiles (Max-width: 768px) */
+@media (max-width: 768px) {
+  .header-search {
+    padding: 10px 0;
+  }
+  .header-search__inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .location-pill, .search-pill-container {
+    width: 100%;
+    max-width: 100%;
+  }
+  .search-pill-container {
+    height: 50px;
+  }
+  .loc-value {
+    max-width: 80vw; /* Mobile par pura text dikhega */
+  }
+  
+  /* Modal Bottom Sheet Design For Mobile */
+  .modal-overlay {
+    align-items: flex-end; /* Mobile me modal neeche se aayega */
+  }
+  .location-modal {
+    width: 100%;
+    height: auto;
+    max-height: 90vh;
+    padding: 24px 20px 40px;
+    border-radius: var(--radius-xl, 24px) var(--radius-xl, 24px) 0 0;
+    animation: slideUpMobile 0.3s ease forwards;
+  }
+  
+  /* Zepto Dropdown Mobile Fix */
+  .zepto-dropdown-overlay {
+    padding: 16px 0 24px 0;
+  }
+  .zepto-products-row {
+    gap: 12px;
+  }
+}
+
+/* 📱 4. Small Mobiles (Max-width: 480px) */
+@media (max-width: 480px) {
+  .location-pill {
+    padding: 4px 12px 4px 4px;
+  }
+  .loc-icon-wrapper {
+    width: 32px;
+    height: 32px;
+  }
+  .loc-value {
+    font-size: 13px;
+  }
+  
+  .search-pill-container {
+    height: 46px;
+    padding: 0 12px;
+  }
+  .search-icon {
+    font-size: 18px;
+  }
+  .search-input {
+    font-size: 14px;
+  }
+  
+  /* Mini Product Card Adjustments */
+  .zepto-mini-card {
+    min-width: 120px;
+    width: 120px;
+    padding: 8px;
+  }
+  .zepto-mini-card .img-box {
+    height: 80px;
+  }
+  .mini-title {
+    font-size: 11px;
+    min-height: 28px;
+  }
+  .current-price {
+    font-size: 13px;
+  }
+  .mini-add-btn {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  /* Form Elements Adjustments inside Modal */
+  .form-row {
+    flex-direction: column; /* Mobile me 2 inputs ko upar-neeche kar dega */
+    gap: 14px;
+  }
+  .detailed-address-form {
+    max-height: 65vh;
+  }
+}
+
+/* 🎥 Mobile Animation */
+@keyframes slideUpMobile {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

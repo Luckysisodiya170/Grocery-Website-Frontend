@@ -16,25 +16,35 @@ const CategoryPage = () => {
   // 1. GLOBAL SEARCH STATE (Listens to Navbar)
   const [searchParams, setSearchParams] = useSearchParams();
   const globalSearchTerm = searchParams.get("search") || "";
+  const urlCategory = searchParams.get("category");
+  const urlSubcategory = searchParams.get("subcategory");
 
   // 2. PAGE STATES
   const uniqueCategories = categories.filter(
     (value, index, self) => index === self.findIndex((t) => t.name === value.name)
   );
 
-  const [activeCategory, setActiveCategory] = useState(uniqueCategories[0]?.name || "Electronics");
-  const [activeSub, setActiveSub] = useState("All");
+  const [activeCategory, setActiveCategory] = useState(
+    urlCategory || (location.state && location.state.selectedCategory) || uniqueCategories[0]?.name || "Electronics"
+  );
+  
+  const [activeSub, setActiveSub] = useState(
+    urlSubcategory || (location.state && location.state.selectedSub) || "All"
+  );
   
   // 3. SORTING STATE
   const [sortOrder, setSortOrder] = useState("featured");
 
-  // Handle Navigation state
+  // Sync state when URL changes
   useEffect(() => {
-    if (location.state && location.state.selectedCategory) {
+    if (urlCategory) {
+      setActiveCategory(urlCategory);
+      setActiveSub(urlSubcategory || "All");
+    } else if (location.state && location.state.selectedCategory) {
       setActiveCategory(location.state.selectedCategory);
       setActiveSub(location.state.selectedSub || "All");
     }
-  }, [location]);
+  }, [urlCategory, urlSubcategory, location]);
 
   // Handle Sidebar Images
   const currentCategoryObj = uniqueCategories.find((cat) => cat.name === activeCategory);
@@ -46,8 +56,10 @@ const CategoryPage = () => {
       image: `/category/${currentCategoryObj?.image || "default.png"}` 
     },
     ...rawSubCategories.map((subName) => {
+      // Find image using flexible keys
       const firstProduct = products.find(
-        (p) => p.mainCategory === activeCategory && p.category === subName
+        (p) => (p.mainCategory === activeCategory || p.parentCategory === activeCategory || p.category === activeCategory) && 
+               (p.category === subName || p.subCategory === subName)
       );
       return {
         name: subName,
@@ -58,15 +70,17 @@ const CategoryPage = () => {
 
   // 4. THE MASTER FILTER & SORT ENGINE
   const processedProducts = useMemo(() => {
-    // Step A: Filter
     let filtered = products.filter((p) => {
-      // If user typed in the Navbar, ignore category and search ALL products
+      // Agar global search ho rahi hai
       if (globalSearchTerm) {
         return p.name.toLowerCase().includes(globalSearchTerm.toLowerCase());
       }
-      // Otherwise, filter normally by sidebar category
-      const matchCategory = p.mainCategory === activeCategory;
-      const matchSub = activeSub === "All" || p.category === activeSub;
+      
+      // 🌟 BULLETPROOF FILTERING LOGIC 🌟
+      // Checks all possible variations of your JSON keys
+      const matchCategory = p.mainCategory === activeCategory || p.parentCategory === activeCategory || p.category === activeCategory;
+      const matchSub = activeSub === "All" || p.category === activeSub || p.subCategory === activeSub;
+      
       return matchCategory && matchSub;
     });
 
@@ -80,24 +94,35 @@ const CategoryPage = () => {
     return filtered;
   }, [activeCategory, activeSub, globalSearchTerm, sortOrder]);
 
+
+  // --- CLICK HANDLERS (URL UPDATE LOGIC) ---
   const handleSelectCategory = (catName) => {
     setActiveCategory(catName);
     setActiveSub("All");
-    if (globalSearchTerm) setSearchParams({}); // Clear search if they click a new category
+    // Update URL parameters
+    setSearchParams({ category: catName }); 
+  };
+
+  const handleSelectSub = (subName) => {
+    setActiveSub(subName);
+    // Jab Sidebar par click ho, URL ko bhi update karo taaki sab sync rahe
+    if (subName === "All") {
+      setSearchParams({ category: activeCategory });
+    } else {
+      setSearchParams({ category: activeCategory, subcategory: subName });
+    }
   };
 
   const handleClearFilters = () => {
-    if (globalSearchTerm) setSearchParams({});
+    if (searchParams.toString()) setSearchParams({});
     setActiveSub("All");
     setSortOrder("featured");
   };
 
   return (
     <div className="cat-page-wrapper">
-      {/* Container max handles the 1800px+ scaling safely */}
       <div className="container-max"> 
         
-        {/* Hide Top Row if Searching Globally */}
         {!globalSearchTerm && (
           <CategoryRow
             categories={uniqueCategories}
@@ -108,12 +133,11 @@ const CategoryPage = () => {
 
         <div className={`cat-content-split ${globalSearchTerm ? "search-active" : ""}`}>
           
-          {/* Hide Sidebar if Searching Globally */}
           {!globalSearchTerm && (
             <CategorySidebar
               subCategoriesData={subCategoriesWithImages}
               activeSub={activeSub}
-              setActiveSub={setActiveSub}
+              setActiveSub={handleSelectSub} // Pass new handler to Sidebar
             />
           )}
 

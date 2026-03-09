@@ -54,7 +54,8 @@ function HeaderSearch() {
   // --- DROPDOWN DATA FILTERING ---
   const matchingProducts = products.filter(p =>
     p.name.toLowerCase().includes(query.toLowerCase()) ||
-    p.category.toLowerCase().includes(query.toLowerCase())
+    (p.category && p.category.toLowerCase().includes(query.toLowerCase())) ||
+    (p.subCategory && p.subCategory.toLowerCase().includes(query.toLowerCase()))
   ).slice(0, 6);
 
   const textSuggestions = Array.from(new Set(
@@ -77,50 +78,55 @@ function HeaderSearch() {
   };
 
   const handleInputChange = (e) => {
-    const val = e.target.value;
-    setQuery(val);
-    if (location.pathname === "/shop") {
-      navigate(`/shop?search=${encodeURIComponent(val)}`, { replace: true });
-    }
+    setQuery(e.target.value);
   };
 
   const handleFocus = () => {
     setIsSearchFocused(true);
-    if (location.pathname !== "/shop") {
-      navigate("/shop");
-    }
   };
 
   const executeSearch = (searchTerm) => {
     setIsSearchFocused(false);
+    if (!searchTerm.trim()) return;
 
-    // Check if it's an exact product name match
-    const matchedProduct = products.find(p => p.name.toLowerCase() === searchTerm.toLowerCase());
+    const termLower = searchTerm.toLowerCase();
+
+    // 1. Check if it's an exact product match
+    const matchedProduct = products.find(p => p.name.toLowerCase() === termLower);
     if (matchedProduct) {
       setQuery("");
       navigate(`/product/${matchedProduct.id}`);
       return;
     }
 
-    // Check if it's an exact category match
-    const matchedCategory = products.find(p => p.category.toLowerCase() === searchTerm.toLowerCase() || (p.parentCategory && p.parentCategory.toLowerCase() === searchTerm.toLowerCase()));
-    if (matchedCategory) {
-      setQuery(searchTerm);
-      const categoryToUse = matchedCategory.parentCategory && matchedCategory.parentCategory.toLowerCase() === searchTerm.toLowerCase()
-        ? matchedCategory.parentCategory
-        : matchedCategory.category;
-      navigate(`/shop?category=${encodeURIComponent(categoryToUse)}`);
+    // 2. Check if it's a category or subcategory match
+    const matchedCategoryItem = products.find(p => 
+      (p.mainCategory && p.mainCategory.toLowerCase() === termLower) ||
+      (p.category && p.category.toLowerCase() === termLower)
+    );
+
+    if (matchedCategoryItem) {
+      setQuery(""); // clear search bar
+      
+      // Agar match subcategory se hua hai (e.g. "mobile" ya "milk")
+      if (matchedCategoryItem.category && matchedCategoryItem.category.toLowerCase() === termLower) {
+        navigate(`/shop?category=${encodeURIComponent(matchedCategoryItem.mainCategory)}&subcategory=${encodeURIComponent(matchedCategoryItem.category)}`);
+      } 
+      // Agar match main category se hua hai (e.g. "electronics" ya "vegetables")
+      else if (matchedCategoryItem.mainCategory && matchedCategoryItem.mainCategory.toLowerCase() === termLower) {
+        navigate(`/shop?category=${encodeURIComponent(matchedCategoryItem.mainCategory)}`);
+      }
       return;
     }
 
-    setQuery(searchTerm);
+    // 3. Fallback: Normal search query
+    setQuery("");
     navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       executeSearch(query);
-      setIsSearchFocused(false);
     }
   };
 
@@ -216,7 +222,6 @@ function HeaderSearch() {
             {query && (
               <button className="clear-search" onClick={() => {
                 setQuery("");
-                navigate("/shop");
               }}>
                 <CloseIcon fontSize="small" />
               </button>

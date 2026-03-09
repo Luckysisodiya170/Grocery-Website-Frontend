@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCart } from "../../pages/cart/CartContext"; 
+import { toast } from "react-toastify"; // 1. Toast import karein
 
 function ProductInfo({ product }) {
   const [qty, setQty] = useState(1);
@@ -7,7 +8,6 @@ function ProductInfo({ product }) {
 
   const { addToCart } = useCart();
 
-  // --- PRICE MATH ---
   const weightMultipliers = {
     "500g": 0.5,
     "1kg": 1,
@@ -17,23 +17,24 @@ function ProductInfo({ product }) {
 
   const currentMultiplier = weightMultipliers[weight] || 1;
   const currentPrice = Math.round(product.price * currentMultiplier);
-  const currentOldPrice = product.originalPrice 
-    ? Math.round(product.originalPrice * currentMultiplier) 
-    : null;
 
-  // --- THE FIX: SENDING QUANTITY ---
-const handleAddToCart = () => {
-  // Use a template literal to combine ID and Weight
-  const uniqueId = `${product.id}-${weight}`; 
+  const handleAddToCart = () => {
+    const uniqueId = `${product.id}-${weight}`; 
 
-  addToCart({ 
-    ...product, 
-    id: uniqueId, // This must be a string like "1-2kg"
-    price: currentPrice,
-    selectedWeight: weight,
-    quantity: qty // Send the number from your state
-  });
-};
+    addToCart({ 
+      ...product, 
+      id: uniqueId, 
+      price: currentPrice,
+      selectedWeight: weight,
+      quantity: qty 
+    });
+
+    // 2. Success message dikhayein
+    toast.success(`${product.name} (${weight}) added to cart!`, {
+      position: "bottom-right",
+      autoClose: 2000,
+    });
+  };
 
   return (
     <div className="product-info">
@@ -46,14 +47,8 @@ const handleAddToCart = () => {
 
       <div className="price-row">
         <span className="price">₹{currentPrice}</span>
-        {currentOldPrice && <span className="old">₹{currentOldPrice}</span>}
       </div>
 
-      <p className="desc">
-        Sourced for peak freshness and quality. Perfect for your daily needs.
-      </p>
-
-      {/* WEIGHT SELECTOR */}
       <div className="weight-section">
         <p className="weight-title">Select Weight</p>
         <div className="weight-options">
@@ -63,7 +58,7 @@ const handleAddToCart = () => {
               className={`weight-btn ${weight === w ? "active" : ""}`}
               onClick={() => {
                 setWeight(w);
-                setQty(1); // Optional: Reset qty to 1 when weight changes
+                setQty(1);
               }}
             >
               {w}
@@ -72,7 +67,6 @@ const handleAddToCart = () => {
         </div>
       </div>
 
-      {/* QUANTITY CONTROLS */}
       <div className="qty-box">
         <button className="qty-btn" onClick={() => setQty(qty > 1 ? qty - 1 : 1)}>−</button>
         <span className="qty-value">{qty}</span>
@@ -92,5 +86,3 @@ const handleAddToCart = () => {
 }
 
 export default ProductInfo;
-
-
