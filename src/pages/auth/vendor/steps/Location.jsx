@@ -1,70 +1,77 @@
+// src/pages/Auth/vendor/steps/Location.jsx
 import HomeIcon from "@mui/icons-material/Home";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import MapIcon from "@mui/icons-material/Map";
-import PublicIcon from "@mui/icons-material/Public";
 import PinDropIcon from "@mui/icons-material/PinDrop";
-import GpsFixedIcon from "@mui/icons-material/GpsFixed";
+import PublicIcon from "@mui/icons-material/Public";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
+import InputComponent from "../../../../components/common/InputComponent"; 
 
 function Location({ vendorData, handleChange }) {
+  
+  // Naya Feature: Auto Fetch GPS Location
+  const handleGetLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          handleChange({
+            target: { 
+              name: "geoLocation", 
+              value: `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}` 
+            }
+          });
+        },
+        (error) => {
+          alert("Please allow location access to fetch coordinates.",error);
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
   return (
-    <div className="form-grid">
-      <div className="form-group full-width">
-        <label>Door No / Building / Street</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><HomeIcon fontSize="small" /></div>
-          <input type="text" name="address" placeholder="Full address" value={vendorData.address} onChange={handleChange} />
-        </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mt-2">
+      {/* Full width Address */}
+      <div className="md:col-span-2">
+        <InputComponent 
+          icon={HomeIcon} 
+          label="Complete Business Address" 
+          name="address" 
+          value={vendorData.address} 
+          onChange={handleChange} 
+        />
       </div>
+      
+      {/* Grid Inputs */}
+      <InputComponent icon={LocationCityIcon} label="City" name="city" value={vendorData.city} onChange={handleChange} />
+      <InputComponent icon={MapIcon} label="State" name="state" value={vendorData.state} onChange={handleChange} />
+      <InputComponent icon={PinDropIcon} label="Pincode" name="pincode" value={vendorData.pincode} onChange={handleChange} />
+      <InputComponent icon={PublicIcon} label="Country" name="country" value={vendorData.country} onChange={handleChange} />
 
-      <div className="form-group">
-        <label>City</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><LocationCityIcon fontSize="small" /></div>
-          <input type="text" name="city" placeholder="City" value={vendorData.city} onChange={handleChange} />
-        </div>
-      </div>
-
-      <div className="form-group">
-        <label>State / Province</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><MapIcon fontSize="small" /></div>
-          <input type="text" name="state" placeholder="State" value={vendorData.state} onChange={handleChange} />
-        </div>
-      </div>
-
-      <div className="form-group">
-        <label>Country</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><PublicIcon fontSize="small" /></div>
-          <select name="country" value={vendorData.country} onChange={handleChange}>
-            <option value="India">India</option>
-            <option value="USA">USA</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="form-group">
-        <label>Pincode / Zip</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><PinDropIcon fontSize="small" /></div>
-          <input type="text" name="pincode" placeholder="6-digit code" value={vendorData.pincode} onChange={handleChange} />
-        </div>
-      </div>
-
-      <div className="form-group full-width">
-        <label>Geo Location (Coordinates)</label>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          {/* Corrected wrapper for the icon and input */}
-          <div className="input-with-icon" style={{ flex: 1 }}>
-            <div className="input-icon-wrapper"><GpsFixedIcon fontSize="small" /></div>
-            <input type="text" name="geoLocation" placeholder="Lat / Long" value={vendorData.geoLocation} onChange={handleChange} />
-          </div>
-          <button type="button" style={{ height: '42px', padding: '0 20px', borderRadius: '12px', background: '#e2e8f0', border: 'none', fontWeight: 'bold', cursor: 'pointer', color: '#333' }}>
-            Map
+      {/* Geo Location Field with Fetch Button */}
+      <div className="md:col-span-2 flex flex-col gap-1 mb-3 relative z-10">
+        <label className="text-xs font-semibold text-textLight pl-1">Store GPS Coordinates</label>
+        <div className="flex gap-2">
+          <input 
+            type="text" 
+            readOnly 
+            value={vendorData.geoLocation} 
+            placeholder="Click button to fetch ->" 
+            className="flex-1 h-11 px-3 rounded-md bg-bgSoft border-1.5 border-borderMain text-sm text-textMuted outline-none"
+          />
+          <button 
+            type="button" 
+            onClick={handleGetLocation} 
+            className="h-11 px-4 rounded-md bg-brand-gradient text-white flex items-center justify-center transition-all hover:shadow-md hover:-translate-y-0.5"
+            title="Fetch My Location"
+          >
+            <MyLocationIcon fontSize="small" />
           </button>
         </div>
-      </div></div>
-      );
+      </div>
+    </div>
+  );
 }
 
-      export default Location;
+export default Location;

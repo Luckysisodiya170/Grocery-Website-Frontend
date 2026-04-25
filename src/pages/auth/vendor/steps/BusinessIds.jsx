@@ -1,6 +1,7 @@
 import BadgeIcon from "@mui/icons-material/Badge";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useRef, useState } from "react";
+import InputComponent from "../../../../components/common/InputComponent";
 
 function BusinessIds({ vendorData, handleChange }) {
   const fileRef = useRef(null);
@@ -9,44 +10,47 @@ function BusinessIds({ vendorData, handleChange }) {
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFileName(e.target.files[0].name);
-      // Agar backend bhejte waqt set karna ho:
+      // To handle actual file logic for backend, uncomment below:
       // handleChange({ target: { name: "tradeLicenseFile", value: e.target.files[0] }});
     }
   };
 
   return (
-    <div className="form-grid">
-      <div className="form-group full-width">
-        <label>Trade License Number</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><BadgeIcon fontSize="small" /></div>
-          <input type="text" name="tradeLicense" placeholder="Enter trade license ID" value={vendorData.tradeLicense} onChange={handleChange} />
-        </div>
-      </div>
+    <div className="grid grid-cols-1 gap-y-4 mt-2">
+      <InputComponent 
+        icon={BadgeIcon} 
+        label="Trade License Number" 
+        name="tradeLicense" 
+        value={vendorData.tradeLicense} 
+        onChange={handleChange} 
+      />
       
-      <div className="form-group full-width">
-        <label>Upload Trade License (PDF/Image)</label>
+      <div className="flex flex-col gap-1.5 mt-2">
+        <label className="text-xs font-semibold text-textLight">
+          Upload Trade License (PDF/Image)
+        </label>
         
-        {/* Clickable Upload Box */}
+        {/* Clickable Drag & Drop Style Box */}
         <div 
-          className="upload-box" 
+          className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-borderMain rounded-xl bg-bgSoft cursor-pointer transition-all hover:border-primary hover:bg-slate-50 group"
           onClick={() => fileRef.current.click()}
-          style={{ border: '2px dashed var(--border)', padding: '25px', textAlign: 'center', borderRadius: '12px', cursor: 'pointer', background: 'var(--bg-soft)', transition: '0.3s' }}
         >
-          {/* Actual Hidden File Input for PDF and Images */}
           <input 
             type="file" 
             accept="image/*,.pdf" 
             ref={fileRef} 
-            style={{ display: 'none' }} 
+            className="hidden" 
             onChange={handleFileChange} 
           />
-          <UploadFileIcon style={{ fontSize: '35px', color: 'var(--primary)' }} />
-          <p style={{ color: 'var(--text-main)', marginTop: '10px', fontWeight: '600', fontSize: '13px' }}>
+          <UploadFileIcon 
+            className="text-primary transition-transform group-hover:-translate-y-1" 
+            style={{ fontSize: '40px' }} 
+          />
+          <p className="text-[13px] font-semibold text-textMain mt-3">
             {fileName ? fileName : "Click to upload PDF or Image"}
           </p>
+          {!fileName && <span className="text-[11px] text-textMuted mt-1">Max file size: 5MB</span>}
         </div>
-        
       </div>
     </div>
   );

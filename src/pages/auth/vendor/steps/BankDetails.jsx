@@ -2,41 +2,39 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import NumbersIcon from "@mui/icons-material/Numbers";
 import CodeIcon from "@mui/icons-material/Code";
+import InputComponent from "../../../../components/common/InputComponent";
 
 function BankDetails({ vendorData, handleChange }) {
   return (
-    <div className="form-grid">
-      <div className="form-group">
-        <label>Bank Name</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><AccountBalanceIcon fontSize="small" /></div>
-          <input type="text" name="bankName" placeholder="e.g. HDFC Bank" value={vendorData.bankName} onChange={handleChange} />
-        </div>
-      </div>
-      
-      <div className="form-group">
-        <label>Account Holder Name</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><AccountBoxIcon fontSize="small" /></div>
-          <input type="text" name="accountHolderName" placeholder="Name as per passbook" value={vendorData.accountHolderName} onChange={handleChange} />
-        </div>
-      </div>
-      
-      <div className="form-group">
-        <label>Account Number</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><NumbersIcon fontSize="small" /></div>
-          <input type="text" name="accountNumber" placeholder="Enter account number" value={vendorData.accountNumber} onChange={handleChange} />
-        </div>
-      </div>
-      
-      <div className="form-group">
-        <label>IFSC Code</label>
-        <div className="input-with-icon">
-          <div className="input-icon-wrapper"><CodeIcon fontSize="small" /></div>
-          <input type="text" name="ifscCode" placeholder="SBIN0001234" value={vendorData.ifscCode} onChange={handleChange} />
-        </div>
-      </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mt-2">
+      <InputComponent 
+        icon={AccountBalanceIcon} 
+        label="Bank Name" 
+        name="bankName" 
+        value={vendorData.bankName} 
+        onChange={handleChange} 
+      />
+      <InputComponent 
+        icon={AccountBoxIcon} 
+        label="Account Holder Name" 
+        name="accountHolderName" 
+        value={vendorData.accountHolderName} 
+        onChange={handleChange} 
+      />
+      <InputComponent 
+        icon={NumbersIcon} 
+        label="Account Number" 
+        name="accountNumber" 
+        value={vendorData.accountNumber} 
+        onChange={handleChange} 
+      />
+      <InputComponent 
+        icon={CodeIcon} 
+        label="IFSC Code" 
+        name="ifscCode" 
+        value={vendorData.ifscCode} 
+        onChange={handleChange} 
+      />
     </div>
   );
 }

@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-    // REMOVED the 'else' block that was forcing "Rahul Sharma" to log in
   }, []);
 
   const login = (userData) => {
