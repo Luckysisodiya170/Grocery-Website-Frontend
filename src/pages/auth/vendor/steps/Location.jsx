@@ -9,7 +9,7 @@ import InputComponent from "../../../../components/common/InputComponent";
 
 function Location({ vendorData, handleChange }) {
   
-  // Naya Feature: Auto Fetch GPS Location
+  //Fetch GPS Location
   const handleGetLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(

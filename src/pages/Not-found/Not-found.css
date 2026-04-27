@@ -7,7 +7,6 @@
   display: flex; 
   align-items: center; 
   justify-content: center; 
-  /* Changed to transparent so your global starry background shows through */
   background: transparent; 
   padding: 20px; 
 }

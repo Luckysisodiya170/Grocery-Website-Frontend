@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Icons
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -11,23 +11,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import AddIcon from "@mui/icons-material/Add";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import AddIcon from "@mui/icons-material/Add";
 
-// Cart & Data
 import { useCart } from "../../../pages/cart/CartContext";
 import products from "../../../data/products.json";
 
-import "./headerSearch.css";
-
 function HeaderSearch() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { addToCart, setIsCartOpen } = useCart();
 
-  // --- LOCATION STATES ---
   const [selectedLocation, setSelectedLocation] = useState("New Delhi, 110001");
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,11 +30,11 @@ function HeaderSearch() {
     name: "", phone: "", street: "", landmark: "", city: "", state: "", pin: "", type: "Home"
   });
 
-  // --- SEARCH STATES ---
   const [query, setQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchContainerRef = useRef(null);
 
+  // Close search suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
@@ -51,391 +45,171 @@ function HeaderSearch() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // --- DROPDOWN DATA FILTERING ---
-  const matchingProducts = products.filter(p =>
-    p.name.toLowerCase().includes(query.toLowerCase()) ||
-    (p.category && p.category.toLowerCase().includes(query.toLowerCase())) ||
-    (p.subCategory && p.subCategory.toLowerCase().includes(query.toLowerCase()))
+  // --- Search Logic ---
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(query.toLowerCase())
   ).slice(0, 6);
 
-  const textSuggestions = Array.from(new Set(
-    products
-      .filter(p => p.name.toLowerCase().includes(query.toLowerCase()))
-      .map(p => p.name)
-  )).slice(0, 5);
-
-  // --- CLICK HANDLERS ---
-  const goToProduct = (productId) => {
+  const handleSearchClick = (productId) => {
     setIsSearchFocused(false);
     setQuery("");
     navigate(`/product/${productId}`);
   };
 
-  const handleAddToCart = (e, product) => {
-    e.stopPropagation();
-    addToCart(product);
-    setIsCartOpen(true);
-  };
-
-  const handleInputChange = (e) => {
-    setQuery(e.target.value);
-  };
-
-  const handleFocus = () => {
-    setIsSearchFocused(true);
-  };
-
-  const executeSearch = (searchTerm) => {
-    setIsSearchFocused(false);
-    if (!searchTerm.trim()) return;
-
-    const termLower = searchTerm.toLowerCase();
-
-    // 1. Check if it's an exact product match
-    const matchedProduct = products.find(p => p.name.toLowerCase() === termLower);
-    if (matchedProduct) {
-      setQuery("");
-      navigate(`/product/${matchedProduct.id}`);
-      return;
-    }
-
-    // 2. Check if it's a category or subcategory match
-    const matchedCategoryItem = products.find(p => 
-      (p.mainCategory && p.mainCategory.toLowerCase() === termLower) ||
-      (p.category && p.category.toLowerCase() === termLower)
-    );
-
-    if (matchedCategoryItem) {
-      setQuery(""); // clear search bar
-      
-      // Agar match subcategory se hua hai (e.g. "mobile" ya "milk")
-      if (matchedCategoryItem.category && matchedCategoryItem.category.toLowerCase() === termLower) {
-        navigate(`/shop?category=${encodeURIComponent(matchedCategoryItem.mainCategory)}&subcategory=${encodeURIComponent(matchedCategoryItem.category)}`);
-      } 
-      // Agar match main category se hua hai (e.g. "electronics" ya "vegetables")
-      else if (matchedCategoryItem.mainCategory && matchedCategoryItem.mainCategory.toLowerCase() === termLower) {
-        navigate(`/shop?category=${encodeURIComponent(matchedCategoryItem.mainCategory)}`);
-      }
-      return;
-    }
-
-    // 3. Fallback: Normal search query
-    setQuery("");
-    navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      executeSearch(query);
-    }
-  };
-
-  // --- LOCATION HANDLERS ---
-  const handleDetectLocation = () => {
-    setLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      () => {
-        setTimeout(() => {
-          setSelectedLocation("Madhya Pradesh, Indore");
-          setLoading(false);
-          setShowLocationModal(false);
-          toast.success("Location updated successfully!");
-        }, 800);
-      },
-      () => {
-        setLoading(false);
-        toast.error("Location permission denied");
-      }
-    );
-  };
-
-  const handleSelectSaved = (address) => {
-    setSelectedLocation(address);
-    setShowLocationModal(false);
-  };
-
-  const handleAddressChange = (e) => {
-    const { name, value } = e.target;
-    setAddressForm(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleTypeSelect = (type) => {
-    setAddressForm(prev => ({ ...prev, type }));
-  };
-
-  const handleSaveAddress = (e) => {
-    e.preventDefault();
-    const { name, phone, street, city, state, pin, type } = addressForm;
-    const trimmedName = name.trim();
-    const trimmedPhone = phone.trim();
-    const trimmedStreet = street.trim();
-    const trimmedCity = city.trim();
-    const trimmedState = state.trim();
-    const trimmedPin = pin.trim();
-
-    if (!trimmedName || !trimmedPhone || !trimmedStreet || !trimmedCity || !trimmedState || !trimmedPin) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(trimmedPhone)) {
-      toast.error("Please enter a valid 10-digit mobile number.");
-      return;
-    }
-
-    const formattedAddress = `${type} - ${trimmedCity}, ${trimmedPin}`;
-    setSelectedLocation(formattedAddress);
-    setShowLocationModal(false);
-    setIsAddingAddress(false);
-    setAddressForm({ name: "", phone: "", street: "", landmark: "", city: "", state: "", pin: "", type: "Home" });
-    toast.success("New address added successfully!");
-  };
-
   return (
-    <>
-      <div className="header-search" ref={searchContainerRef}>
-        <div className="container header-search__inner">
+    <div className="relative w-full" ref={searchContainerRef}>
+      <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6 w-full">
+        
+        {/* --- Location Pill--- */}
+        <button 
+          onClick={() => setShowLocationModal(true)}
+          className="flex items-center gap-3 p-1.5 pr-5 bg-white border border-slate-100 rounded-2xl lg:rounded-full shadow-sm hover:border-cyan-900/30 transition-all min-w-full lg:min-w-[280px] group"
+        >
+          <div className="w-10 h-10 rounded-full bg-cyan-900 flex items-center justify-center text-white shrink-0 shadow-lg shadow-cyan-900/20">
+            <LocationOnIcon fontSize="small" />
+          </div>
+          <div className="flex flex-col items-start overflow-hidden text-left">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Delivering to</span>
+            <strong className="text-sm font-black text-cyan-900 truncate w-40">{selectedLocation}</strong>
+          </div>
+          <KeyboardArrowDownIcon className="ml-auto text-slate-400 group-hover:text-cyan-900 transition-all" />
+        </button>
 
-          <button className="location-pill premium-hover" onClick={() => setShowLocationModal(true)}>
-            <div className="loc-icon-wrapper">
-              <LocationOnIcon className="pin-icon" fontSize="small" />
-            </div>
-            <div className="loc-text-wrapper">
-              <span className="loc-label">Delivering to</span>
-              <strong className="loc-value">{selectedLocation}</strong>
-            </div>
-            <KeyboardArrowDownIcon className="dropdown-arrow" />
-          </button>
+        {/* --- Search Bar--- */}
+        <div className={`relative flex-1 flex border-gray-700 shadow-md items-center gap-3 px-5 h-14 rounded-2xl lg:rounded-full transition-all w-full border ${isSearchFocused ? 'bg-white border-cyan-900 shadow-xl shadow-cyan-900/10' : 'bg-slate-50 border-slate-100'}`}>
+          <SearchIcon className={isSearchFocused ? 'text-cyan-900' : 'text-slate-400'} />
+          <input
+            type="text"
+            className="flex-1 bg-transparent border-none outline-none text-base font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-medium"
+            placeholder="Search for fresh spinach, milk..."
+            value={query}
+            onFocus={() => setIsSearchFocused(true)}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {query && (
+            <button onClick={() => setQuery("")} className="text-slate-400 hover:text-red-500">
+              <CloseIcon fontSize="small" />
+            </button>
+          )}
+        </div>
+      </div>
 
-          <div className="search-pill-container">
-            <SearchIcon className="search-icon" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search for Fresh Spinach, Milk..."
-              value={query}
-              onChange={handleInputChange}
-              onFocus={handleFocus}
-              onKeyDown={handleKeyDown}
-            />
-            {query && (
-              <button className="clear-search" onClick={() => {
-                setQuery("");
-              }}>
-                <CloseIcon fontSize="small" />
-              </button>
+      {/* --- SEARCH SUGGESTIONS DROPDOWN --- */}
+      {isSearchFocused && query.length > 0 && (
+        <div className="absolute top-full left-0 lg:left-auto lg:right-0 w-full lg:w-[calc(100%-300px)] bg-white mt-3 rounded-[32px] border border-slate-100 shadow-[0_20px_60px_rgba(8,47,55,0.15)] overflow-hidden z-[1100] animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="p-4">
+            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-4 px-2">Suggestions for "{query}"</h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {filteredProducts.map((product) => (
+                <div 
+                  key={product.id}
+                  onClick={() => handleSearchClick(product.id)}
+                  className="flex items-center gap-4 p-3 rounded-2xl hover:bg-cyan-50 cursor-pointer group transition-all"
+                >
+                  <div className="w-14 h-14 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 group-hover:bg-white border border-transparent group-hover:border-cyan-100">
+                    <img src={product.product_image} alt={product.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-black text-slate-900 group-hover:text-cyan-900 transition-colors truncate">{product.name}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs font-black text-cyan-900">₹{product.offer_price}</span>
+                      <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400">
+                        <AccessTimeIcon style={{ fontSize: '10px' }} /> 8 MINS
+                      </div>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); addToCart(product); setIsCartOpen(true); }}
+                    className="p-2 bg-white border border-cyan-900 text-cyan-900 rounded-lg hover:bg-cyan-900 hover:text-white transition-all scale-0 group-hover:scale-100 shadow-sm"
+                  >
+                    <AddIcon fontSize="small" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {filteredProducts.length === 0 && (
+              <div className="py-10 text-center">
+                <p className="text-slate-400 font-bold italic">No matches found. Try searching for something else!</p>
+              </div>
             )}
           </div>
         </div>
+      )}
 
-        {/* --- FULL WIDTH ZEPTO-STYLE OVERLAY --- */}
-        {query && isSearchFocused && (
-          <div className="zepto-dropdown-overlay">
-            <div className="container zepto-dropdown-inner">
-
-              {textSuggestions.length > 0 && (
-                <div className="zepto-suggestions-list">
-                  {textSuggestions.map((name, i) => {
-                    const matchedProduct = products.find(p => p.name === name);
-                    const safeImage = matchedProduct?.image || "default.png";
-
-                    return (
-                      <div key={i} className="zepto-suggestion-item" onClick={() => executeSearch(name)}>
-                        <div className="sugg-img-placeholder">
-                          <img src={`/product/${safeImage}`} alt={name} />
-                        </div>
-                        <span>
-                          {name.toLowerCase().startsWith(query.toLowerCase()) ? (
-                            <><strong>{query}</strong>{name.substring(query.length)}</>
-                          ) : (
-                            name
-                          )}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {matchingProducts.length > 0 && (
-                <div className="zepto-products-section">
-                  <h4 className="zepto-results-title">Showing results for "{query}"</h4>
-                  <div className="zepto-products-row">
-                    {matchingProducts.map((product) => (
-                      <div className="zepto-mini-card" key={product.id} onClick={() => goToProduct(product.id)}>
-                        <div className="img-box">
-                          {product.discount && <span className="blue-badge">{product.discount}</span>}
-                          {product.isNew && !product.discount && <span className="new-badge">NEW</span>}
-                          <img src={`/product/${product.image}`} alt={product.name} />
-                        </div>
-
-                        <div className="delivery-time">
-                          <AccessTimeIcon style={{ fontSize: "10px" }} /> 8 MINS
-                        </div>
-
-                        <div className="mini-title">{product.name}</div>
-                        <div className="weight-selector">1 pc <KeyboardArrowDownIcon style={{ fontSize: "14px" }} /></div>
-
-                        <div className="price-add-row">
-                          <div className="price-block">
-                            <span className="current-price">₹{product.price}</span>
-                            {product.originalPrice && <span className="old-price">₹{product.originalPrice}</span>}
-                          </div>
-
-                          <button
-                            className="mini-add-btn"
-                            onClick={(e) => handleAddToCart(e, product)}
-                          >
-                            ADD
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* --- LOCATION MODAL --- */}
+      {/* --- LOCATION MODAL--- */}
       {showLocationModal && createPortal(
-        <div className="modal-overlay" onClick={() => {
-          setShowLocationModal(false);
-          setIsAddingAddress(false);
-        }}>
-          <div className="location-modal glass-panel" onClick={(e) => e.stopPropagation()}>
-
-            <div className="modal-header">
-              <div>
-                {isAddingAddress ? (
-                  <button className="back-btn" onClick={() => setIsAddingAddress(false)}>
-                    <ArrowBackIcon fontSize="small" /> Back
-                  </button>
-                ) : (
-                  <>
-                    <h3>Choose your location</h3>
-                    <p className="modal-subtitle">Select a delivery location to see product availability.</p>
-                  </>
-                )}
-              </div>
-              <button className="close-btn" onClick={() => {
-                setShowLocationModal(false);
-                setIsAddingAddress(false);
-              }}>
-                <CloseIcon />
-              </button>
+        <div className="fixed inset-0 z-[2000] flex items-end lg:items-center justify-center">
+          <div className="absolute inset-0 bg-cyan-950/40 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setShowLocationModal(false)} />
+          
+          <div className="relative w-full lg:max-w-xl bg-white rounded-t-[40px] lg:rounded-[40px] shadow-2xl p-6 lg:p-10 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-10 duration-500">
+            <div className="flex justify-between items-center mb-8">
+               {isAddingAddress ? (
+                 <button onClick={() => setIsAddingAddress(false)} className="flex items-center gap-2 text-slate-400 font-black uppercase text-xs hover:text-cyan-900">
+                    <ArrowBackIcon fontSize="inherit" /> Back
+                 </button>
+               ) : (
+                 <div>
+                    <h3 className="text-2xl font-black text-cyan-900 tracking-tight">Select Location</h3>
+                    <p className="text-slate-400 text-sm font-bold">Where should we deliver your order?</p>
+                 </div>
+               )}
+               <button onClick={() => setShowLocationModal(false)} className="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-full hover:bg-red-50 hover:text-red-500 transition-all">
+                  <CloseIcon />
+               </button>
             </div>
 
             {isAddingAddress ? (
-              <form onSubmit={handleSaveAddress} className="detailed-address-form">
-                <div className="address-type-selector">
-                  {["Home", "Work", "Other"].map((type) => (
-                    <button
-                      key={type}
-                      type="button"
-                      className={`type-chip ${addressForm.type === type ? "active" : ""}`}
-                      onClick={() => handleTypeSelect(type)}
-                    >
-                      {type === "Home" && <HomeOutlinedIcon fontSize="small" />}
-                      {type === "Work" && <WorkOutlineIcon fontSize="small" />}
-                      {type === "Other" && <MapOutlinedIcon fontSize="small" />}
-                      {type}
-                    </button>
-                  ))}
+              /* Detailed form  */
+              <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+                <div className="flex gap-3">
+                   {["Home", "Work", "Other"].map(type => (
+                     <button 
+                       key={type}
+                       onClick={() => setAddressForm({...addressForm, type})}
+                       className={`flex-1 py-3 rounded-2xl font-black text-xs uppercase tracking-widest border-2 transition-all ${addressForm.type === type ? 'bg-cyan-900 border-cyan-900 text-white shadow-lg shadow-cyan-900/20' : 'bg-slate-50 border-transparent text-slate-400'}`}
+                     >
+                       {type}
+                     </button>
+                   ))}
                 </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Receiver's Name *</label>
-                    <input type="text" name="name" placeholder="John Doe" value={addressForm.name} onChange={handleAddressChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label>Phone Number *</label>
-                    <input type="tel" name="phone" placeholder="10-digit mobile number" value={addressForm.phone} onChange={handleAddressChange} required maxLength="10" />
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input className="p-4 bg-slate-50 rounded-2xl font-bold outline-none border-2 border-transparent focus:border-cyan-900 focus:bg-white transition-all" placeholder="Receiver's Name" />
+                  <input className="p-4 bg-slate-50 rounded-2xl font-bold outline-none border-2 border-transparent focus:border-cyan-900 focus:bg-white transition-all" placeholder="Phone Number" />
                 </div>
-
-                <div className="form-group">
-                  <label>Flat, House no., Building, Apartment *</label>
-                  <input type="text" name="street" value={addressForm.street} onChange={handleAddressChange} required />
-                </div>
-
-                <div className="form-group">
-                  <label>Area, Street, Sector, Village (Optional)</label>
-                  <input type="text" name="landmark" value={addressForm.landmark} onChange={handleAddressChange} />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Town / City *</label>
-                    <input type="text" name="city" value={addressForm.city} onChange={handleAddressChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label>Pincode *</label>
-                    <input type="text" name="pin" placeholder="6 digits" value={addressForm.pin} onChange={handleAddressChange} required maxLength="6" />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>State *</label>
-                  <input type="text" name="state" value={addressForm.state} onChange={handleAddressChange} required />
-                </div>
-
-                <button type="submit" className="save-address-btn">Save Address Details</button>
-              </form>
+                <input className="p-4 bg-slate-50 rounded-2xl font-bold outline-none border-2 border-transparent focus:border-cyan-900 focus:bg-white transition-all" placeholder="Flat / House No. / Building" />
+                <button className="w-full py-5 bg-cyan-900 text-white rounded-[24px] font-black shadow-xl shadow-cyan-900/20 hover:bg-cyan-950 transition-all uppercase tracking-widest">
+                   Save & Deliver Here
+                </button>
+              </div>
             ) : (
-              <>
-                <button className="add-address-trigger" onClick={() => setIsAddingAddress(true)}>
-                  <div className="add-icon-wrapper"><AddIcon /></div>
-                  <div className="add-text">
-                    <strong>Add New Address</strong>
-                    <span>Deliver to a different location</span>
+              /* Saved addresses */
+              <div className="flex flex-col gap-6">
+                <button onClick={() => setIsAddingAddress(true)} className="flex items-center gap-4 p-5 border-2 border-dashed border-slate-200 rounded-3xl hover:border-cyan-900 hover:bg-cyan-50 transition-all group text-left">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-900 group-hover:bg-cyan-900 group-hover:text-white transition-all">
+                    <AddIcon />
+                  </div>
+                  <div>
+                    <p className="font-black text-slate-900 text-lg group-hover:text-cyan-900 transition-colors">Add New Address</p>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">For a different location</p>
                   </div>
                 </button>
 
-                <div className="divider-text"><span>or</span></div>
-
-                <button className={`geo-btn premium-shadow ${loading ? 'loading' : ''}`} onClick={handleDetectLocation} disabled={loading}>
-                  <div className="geo-btn-content">
-                    <MyLocationIcon className={loading ? "spin-icon" : "pulse-icon"} />
-                    <div className="geo-text">
-                      <span className="geo-title">{loading ? "Detecting location..." : "Use current location"}</span>
-                      <span className="geo-subtitle">Using GPS</span>
-                    </div>
+                <button className="flex items-center gap-4 p-5 bg-cyan-900 text-white rounded-3xl shadow-xl shadow-cyan-900/30 hover:scale-[1.01] transition-all">
+                  <MyLocationIcon className="animate-pulse text-cyan-200" />
+                  <div className="text-left">
+                    <p className="font-black text-lg">Use Current Location</p>
+                    <p className="text-xs text-cyan-200/60 font-bold uppercase tracking-widest">Using GPS</p>
                   </div>
                 </button>
-
-                <div className="saved-addresses-container">
-                  <h4 className="saved-title">Saved Addresses</h4>
-                  <div className="saved-addresses">
-                    <div className="address-item" onClick={() => handleSelectSaved("Home - New Delhi, 110001")}>
-                      <div className="address-icon home-icon"><HomeOutlinedIcon /></div>
-                      <div className="address-details">
-                        <strong>Home</strong>
-                        <p>Block C, Connaught Place, New Delhi, 110001</p>
-                      </div>
-                    </div>
-                    <div className="address-item" onClick={() => handleSelectSaved("Work - Gurugram, 122018")}>
-                      <div className="address-icon work-icon"><WorkOutlineIcon /></div>
-                      <div className="address-details">
-                        <strong>Work</strong>
-                        <p>Cyber City, DLF Phase 2, Gurugram, Haryana 122018</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </>
+              </div>
             )}
-
           </div>
         </div>,
         document.body
       )}
-    </>
+    </div>
   );
 }
 

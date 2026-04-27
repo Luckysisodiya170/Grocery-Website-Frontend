@@ -1,4 +1,3 @@
-// src/components/ui/ButtonComponent.jsx
 import React from "react";
 
 const ButtonComponent = ({ text, onClick, loading, disabled, type = "button" }) => {

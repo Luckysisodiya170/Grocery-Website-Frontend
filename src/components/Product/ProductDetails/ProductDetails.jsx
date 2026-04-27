@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useRef } from "react"; // useState aur useEffect ki zaroorat nahi ab
+import { useRef } from "react"; 
 import products from "../../../data/products.json";
 import ProductGallery from "../ProductGallery";
 import ProductInfo from "../ProductInfo";

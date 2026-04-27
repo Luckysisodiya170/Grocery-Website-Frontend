@@ -21,7 +21,6 @@ function ProductGallery({ product }) {
   const imgSrc = (img) =>
     img.startsWith("http") ? img : `/product/${img}`;
 
-  // Build a simple set of thumbs (up to 4 views of same image if no gallery array)
   const thumbs = product.images
     ? product.images
     : [product.image, product.image, product.image];

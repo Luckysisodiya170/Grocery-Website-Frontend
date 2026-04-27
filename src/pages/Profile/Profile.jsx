@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"; // 👈 useRef import kiya
+import { useState, useEffect, useRef } from "react"; 
 import Sidebar from "./components/Sidebar";
 import PersonalInfo from "./components/PersonalInfo";
 import ManageAddress from "./components/ManageAddress";
@@ -13,12 +13,9 @@ import "./profile1.css";
 function Profile() {
   const [activeTab, setActiveTab] = useState("personal");
   
-  // ✅ 1. Ek Reference banaya jo page ke top ko point karega
   const profileTopRef = useRef(null);
 
-  // ✅ 2. Universal Scroll Fix
   useEffect(() => {
-    // Thoda sa (50ms) delay diya taaki naya tab DOM me load ho sake
     setTimeout(() => {
       if (profileTopRef.current) {
         profileTopRef.current.scrollIntoView({ 
@@ -44,8 +41,7 @@ function Profile() {
   };
 
   return (
-    // ✅ 3. Ref ko main div par lagaya. 
-    // scrollMarginTop isliye taaki aapka sticky Navbar content ke upar overlap na kare.
+ 
     <div className="account-page" ref={profileTopRef} style={{ scrollMarginTop: "100px" }}>
       <div className="account-header">
         <h1>My Account</h1>

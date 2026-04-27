@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import mockData from "../../../data/mockData.json"; // 👈 Update path according to your folder structure
+import mockData from "../../../data/mockData.json";
 
 // Icons
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";

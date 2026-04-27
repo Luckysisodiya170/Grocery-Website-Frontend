@@ -1,43 +1,44 @@
 import React from "react";
-import Card from "../../components/Product/Productcard/Productcard"; // Adjust path as needed
-import "./categoryPage.css"
+import Card from "../../components/Product/Productcard/Productcard";
 
-// 🔴 ADDED sortOrder and setSortOrder to props
-const ProductGrid = ({ products, activeCategory, activeSub, clearFilters, sortOrder, setSortOrder }) => {
+const ProductGrid = ({ products, activeSub, clearFilters, sortOrder, setSortOrder }) => {
   return (
-    <main className="cat-product-area">
-      <div className="cat-area-header">
-        <h2>{activeSub === "All" ? `All ${activeCategory}` : activeSub}</h2>
-      
+    <main className="w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-white/10">
         
-        <div className="header-actions">
-          <span className="product-count">{products.length} items</span>
+        {/* 🌟 FIX: "All Category" hata kar sirf "All Products" likha hai */}
+        <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tighter italic uppercase">
+          {activeSub === "All" ? "All Products" : activeSub}
+        </h2>
+        
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          <span className="bg-white/5 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black text-white/70 border border-white/10">
+            {products.length} ITEMS
+          </span>
           <select 
-            className="sort-dropdown"
+            className="flex-1 sm:flex-none bg-slate-900 text-white text-xs font-black p-3 rounded-xl border border-white/10 outline-none cursor-pointer hover:border-cyan-500 transition-all uppercase tracking-widest"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
           >
-            <option value="featured">Sort by: Featured</option>
+            <option value="featured">Featured</option>
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
           </select>
         </div>
-      
-   </div>
+      </div>
+
       {products.length > 0 ? (
-        <div className="cat-product-grid">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-8">
           {products.map((product) => (
             <Card key={product.id} product={product} />
           ))}
         </div>
       ) : (
-        <div className="cat-empty-state">
-          <div className="empty-icon-wrapper glass-panel">
-            <span className="empty-icon">🛒</span>
-          </div>
-          <h3>No products found!</h3>
-          <p>We couldn't find anything matching your search for {activeSub}.</p>
-          <button className="btn-primary" onClick={clearFilters}>
+        <div className="flex flex-col items-center justify-center py-24 px-6 bg-white/5 backdrop-blur-xl border-2 border-dashed border-white/10 rounded-[40px] text-center">
+          <div className="w-20 h-20 mb-6 flex items-center justify-center bg-white/5 rounded-full text-4xl shadow-inner">🛒</div>
+          <h3 className="text-2xl font-black text-white mb-2">No products found!</h3>
+          <p className="text-slate-400 font-bold mb-8 max-w-sm">We couldn't find anything matching your selection.</p>
+          <button className="bg-cyan-500 text-black px-10 py-4 rounded-full font-black uppercase tracking-widest hover:bg-cyan-400 transition-all shadow-xl shadow-cyan-500/20" onClick={clearFilters}>
             Clear Filters
           </button>
         </div>

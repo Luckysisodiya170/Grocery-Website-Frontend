@@ -10,7 +10,6 @@ function BusinessIds({ vendorData, handleChange }) {
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFileName(e.target.files[0].name);
-      // To handle actual file logic for backend, uncomment below:
       // handleChange({ target: { name: "tradeLicenseFile", value: e.target.files[0] }});
     }
   };

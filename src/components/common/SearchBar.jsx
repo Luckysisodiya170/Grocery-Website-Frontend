@@ -81,7 +81,7 @@ function SearchBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filter logic (In a real app, this would come from an API based on the query)
+  // Filter logic 
   const filteredSuggestions = mockSuggestions.filter((item) =>
     item.toLowerCase().includes(query.toLowerCase())
   );

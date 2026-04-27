@@ -62,7 +62,7 @@ function LoginRegister() {
   };
 
   const handleRequestOtp = async (e) => {
-    if (e) e.preventDefault(); // Added to handle both click and Enter key gracefully
+    if (e) e.preventDefault(); 
     if (!formData.mobile || formData.mobile.length < 10) return triggerError("mobile", "Enter a valid mobile number");
     if (isRegister && !formData.name.trim()) return triggerError("name", "Enter your full name");
 
@@ -119,7 +119,7 @@ function LoginRegister() {
     }, 1000);
   };
 
-  // 🔥 Helper function for Enter key press
+  // Helper function for Enter key press
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -162,7 +162,7 @@ function LoginRegister() {
               )}
 
               {role === "user" || !isRegister ? (
-                // 🔥 Form par onKeyDown lagaya hai
+            
                 <form onSubmit={handleRequestOtp} onKeyDown={handleKeyDown}>
                   {isRegister && <InputComponent icon={PersonIcon} label="Full Name" name="name" value={formData.name} onChange={handleInputChange} error={fieldErrors.name} />}
 
@@ -170,7 +170,7 @@ function LoginRegister() {
                     <label className="text-xs font-semibold text-textLight">Mobile Number</label>
                     <PhoneInput
                       country="in" value={formData.mobile} onChange={handleMobileChange}
-                      // 🔥 PhoneInput ko explicitly onKeyDown pass kiya
+                 
                       onKeyDown={handleKeyDown}
                       inputClass={`!w-full !h-12 !pl-[55px] !rounded-md !border-1.5 !bg-bgSoft !text-sm transition-all focus:!border-primary focus:!bg-white focus:!ring-2 focus:!ring-teal-50 ${fieldErrors.mobile ? "!border-danger !bg-red-50" : "!border-borderMain"}`}
                       buttonClass="!border-none !bg-transparent !border-r !border-borderMain !rounded-l-md"

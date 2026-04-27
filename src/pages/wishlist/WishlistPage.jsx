@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useWishlist } from './WishlistContext';
-import { useCart } from '../cart/CartContext'; // Path apne hisaab se check karein
-// 👇 AUTH CONTEXT IMPORT KAREIN (Path apne folder structure ke hisaab se set karein)
+import { useCart } from '../cart/CartContext'; 
 import { useAuth } from '../../context/AuthContext'; 
 import "./wishlist.css";
 
@@ -11,10 +10,8 @@ const WishlistPage = () => {
   const { wishlist, toggleWishlist } = useWishlist();
   const { cart, addToCart, removeFromCart } = useCart();
   
-  // 👇 User ka login status nikalne ke liye
   const { user } = useAuth();
 
-  // 👇 Login Protection Helper (Aapke Card.jsx se liya gaya)
   const requireLogin = () => {
     if (!user) {
       navigate("/login");
@@ -80,13 +77,12 @@ const WishlistPage = () => {
                     </div>
 
                     <div className="col-action">
-                       {/* 👇 LOGIN CHECK ADDED HERE 👇 */}
                        {quantity === 0 ? (
                          <button 
                            className="wish-add-cart-btn" 
                            onClick={(e) => { 
                              e.stopPropagation(); 
-                             if (requireLogin()) addToCart(item); // Login hai tabhi add hoga
+                             if (requireLogin()) addToCart(item); 
                            }}
                          >
                            Add to cart
@@ -109,7 +105,6 @@ const WishlistPage = () => {
                          className="wish-remove-btn" 
                          onClick={(e) => { 
                            e.stopPropagation(); 
-                           // Agar wishlist se remove karne ke liye bhi login chahiye toh yahan bhi requireLogin() laga sakti hain
                            toggleWishlist(item); 
                          }}
                          title="Remove from Wishlist"

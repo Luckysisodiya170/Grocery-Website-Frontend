@@ -1,51 +1,62 @@
 import React from "react";
-import "./categoryPage.css"; 
 
-const CategorySidebar = ({ subCategoriesData = [], activeSub, setActiveSub }) => {
-  if (!subCategoriesData || subCategoriesData.length === 0) return null;
+const CategorySidebar = ({ categories, activeCategory, activeSub, setActiveSub }) => {
+  const currentCat = categories.find(c => c.name === activeCategory);
+  if (!currentCat) return null;
 
-  const IMAGE_FOLDER_PATH = "/product/"; 
+  const subData = [
+    { name: "All", image: currentCat.icon || currentCat.image },
+    ...(currentCat.subcategories || [])
+  ];
 
   return (
-    <aside className="cat-sidebar-rail">
-      <ul className="sub-cat-list-rail">
-        {subCategoriesData.map((sub, index) => {
-          
-          const safeImage = sub?.image || "default.png";
-          let finalImagePath = safeImage;
-          
-          if (typeof safeImage === "string" && !safeImage.startsWith("/") && !safeImage.startsWith("http")) {
-             finalImagePath = `${IMAGE_FOLDER_PATH}${safeImage}`;
-          }
+    <aside className="lg:sticky lg:top-32 flex lg:flex-col gap-10 overflow-x-auto lg:overflow-visible pb-8 scrollbar-hide snap-x">
+      {/* Scrollbar hide logic inline */}
+      <style>
+        {`
+          .scrollbar-hide::-webkit-scrollbar { display: none; }
+          .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        `}
+      </style>
 
-          const isActive = activeSub === sub?.name;
-
-          return (
-            <li key={index} className="sub-cat-item">
-              <button
-                className={`sub-cat-btn-rail ${isActive ? "active" : ""}`}
-                onClick={() => setActiveSub(sub?.name)}
-              >
-                <div className="sub-cat-img-box">
-                  <img 
-                    src={finalImagePath} 
-                    alt={sub?.name || "Category"} 
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.onerror = null; 
-                      e.target.src = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Crect width='60' height='60' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%2394a3b8'%3ENo Img%3C/text%3E%3C/svg%3E";
-                    }}
-                  />
-                </div>
-                <span className="sub-cat-name">{sub?.name}</span>
-              </button>
+      {subData.map((sub, idx) => {
+        const isActive = activeSub === sub.name;
+        
+        return (
+          <button
+            key={idx}
+            onClick={() => setActiveSub(sub.name)}
+            className="flex flex-col items-center gap-4 group outline-none shrink-0 snap-center transition-all"
+          >
+            {/* Circle UI - Large Size like Category Row */}
+            <div className={`relative w-24 h-24 lg:w-25 lg:h-25 rounded-full overflow-hidden border-[2px] transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.5)] bg-slate-900 flex items-center justify-center
+              ${isActive 
+                ? "border-cyan-500 shadow-cyan-500/30 scale-110" 
+                : "border-white/20 group-hover:border-white/60"}`}>
               
-              {/* Animated Active Pill Indicator */}
-              {isActive && <div className="active-indicator"></div>}
-            </li>
-          );
-        })}
-      </ul>
+              <img 
+                src={sub.image} 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                alt={sub.name} 
+              />
+              
+              {/* Subtle Overlay */}
+              <div className={`absolute inset-0 transition-all duration-500 ${isActive ? 'bg-transparent' : 'bg-black/10 group-hover:bg-transparent'}`}></div>
+            </div>
+            
+            {/* Subcategory Name */}
+            <span className={`text-[11px] lg:text-[13px] font-black uppercase tracking-[2px] text-center max-w-[100px] leading-tight transition-all
+              ${isActive ? "text-cyan-500" : "text-slate-500 group-hover:text-white"}`}>
+              {sub.name}
+            </span>
+
+            {/* Active Indicator Line for Desktop */}
+            {isActive && (
+              <div className="hidden lg:block absolute -right-2 top-1/3 w-1 h-12 bg-cyan-500 rounded-full shadow-[0_0_15px_#06b6d4]" />
+            )}
+          </button>
+        );
+      })}
     </aside>
   );
 };

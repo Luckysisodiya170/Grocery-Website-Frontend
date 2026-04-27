@@ -18,7 +18,7 @@ function VendorRegister() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Master State Data
+  //  State Data
   const [vendorData, setVendorData] = useState({
     businessName: "", businessCategory: [], ownerName: "", email: "", password: "", contactNumber: "", emergencyContact: "",
     address: "", city: "", state: "", country: "India", pincode: "", geoLocation: "",

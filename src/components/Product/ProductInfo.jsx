@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate import karein
+import { useNavigate } from "react-router-dom"; 
 import { useCart } from "../../pages/cart/CartContext"; 
-import { useAuth } from "../../context/AuthContext"; // AuthContext import karein
+import { useAuth } from "../../context/AuthContext"; 
 import { toast } from "react-toastify";
 
 function ProductInfo({ product }) {
   const navigate = useNavigate();
-  const { user } = useAuth(); // User status check karne ke liye
+  const { user } = useAuth(); 
   const { addToCart } = useCart();
   
   const [qty, setQty] = useState(1);
@@ -15,7 +15,7 @@ function ProductInfo({ product }) {
   // --- LOGIN CHECK LOGIC ---
   const requireLogin = () => {
     if (!user) {
-      toast.warn("Please login to add items to cart"); // User ko batane ke liye
+      toast.warn("Please login to add items to cart"); 
       navigate("/login");
       return false;
     }
@@ -35,7 +35,7 @@ function ProductInfo({ product }) {
 
   // --- ADD TO CART HANDLER ---
   const handleAddToCart = () => {
-    // 🌟 FIX: Login check yahan add kiya
+
     if (!requireLogin()) return; 
 
     const uniqueId = `${product.id}-${weight}`; 

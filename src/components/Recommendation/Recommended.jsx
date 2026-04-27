@@ -24,14 +24,7 @@ function Recommended({ products = [] }) {
           <p className="text-xl text-yellow-400 font-bold mt-1 uppercase tracking-tighter">Handpicked for you</p>
         </div>
         
-        <div className="flex gap-2">
-          <button onClick={() => scroll("left")} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white hover:bg-green-600 transition-all">
-            <ArrowBackIosNewIcon className="!text-sm" />
-          </button>
-          <button onClick={() => scroll("right")} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white hover:bg-green-600 transition-all">
-            <ArrowForwardIosIcon className="!text-sm" />
-          </button>
-        </div>
+       
       </div>
 
      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">

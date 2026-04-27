@@ -1,79 +1,88 @@
-import React, { useRef, useState } from "react";
-import "./categoryPage.css";
+import React from "react";
+import { useNavigate } from "react-router-dom"; // 👈 Router import for navigation
 
 const CategoryRow = ({ categories, activeCategory, onSelectCategory }) => {
-  const scrollRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const navigate = useNavigate(); // 👈 Initialize Navigate
 
-  // 🌟 CLICK TO SCROLL FUNCTIONALITY
-  const handleScroll = (direction) => {
-    if (scrollRef.current) {
-      const scrollAmount = 400; // Ek click me kitna aage jayega
-      scrollRef.current.scrollBy({ 
-        left: direction === "right" ? scrollAmount : -scrollAmount, 
-        behavior: "smooth" 
-      });
-    }
-  };
-
-  // 🌟 MOUSE DRAG / SWIPE FUNCTIONALITY
-  const onMouseDown = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX - scrollRef.current.offsetLeft);
-    setScrollLeft(scrollRef.current.scrollLeft);
-  };
-
-  const onMouseLeave = () => setIsDragging(false);
-  const onMouseUp = () => setIsDragging(false);
-
-  const onMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Drag speed
-    scrollRef.current.scrollLeft = scrollLeft - walk;
-  };
+  const filteredCategories = categories.filter(
+    (cat) => cat.subcategories && cat.subcategories.length > 0
+  );
 
   return (
-    <div className="main-cat-section">
-      <div className="section-header-row">
-        <h4 className="section-subtitle">Explore 3D Categories</h4>
-        <div className="cat-nav-buttons">
-          <button className="nav-arrow" onClick={() => handleScroll("left")}>❮</button>
-          <span className="swipe-hint">Swipe or Click ➔</span>
-          <button className="nav-arrow" onClick={() => handleScroll("right")}>❯</button>
-        </div>
-      </div>
+    <div className="w-full mb-10 overflow-hidden px-4">
       
-      {/* 3D Perspective Wrapper */}
-      <div className="cat-perspective-wrapper">
-        <div 
-          className={`main-cat-row ${isDragging ? 'dragging' : ''}`}
-          ref={scrollRef}
-          onMouseDown={onMouseDown}
-          onMouseLeave={onMouseLeave}
-          onMouseUp={onMouseUp}
-          onMouseMove={onMouseMove}
-        >
-          {categories.map((cat, index) => (
-            <button
-              key={index}
-              className={`cat-3d-card ${activeCategory === cat.name ? "active" : ""}`}
-              onClick={() => {
-                if (!isDragging) onSelectCategory(cat.name);
-              }}
-            >
-              <div className="cat-3d-content">
-                <div className="cat-icon-box">
-                  <img src={`/category/${cat.image}`} alt={cat.name} loading="lazy" draggable="false" />
-                </div>
-                <span className="cat-name">{cat.name}</span>
-              </div>
-            </button>
-          ))}
+      {/* 🌟 Title & Back Button Section (Flexbox Layout) */}
+      <div className="mb-10 flex flex-col sm:flex-row justify-between items-center sm:items-end gap-6 sm:gap-0">
+        
+        {/* Left Side: Title */}
+        <div className="text-center sm:text-left">
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tighter italic uppercase">
+            Shop by <span className="text-cyan-500">Category</span>
+          </h2>
+          <div className="flex items-center justify-center sm:justify-start gap-4 mt-3">
+            <div className="h-[2px] w-12 bg-cyan-500 hidden lg:block"></div>
+            <p className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-[5px]">
+              Explore our curated collections
+            </p>
+          </div>
         </div>
+
+        {/* Right Side: Back to Home Button */}
+        <button 
+          onClick={() => navigate("/")} 
+          className="group flex items-center gap-2 bg-white hover:bg-cyan-500 border border-white/10 hover:border-cyan-500 text-black-400 hover:text-black px-6 py-3 rounded-full font-black uppercase tracking-widest text-[12px] sm:text-md transition-all duration-300 shadow-xl shrink-0"
+        >
+          <span className="text-lg leading-none mb-0.5 group-hover:-translate-x-1 transition-transform">←</span>
+         Back To Home
+        </button>
+      </div>
+
+      {/* Categories Scroll Row */}
+      <div 
+        className="flex gap-8 sm:gap-14 overflow-x-auto pb-8 snap-x scrollbar-hide"
+        style={{ 
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none'
+        }}
+      >
+        <style>
+          {`
+            .scrollbar-hide::-webkit-scrollbar {
+              display: none;
+            }
+          `}
+        </style>
+
+        {filteredCategories.map((cat) => {
+          const isActive = activeCategory === cat.name;
+          
+          return (
+            <div
+              key={cat.id}
+              onClick={() => onSelectCategory(cat.name)}
+              className="flex flex-col items-center gap-5 cursor-pointer group min-w-[130px] sm:min-w-[180px] snap-start"
+            >
+              <div className={`relative w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-[2px] transition-all duration-500 shadow-[0_10px_50px_rgba(0,0,0,0.6)] bg-slate-900 flex items-center justify-center
+                ${isActive 
+                  ? "border-cyan-500 shadow-cyan-500/30 scale-110" 
+                  : "border-white/20 group-hover:border-white/60"}`}>
+                
+                <img
+                  src={cat.icon || cat.image}
+                  alt={cat.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all duration-500"></div>
+              </div>
+
+              <span className={`text-[12px] sm:text-[14px] font-black uppercase tracking-[2px] text-center transition-all duration-300
+                ${isActive ? "text-cyan-500" : "text-white/80 group-hover:text-white"}`}>
+                {cat.name}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
