@@ -77,7 +77,7 @@ const handleRequestOtp = async (e) => {
         ...(isRegister && { name: formData.name, email: formData.email })
       };
 
-      // 🔥 Service Layer Call
+      // Service Layer Call
       const response = await requestOtp(payload);
       
       if (response.success) {
@@ -106,7 +106,6 @@ const handleRequestOtp = async (e) => {
     }
     setError("");
     setLoading(true);
-    // Future: Connect Vendor Register API here using api.post()
     setTimeout(() => {
       setLoading(false);
       toast.success("Vendor Registered Successfully! Please login.");

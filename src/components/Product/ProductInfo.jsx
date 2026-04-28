@@ -16,7 +16,6 @@ function ProductInfo({ product }) {
   const rating = parseFloat(product.avg_rating || 0).toFixed(1);
   const reviewsCount = product.reviews?.length || 0;
 
-  // 🌟 LOGIN CHECK LOGIC (Strict)
   const requireLogin = () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -28,9 +27,9 @@ function ProductInfo({ product }) {
   };
 
   const handleAddToCart = () => {
-    if (!requireLogin()) return; // 🌟 Agar login nahi hai, toh yahan se aage nahi jayega
+    if (!requireLogin()) return; 
 
-    // addToCart({ ...product, quantity: qty }); // Ise on kar lena
+    // addToCart({ ...product, quantity: qty }); // add to cart
     toast.success(`${product.name} added to cart!`);
   };
 

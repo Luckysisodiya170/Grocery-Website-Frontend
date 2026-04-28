@@ -33,12 +33,10 @@ const OrderHistory = () => {
     return <div className="loader-box">Loading your orders...</div>;
   }
 
-  // 🌟 ULTRA CLEAN GRID ROW 
   const renderCleanRow = (order) => {
     const { id, createdAt, status, items = [], total } = order;
     const statusClass = status.toLowerCase().replace(/\s+/g, "-");
     
-    // Clean items logic: Show only 1st item name + count of others
     const firstItem = items[0];
     const extraItemsCount = items.length - 1;
     const itemsText = extraItemsCount > 0 

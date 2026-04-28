@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined"; // 👈 Edit Icon imported
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined"; 
 
 function PersonalInfo() {
   const { user, updateUser } = useAuth();

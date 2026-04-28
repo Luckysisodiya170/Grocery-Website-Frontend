@@ -43,7 +43,6 @@ const Card = ({ product }) => {
     }
   };
 
-  // Logical fix: API 'sale_price' bhejta hai aur normalization ke baad price keys change ho jati hain
   const offerPrice = parseFloat(product.offer_price || product.sale_price || 0);
   const mrp = parseFloat(product.mrp || product.MRP || 0);
   const discount = product.discount_percentage || product.discount_value || 0;
@@ -67,7 +66,7 @@ const Card = ({ product }) => {
           </span>
         )}
 
-        {/* Image Container - Fixed Key to 'image' */}
+        {/* Image Container */}
         <div className="w-full aspect-square bg-slate-50/30 overflow-hidden cursor-pointer flex items-center justify-center" onClick={goToProduct}>
           <img 
             src={product.image || product.product_image || product.primary_image} 

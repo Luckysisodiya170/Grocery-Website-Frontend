@@ -22,13 +22,12 @@ const ErrorFallback = ({ type, retryAction, isRetrying }) => {
 
       <button 
         onClick={retryAction}
-        disabled={isRetrying} // Loading ke time button disable
+        disabled={isRetrying} 
         className={`${isOffline ? 'bg-cyan-500 shadow-cyan-500/20' : 'bg-red-500 shadow-red-500/20'} 
           min-w-[200px] text-black px-12 py-4 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-3`}
       >
         {isRetrying ? (
           <>
-            {/* 🌟 Chhota Spinner button ke andar */}
             <div className="w-5 h-5 border-4 border-black/20 border-t-black rounded-full animate-spin"></div>
             <span>Checking...</span>
           </>

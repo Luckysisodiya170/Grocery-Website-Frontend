@@ -1,9 +1,7 @@
 function RatingBreakdown({ product }) {
-  // API se aane wala data safely extract kar rahe hain
   const rating = parseFloat(product.avg_rating || 0).toFixed(1);
   const reviewsCount = product.reviews?.length || 0;
 
-  // Agar real data hai toh calculations karna, warna default design
   const bars = [
     { stars: 5, fill: "80%" },
     { stars: 4, fill: "15%" },

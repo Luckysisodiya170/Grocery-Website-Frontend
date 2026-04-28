@@ -20,9 +20,7 @@ const CheckoutPage = () => {
   const [addresses, setAddresses] = useState(userData.locations);
   const [showNewAddress, setShowNewAddress] = useState(false);
 
-  // ==========================
   // Add Address
-  // ==========================
   const handleAddAddress = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -42,12 +40,9 @@ const CheckoutPage = () => {
     toast.success("Address Added Successfully");
   };
 
-  // ==========================
-  // Place Order (Instant Redirect & Top-Center Toast)
-  // ==========================
+  // Place Order
   const handlePlaceOrder = () => {
     if (!cart.length) {
-      // Error toast also in top-center
       toast.error("Cart is empty", { position: "top-center" });
       return;
     }
@@ -61,18 +56,16 @@ const CheckoutPage = () => {
       createdAt: new Date().toISOString(),
     };
 
-    addOrder(newOrder); // Saves to your OrdersContext
-    clearCart();        // Clears the cart
+    addOrder(newOrder); 
+    clearCart();        
 
-    // ✅ TOP-CENTER TOAST
     toast.success("Order Placed Successfully 🎉", {
       position: "top-center",
-      autoClose: 2000, // Automatically close after 2 seconds
+      autoClose: 2000, 
       hideProgressBar: false,
       closeOnClick: true,
     });
 
-    // ✅ INSTANT REDIRECT (setTimeout hata diya hai)
     navigate("/order-success", { state: { orderId: newOrder.id } });
   };
   return (

@@ -7,7 +7,7 @@ const api = axios.create({
   baseURL: BASE_URL,
 });
 
-// 2. REQUEST INTERCEPTOR (Token add karta hai)
+// 2. REQUEST INTERCEPTOR 
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
@@ -17,20 +17,20 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 3. COMBINED RESPONSE INTERCEPTOR (Token Refresh + Global Error dono handle karega)
+// 3. COMBINED RESPONSE INTERCEPTOR
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // 🌟 A. GLOBAL SERVER ERROR (500) & NETWORK DOWN HANDLER
+    // GLOBAL SERVER ERROR (500) & NETWORK DOWN HANDLER
     if (!error.response || error.response.status >= 500) {
       const event = new CustomEvent("server-error");
       window.dispatchEvent(event);
       return Promise.reject(error);
     }
 
-    // 🌟 B. 401 UNAUTHORIZED (TOKEN REFRESH) HANDLER
+    //  401 UNAUTHORIZED (TOKEN REFRESH) HANDLER
     if (error.response?.status === 401 && !originalRequest._retry) {
       const refreshToken = localStorage.getItem('refreshToken');
 

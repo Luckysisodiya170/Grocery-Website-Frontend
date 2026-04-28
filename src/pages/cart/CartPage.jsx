@@ -22,7 +22,6 @@ const CartPage = () => {
   const [discount, setDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
   
-  // 🔥 NAYA STATE: Tip ke liye
   const [tipAmount, setTipAmount] = useState(0);
 
   const subtotal = useMemo(
@@ -30,12 +29,10 @@ const CartPage = () => {
     [cart]
   );
 
-  // 🔥 NAYE CHARGES CALCULATION
   const deliveryFee = subtotal > 999 || subtotal === 0 ? 0 : 60;
-  const platformFee = subtotal > 0 ? 15 : 0; // Small fixed platform fee
+  const platformFee = subtotal > 0 ? 15 : 0; 
   const gst = subtotal > 0 ? Math.round(subtotal * 0.05) : 0; // 5% GST
   
-  // Naya Grand Total Formula
   const grandTotal = subtotal + deliveryFee + platformFee + gst + tipAmount - discount;
 
   const handleApplyCoupon = () => {

@@ -25,7 +25,6 @@ export const OrdersProvider = ({ children }) => {
     setOrders((prev) => [order, ...prev]);
   };
 
-  // ✅ ADD THIS LINE
   const updateOrders = (updatedOrders) => {
     setOrders(updatedOrders);
   };

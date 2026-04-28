@@ -1,7 +1,6 @@
 function ReviewList({ product }) {
   const reviews = product.reviews || [];
 
-  // Helper function to render stars based on rating number
   const renderStars = (rating) => {
     const filled = "★".repeat(rating);
     const empty = "☆".repeat(5 - rating);

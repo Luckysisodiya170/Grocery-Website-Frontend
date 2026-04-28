@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../utils/api.js"; // 
+import api from "../../utils/api.js";  
 import { useAuth } from "../../context/AuthContext"; 
 
 import app from "../../assets/screen/WhatsApp Image 2026-02-20 at 12.54.29 AM.jpeg";
@@ -9,7 +9,7 @@ import Recommended from "../../components/Recommendation/Recommended.jsx";
 
 function Home() {
   const navigate = useNavigate();
-  const { user } = useAuth(); // 👈 User state nikal li takki login par data refresh ho
+  const { user } = useAuth(); 
 
   const [apiData, setApiData] = useState({
     banners: [],
@@ -27,7 +27,6 @@ function Home() {
       if (pageNo === 1) setLoading(true);
       else setLoadMoreLoading(true);
 
-      // 👈 URL short ho gaya aur Headers/Token 'api.js' apne aap sambhal lega
       const response = await api.get(`/customers/home?page=${pageNo}&limit=10`);
       
       if (response.data.success) {
@@ -57,7 +56,6 @@ function Home() {
     }
   };
 
-  // 👈 'user' ko dependency me dala takki login/logout hote hi API wapas chale
   useEffect(() => {
     fetchHomeData(1);
   }, [user]);

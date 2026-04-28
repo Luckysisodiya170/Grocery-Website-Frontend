@@ -5,7 +5,6 @@ import "./myOrders.css";
 const MyOrdersPage = () => {
   const { orders, updateOrders } = useOrders();
 
-  // Simulate order status progression (Optional, you can keep or remove)
   useEffect(() => {
     const interval = setInterval(() => {
       const updated = orders.map((order) => {
@@ -19,7 +18,6 @@ const MyOrdersPage = () => {
     return () => clearInterval(interval);
   }, [orders, updateOrders]);
 
-  // Separate orders into Active and History
   const activeOrders = orders.filter((o) => o.status !== "Delivered" && o.status !== "Cancelled");
   const historyOrders = orders.filter((o) => o.status === "Delivered" || o.status === "Cancelled");
 

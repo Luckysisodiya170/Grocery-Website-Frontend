@@ -83,7 +83,7 @@ const handleSubmit = async (e) => {
 
     setLoading(true);
     try {
-      // 🔥 Service Layer Call
+      // Service Layer Call
       const response = await verifyOtp({
         token: currentToken,
         otp: otpValue,
@@ -94,7 +94,6 @@ const handleSubmit = async (e) => {
         toast.success("Verification successful!");
         const { customer, accessToken, refreshToken } = response.data;
 
-        // ✅ Context ko 3 alag parameters bhejo
         login(customer, accessToken, refreshToken); 
 
         navigate(type === "reset" ? "/reset-password" : "/");

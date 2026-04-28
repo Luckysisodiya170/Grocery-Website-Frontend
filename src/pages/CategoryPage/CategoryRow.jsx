@@ -1,8 +1,8 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // 👈 Router import for navigation
+import { useNavigate } from "react-router-dom"; 
 
 const CategoryRow = ({ categories, activeCategory, onSelectCategory }) => {
-  const navigate = useNavigate(); // 👈 Initialize Navigate
+  const navigate = useNavigate(); 
 
   const filteredCategories = categories.filter(
     (cat) => cat.subcategories && cat.subcategories.length > 0
@@ -11,7 +11,7 @@ const CategoryRow = ({ categories, activeCategory, onSelectCategory }) => {
   return (
     <div className="w-full mb-10 overflow-hidden px-4">
       
-      {/* 🌟 Title & Back Button Section (Flexbox Layout) */}
+      {/*  Title & Back Button Section */}
       <div className="mb-10 flex flex-col sm:flex-row justify-between items-center sm:items-end gap-6 sm:gap-0">
         
         {/* Left Side: Title */}
