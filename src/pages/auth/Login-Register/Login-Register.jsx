@@ -1,7 +1,7 @@
 // src/pages/Auth/LoginRegister.jsx
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
-import axios from "axios";
+import { requestOtp } from "../../../utils/authApi";
 import { toast } from "react-toastify";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -61,7 +61,7 @@ function LoginRegister() {
     setError(message);
   };
 
-  const handleRequestOtp = async (e) => {
+const handleRequestOtp = async (e) => {
     if (e) e.preventDefault(); 
     if (!formData.mobile || formData.mobile.length < 10) return triggerError("mobile", "Enter a valid mobile number");
     if (isRegister && !formData.name.trim()) return triggerError("name", "Enter your full name");
@@ -74,21 +74,18 @@ function LoginRegister() {
         device_id: "web_device_123",
         player_id: "web_player_123",
         device_type: "web",
+        ...(isRegister && { name: formData.name, email: formData.email })
       };
 
-      if (isRegister) {
-        payload.name = formData.name;
-        if (formData.email) payload.email = formData.email;
-      }
-
-      const response = await axios.post("http://13.203.29.79:9000/api/v1/customers/request-otp", payload);
+      // 🔥 Service Layer Call
+      const response = await requestOtp(payload);
       
-      if (response.data.success) {
-        toast.success(response.data.message);
+      if (response.success) {
+        toast.success(response.message);
         navigate("/verify-otp", { 
           state: { 
             phone: formData.mobile, 
-            token: response.data.data.token, 
+            token: response.data.token, 
             purpose: isRegister ? "signup" : "login" 
           } 
         });
@@ -99,7 +96,6 @@ function LoginRegister() {
       setLoading(false);
     }
   };
-
   const handleVendorChange = (e) => {
     setVendorData({ ...vendorData, [e.target.name]: e.target.value });
   };
@@ -110,16 +106,16 @@ function LoginRegister() {
     }
     setError("");
     setLoading(true);
+    // Future: Connect Vendor Register API here using api.post()
     setTimeout(() => {
       setLoading(false);
-      toast.success("Vendor Registered Successfully! Please login.", { position: "top-center" });
+      toast.success("Vendor Registered Successfully! Please login.");
       navigate("/login");
       setCurrentStep(1);
       setRole("user");
     }, 1000);
   };
 
-  // Helper function for Enter key press
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -130,13 +126,13 @@ function LoginRegister() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-5 bg-gradient-to-br from-slate-50 to-indigo-50">
       
-      <div className={`w-full flex flex-col rounded-2xl bg-cardBg shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-borderMain overflow-hidden animate-fade-in transition-all duration-300 ${isRegister && role === "vendor" ? "max-w-[1000px]" : "max-w-[850px]"}`}>
+      <div className={`w-full flex flex-col rounded-2xl bg-[var(--card-bg)] shadow-[var(--shadow-lg)] border border-[var(--border)] overflow-hidden animate-fade-in transition-all duration-300 ${isRegister && role === "vendor" ? "max-w-[1000px]" : "max-w-[850px]"}`}>
 
         <div className="w-full pt-8 pb-2 px-6 text-center z-20">
           <h2 className="text-[22px] md:text-[26px] font-black mb-0.5 text-transparent bg-clip-text bg-brand-gradient tracking-tight">
             Lightning Fast Delivery
           </h2>
-          <p className="text-[12px] md:text-[13px] font-bold text-textMuted">
+          <p className="text-[12px] md:text-[13px] font-bold text-[var(--text-muted)]">
             Experience the best service in your city.
           </p>
         </div>
@@ -147,50 +143,47 @@ function LoginRegister() {
 
             <div className={`w-full ${isRegister && role === "vendor" ? "max-w-[500px]" : "max-w-[350px]"}`}>
               
-              <h2 className="text-2xl font-bold text-textMain mb-1 text-center md:text-left">
+              <h2 className="text-2xl font-bold text-[var(--text-main)] mb-1 text-center md:text-left">
                 {isRegister ? "Create Account" : "Welcome Back"}
               </h2>
-              <p className="text-xs text-textMuted mb-6 text-center md:text-left">
+              <p className="text-xs text-[var(--text-muted)] mb-6 text-center md:text-left">
                 {isRegister ? "Join our community today" : "Login with your mobile number"}
               </p>
 
               {isRegister && (
-                <div className="flex bg-bgSoft rounded-xl p-1 mb-6 border-1.5 border-borderMain">
-                  <button type="button" onClick={() => setRole("user")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${role === "user" ? "bg-brand-gradient text-white shadow-sm" : "text-textMuted hover:text-textMain"}`}>User</button>
-                  <button type="button" onClick={() => setRole("vendor")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${role === "vendor" ? "bg-brand-gradient text-white shadow-sm" : "text-textMuted hover:text-textMain"}`}>Vendor</button>
+                <div className="flex bg-[var(--bg-soft)] rounded-xl p-1 mb-6 border-2 border-[var(--border)]">
+                  <button type="button" onClick={() => setRole("user")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${role === "user" ? "bg-[var(--primary)] text-[var(--secondary)] shadow-sm" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"}`}>User</button>
+                  <button type="button" onClick={() => setRole("vendor")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${role === "vendor" ? "bg-[var(--primary)] text-[var(--secondary)] shadow-sm" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"}`}>Vendor</button>
                 </div>
               )}
 
               {role === "user" || !isRegister ? (
-            
                 <form onSubmit={handleRequestOtp} onKeyDown={handleKeyDown}>
                   {isRegister && <InputComponent icon={PersonIcon} label="Full Name" name="name" value={formData.name} onChange={handleInputChange} error={fieldErrors.name} />}
 
                   <div className="flex flex-col gap-1 mb-3 relative z-50">
-                    <label className="text-xs font-semibold text-textLight">Mobile Number</label>
+                    <label className="text-xs font-semibold text-[var(--text-light)] pl-1">Mobile Number</label>
                     <PhoneInput
                       country="in" value={formData.mobile} onChange={handleMobileChange}
-                 
                       onKeyDown={handleKeyDown}
-                      inputClass={`!w-full !h-12 !pl-[55px] !rounded-md !border-1.5 !bg-bgSoft !text-sm transition-all focus:!border-primary focus:!bg-white focus:!ring-2 focus:!ring-teal-50 ${fieldErrors.mobile ? "!border-danger !bg-red-50" : "!border-borderMain"}`}
-                      buttonClass="!border-none !bg-transparent !border-r !border-borderMain !rounded-l-md"
+                      inputClass={`!w-full !h-12 !pl-[55px] !rounded-[var(--radius-md)] !border-2 !bg-[var(--bg-soft)] !text-sm transition-all focus:!border-[var(--primary)] focus:!bg-[var(--bg)] focus:!ring-2 focus:!ring-teal-50 ${fieldErrors.mobile ? "!border-[var(--danger)] !bg-red-50" : "!border-transparent hover:!border-[var(--border)]"}`}
+                      buttonClass="!border-none !bg-transparent !border-r !border-[var(--border)] !rounded-l-md"
                     />
-                    {fieldErrors.mobile && <span className="text-[11px] text-danger font-semibold px-1">{fieldErrors.mobile}</span>}
+                    {fieldErrors.mobile && <span className="text-[11px] text-[var(--danger)] font-bold px-1 animate-pulse">{fieldErrors.mobile}</span>}
                   </div>
 
                   {isRegister && <InputComponent icon={EmailIcon} label="Email Address (Optional)" name="email" type="email" value={formData.email} onChange={handleInputChange} error={fieldErrors.email} />}
 
-                  {error && <p className="text-[12px] text-danger font-semibold text-center mb-2 animate-pulse">{error}</p>}
+                  {error && <p className="text-[12px] text-[var(--danger)] font-bold text-center mb-2 animate-pulse">{error}</p>}
 
-                  <ButtonComponent type="submit" text={isRegister ? "Send OTP" : "Send OTP"} loading={loading} />
+                  <ButtonComponent type="submit" text="Send OTP" loading={loading} />
                 </form>
-              ) 
-              
-              : (
+              ) : (
                 <div className="mt-2">
-                  <div className="flex justify-between mb-6 border-b-2 border-slate-100 pb-3">
+                  {/* Vendor Steps Logic... (Keeping your existing steps) */}
+                  <div className="flex justify-between mb-6 border-b-2 border-[var(--bg-soft)] pb-3">
                     {["Basic Info", "Location", "Documents", "Bank Details"].map((stepName, idx) => (
-                      <span key={idx} className={`text-xs font-bold transition-colors ${currentStep >= idx + 1 ? "text-teal-600" : "text-slate-400"}`}>
+                      <span key={idx} className={`text-[10px] font-black transition-colors uppercase tracking-tight ${currentStep >= idx + 1 ? "text-[var(--primary)]" : "text-[var(--text-muted)]"}`}>
                         {currentStep > idx + 1 ? "✓ " : `${idx + 1}. `} {stepName}
                       </span>
                     ))}
@@ -203,29 +196,20 @@ function LoginRegister() {
                     {currentStep === 4 && <BankDetails vendorData={vendorData} handleChange={handleVendorChange} />}
                   </div>
 
-                  {error && <p className="text-[12px] text-danger font-semibold mb-2 animate-pulse">{error}</p>}
-
                   <div className="flex gap-4 mt-5">
                     {currentStep > 1 && (
-                      <button type="button" className="flex-[0.5] h-11 rounded-md bg-slate-200 text-slate-700 text-sm font-bold transition-all hover:bg-slate-300" onClick={() => { setError(""); setCurrentStep((prev) => prev - 1); }}>Previous</button>
+                      <button type="button" className="flex-[0.5] h-11 rounded-[var(--radius-md)] bg-[var(--bg-soft)] text-[var(--text-main)] text-sm font-bold transition-all hover:bg-[var(--border)]" onClick={() => { setError(""); setCurrentStep((prev) => prev - 1); }}>Previous</button>
                     )}
-
-                    {currentStep < 4 ? (
-                      <button type="button" className="flex-1 h-11 rounded-md bg-brand-gradient text-white text-sm font-bold transition-all hover:-translate-y-[1px] hover:shadow-float hover:brightness-105" onClick={() => {
-                          if (currentStep === 1 && (!vendorData.businessName || !vendorData.ownerName)) return setError("Please fill required fields.");
-                          setError("");
-                          setCurrentStep((prev) => prev + 1);
-                        }}>Next Step</button>
-                    ) : (
-                      <button type="button" className="flex-1 h-11 rounded-md bg-brand-gradient text-white text-sm font-bold transition-all hover:-translate-y-[1px] hover:shadow-float hover:brightness-105" onClick={handleVendorSubmit} disabled={loading}>{loading ? "Processing..." : "Register as Vendor"}</button>
-                    )}
+                    <button type="button" className="flex-1 h-11 rounded-[var(--radius-md)] bg-[var(--primary)] text-[var(--secondary)] text-sm font-bold transition-all hover:-translate-y-[1px] hover:shadow-[var(--shadow-float)]" onClick={currentStep < 4 ? () => { if (currentStep === 1 && (!vendorData.businessName || !vendorData.ownerName)) return setError("Please fill required fields."); setError(""); setCurrentStep(prev => prev + 1); } : handleVendorSubmit}>
+                      {currentStep < 4 ? "Next Step" : (loading ? "Processing..." : "Register as Vendor")}
+                    </button>
                   </div>
                 </div>
               )}
 
-              <p className="mt-6 text-xs text-center text-textMuted">
+              <p className="mt-6 text-xs text-center text-[var(--text-muted)]">
                 {isRegister ? "Already have an account?" : "Don't have an account?"}
-                <Link to={isRegister ? "/login" : "/register"} className="text-primary font-semibold ml-1 hover:underline" onClick={() => setRole("user")}>
+                <Link to={isRegister ? "/login" : "/register"} className="text-[var(--primary)] font-bold ml-1 hover:underline" onClick={() => setRole("user")}>
                   {isRegister ? "Login" : "Register"}
                 </Link>
               </p>

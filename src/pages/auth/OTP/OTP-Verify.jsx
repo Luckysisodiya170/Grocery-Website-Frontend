@@ -1,7 +1,7 @@
 // src/pages/Auth/OTP/VerifyOtp.jsx
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { verifyOtp, resendOtp } from "../../../utils/authApi";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import bg from "../../../assets/deliveryimage.jpg";
@@ -73,7 +73,7 @@ function VerifyOtp() {
     }
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     const otpValue = otp.join("");
     if (otpValue.length < 6) {
@@ -83,18 +83,20 @@ function VerifyOtp() {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://13.203.29.79:9000/api/v1/customers/verify-otp", {
+      // 🔥 Service Layer Call
+      const response = await verifyOtp({
         token: currentToken,
         otp: otpValue,
         purpose: purpose
       });
 
-      if (response.data.success) {
+      if (response.success) {
         toast.success("Verification successful!");
-        login({
-          token: response.data.data.accessToken, 
-          user: response.data.data.customer
-        });
+        const { customer, accessToken, refreshToken } = response.data;
+
+        // ✅ Context ko 3 alag parameters bhejo
+        login(customer, accessToken, refreshToken); 
+
         navigate(type === "reset" ? "/reset-password" : "/");
       }
     } catch (err) {
@@ -106,18 +108,12 @@ function VerifyOtp() {
 
   const handleResendOtp = async () => {
     if (timer > 0) return;
-    setOtp(["", "", "", "", "", ""]);
-    setError("");
-    inputsRef.current[0].focus();
-    
     try {
-      const response = await axios.post("http://13.203.29.79:9000/api/v1/customers/resend-otp", {
-        token: currentToken
-      });
-      if (response.data.success) {
+      const response = await resendOtp({ token: currentToken });
+      if (response.success) {
         toast.info("New OTP sent!");
         setTimer(30); 
-        if (response.data.data?.token) setCurrentToken(response.data.data.token); 
+        if (response.data?.token) setCurrentToken(response.data.token); 
       }
     } catch (err) {
       toast.error(err.response?.data?.message || "Could not resend OTP.");

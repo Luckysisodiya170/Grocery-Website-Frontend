@@ -3,7 +3,7 @@ import MainLayout from "./layout/Mainlayout";
 import AuthLayout from "./layout/Authlayout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import ErrorFallback from "./components/common/ErrorFallback";
 import Help from "./pages/Help/Help";
 import Home from "./pages/Home/Home";
 import LoginRegister from "./pages/auth/Login-Register/Login-Register";
@@ -19,7 +19,7 @@ import CartPage from "./pages/cart/CartPage";
 import CheckoutPage from "./pages/cart/CheckoutPage";
 import OrderHistory from "./pages/cart/OrderHistory";
 import Profile from "./pages/Profile/Profile";
-
+import { useState,useEffect } from "react";
 import { CartProvider } from "./pages/cart/CartContext";
 import { WishlistProvider } from "./pages/wishlist/WishlistContext";
 import { OrdersProvider } from "./pages/cart/OrdersContext";
@@ -28,6 +28,64 @@ import ScrollToTop from "./components/common/ScrollToTop";
 import OrderSuccess from "./pages/cart/OrderSuccess";
 
 function App() {
+ const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [serverError, setServerError] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false); 
+
+  useEffect(() => {
+    const goOnline = () => {
+      setIsOffline(false);
+      setServerError(false);
+    };
+    const goOffline = () => setIsOffline(true);
+    const handleServerError = () => setServerError(true);
+
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
+    window.addEventListener("server-error", handleServerError);
+
+    return () => {
+      window.removeEventListener("online", goOnline);
+      window.removeEventListener("offline", goOffline);
+      window.removeEventListener("server-error", handleServerError);
+    };
+  }, []);
+
+  const handleRetry = () => {
+    setIsRetrying(true);
+
+    setTimeout(() => {
+      if (navigator.onLine) {
+        setIsOffline(false);
+        setServerError(false);
+        setIsRetrying(false);
+        window.location.href = "/"; 
+      } else {
+        setIsRetrying(false);
+        console.log("Still no internet...");
+      }
+    }, 1500);
+  };
+
+  if (isOffline) {
+    return (
+      <ErrorFallback 
+        type="offline" 
+        isRetrying={isRetrying} 
+        retryAction={handleRetry} 
+      />
+    );
+  }
+
+  if (serverError) {
+    return (
+      <ErrorFallback 
+        type="server" 
+        isRetrying={isRetrying} 
+        retryAction={handleRetry} 
+      />
+    );
+  }
   return (
     <BrowserRouter>
       <ScrollToTop />

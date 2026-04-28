@@ -16,14 +16,12 @@ const Card = ({ product }) => {
   const { cart, addToCart, removeFromCart } = useCart();
   const { toggleWishlist, isProductLiked } = useWishlist();
 
-  // 🌟 Naya State Modal ke liye
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const cartItem = cart.find((item) => item.id === product.id);
   const quantity = cartItem ? cartItem.quantity : 0;
   const liked = isProductLiked(product.id);
 
-  // 🌟 Logic Change: Direct navigate ki jagah modal open hoga
   const requireLogin = () => {
     if (!user) { 
       setShowAuthModal(true); 
@@ -40,14 +38,15 @@ const Card = ({ product }) => {
   const handleBuyNow = (e) => {
     e.stopPropagation();
     if (requireLogin()) {
-      // Agar user login hai, toh seedha checkout ya cart par bhejo
       addToCart(product);
       navigate("/cart"); 
     }
   };
 
-  const offerPrice = parseFloat(product.offer_price);
-  const mrp = parseFloat(product.mrp);
+  // Logical fix: API 'sale_price' bhejta hai aur normalization ke baad price keys change ho jati hain
+  const offerPrice = parseFloat(product.offer_price || product.sale_price || 0);
+  const mrp = parseFloat(product.mrp || product.MRP || 0);
+  const discount = product.discount_percentage || product.discount_value || 0;
 
   return (
     <>
@@ -62,51 +61,49 @@ const Card = ({ product }) => {
         </button>
 
         {/* Discount Badge */}
-        {product.discount_percentage > 0 && (
+        {discount > 0 && (
           <span className="absolute top-2 left-2 z-10 bg-cyan-900 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-lg">
-            {Math.round(product.discount_percentage)}% OFF
+            {Math.round(discount)}% OFF
           </span>
         )}
 
-        {/* Image Container */}
+        {/* Image Container - Fixed Key to 'image' */}
         <div className="w-full aspect-square bg-slate-50/30 overflow-hidden cursor-pointer flex items-center justify-center" onClick={goToProduct}>
           <img 
-            src={product.product_image} 
+            src={product.image || product.product_image || product.primary_image} 
             alt={product.name} 
             className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500" 
+            onError={(e) => { e.target.src = "https://via.placeholder.com/200?text=No+Image"; }}
           />
         </div>
 
         {/* Info Section */}
-        <div className="p-3 flex flex-col flex-grow">
+        <div className="p-3 flex flex-col flex-grow text-slate-900">
           
-          {/* 1. Title */}
-          <h3 className="text-sm font-black text-slate-900 truncate mb-0.5 group-hover:text-cyan-900 transition-colors cursor-pointer" onClick={goToProduct}>
+          <h3 className="text-sm font-black truncate mb-0.5 group-hover:text-cyan-900 transition-colors cursor-pointer" onClick={goToProduct}>
             {product.name}
           </h3>
 
-          {/* 2. Description */}
           <p className="text-[11px] font-medium text-slate-500 line-clamp-2 leading-tight mb-2 flex-grow cursor-pointer" onClick={goToProduct}>
             {product.description || "Premium quality product."}
           </p>
 
-          {/* 3. Rating Section */}
+          {/* Rating Section */}
           <div className="flex items-center gap-1.5 mb-3">
             <div className="flex text-amber-400">
               {[1, 2, 3, 4, 5].map((star) => {
                 const rating = parseFloat(product.avg_rating || 0);
-                if (star <= Math.floor(rating)) return <StarIcon key={star} className="!text-[18px] text-amber-400" />;
-                if (star === Math.ceil(rating) && rating % 1 >= 0.3 && rating % 1 <= 0.7) return <StarHalfIcon key={star} className="!text-[18px] text-amber-400" />;
-                if (star === Math.ceil(rating) && rating % 1 > 0.7) return <StarIcon key={star} className="!text-[18px] text-amber-400" />;
+                if (star <= Math.floor(rating)) return <StarIcon key={star} className="!text-[18px]" />;
+                if (star === Math.ceil(rating) && rating % 1 >= 0.3) return <StarHalfIcon key={star} className="!text-[18px]" />;
                 return <StarIcon key={star} className="!text-[18px] text-slate-200" />;
               })}
             </div>
-            <span className="text-[12px] font-black text-slate-900 ml-1 py-0.5 rounded-md">
+            <span className="text-[12px] font-black ml-1">
               {parseFloat(product.avg_rating || 0).toFixed(1)}
             </span>
           </div>
 
-          {/* 4. Price Row */}
+          {/* Price Row */}
           <div className="flex items-baseline gap-1.5 mb-3">
             <span className="text-lg font-black text-cyan-900">₹{offerPrice}</span>
             {mrp > offerPrice && (
@@ -114,7 +111,7 @@ const Card = ({ product }) => {
             )}
           </div>
 
-          {/* 5. Action Row */}
+          {/* Action Row */}
           <div className="mt-auto flex gap-2">
             <button 
               onClick={handleBuyNow} 
@@ -131,7 +128,7 @@ const Card = ({ product }) => {
                 Add
               </button>
             ) : (
-              <div className="flex-1 flex items-center justify-between bg-cyan-900 text-white rounded-xl px-2 h-[38px]">
+              <div className="flex-[1.5] flex items-center justify-between bg-cyan-900 text-white rounded-xl px-2 h-[38px]">
                 <button onClick={(e) => { e.stopPropagation(); removeFromCart(product.id); }} className="hover:bg-white/20 rounded p-0.5 transition-colors">
                   <RemoveIcon className="!text-md" />
                 </button>
@@ -145,20 +142,18 @@ const Card = ({ product }) => {
         </div>
       </div>
 
-      {/* 🌟 NAYA MODAL 🌟 */}
+      {/* Auth Modal */}
       {showAuthModal && (
         <div 
           className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm"
-          onClick={(e) => { e.stopPropagation(); setShowAuthModal(false); }} // Bahar click karne par band
+          onClick={() => setShowAuthModal(false)}
         >
-          {/* Modal Box */}
           <div 
             className="bg-white rounded-3xl p-6 max-w-[320px] w-full shadow-2xl flex flex-col items-center text-center animate-fade-in"
-            onClick={(e) => e.stopPropagation()} // Andar click karne par band na ho
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Cyan 900 Icon */}
-            <div className="w-16 h-16 bg-cyan-900/10 rounded-full flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-cyan-900" viewBox="0 0 24 24" fill="currentColor">
+            <div className="w-16 h-16 bg-cyan-900/10 rounded-full flex items-center justify-center mb-4 text-cyan-900">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
                 <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.25 8.25v-3a3.25 3.25 0 10-6.5 0v3h6.5z" clipRule="evenodd" />
               </svg>
             </div>
@@ -169,17 +164,14 @@ const Card = ({ product }) => {
             </p>
 
             <div className="flex w-full gap-3">
-              {/* Exit/Cancel Button */}
               <button 
-                className="flex-1 bg-slate-100 text-slate-500 hover:bg-slate-200 text-xs font-black py-3 rounded-xl transition-colors uppercase tracking-widest"
+                className="flex-1 bg-slate-100 text-slate-500 text-xs font-black py-3 rounded-xl uppercase tracking-widest"
                 onClick={() => setShowAuthModal(false)}
               >
                 Cancel
               </button>
-              
-              {/* Login/Redirect Button */}
               <button 
-                className="flex-1 bg-cyan-900 text-white hover:bg-cyan-950 text-xs font-black py-3 rounded-xl transition-colors shadow-lg shadow-cyan-900/30 uppercase tracking-widest"
+                className="flex-1 bg-cyan-900 text-white text-xs font-black py-3 rounded-xl shadow-lg shadow-cyan-900/30 uppercase tracking-widest"
                 onClick={() => navigate("/login")}
               >
                 Login Now

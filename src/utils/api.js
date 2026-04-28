@@ -1,67 +1,74 @@
 import axios from 'axios';
-import { toast } from 'react-toastify';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://shipzyy.com/api/v1';
+
+// 1. AXIOS INSTANCE
 const api = axios.create({
-  baseURL: 'http://13.203.29.79:9000/api/v1',
+  baseURL: BASE_URL,
 });
 
+// 2. REQUEST INTERCEPTOR (Token add karta hai)
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken'); 
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
+    const token = localStorage.getItem('accessToken');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+// 3. COMBINED RESPONSE INTERCEPTOR (Token Refresh + Global Error dono handle karega)
 api.interceptors.response.use(
-  (response) => response, 
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    // 🌟 A. GLOBAL SERVER ERROR (500) & NETWORK DOWN HANDLER
+    if (!error.response || error.response.status >= 500) {
+      const event = new CustomEvent("server-error");
+      window.dispatchEvent(event);
+      return Promise.reject(error);
+    }
+
+    // 🌟 B. 401 UNAUTHORIZED (TOKEN REFRESH) HANDLER
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      if (!refreshToken) {
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken'); 
-        
-        if (!refreshToken) {
-          throw new Error('No refresh token available');
-        }
-
-        const response = await axios.post('http://13.203.29.79:9000/api/v1/customers/refresh-token', {
+        const res = await axios.post(`${BASE_URL}/customers/refresh-token`, {
           token: refreshToken
         });
-
-        const newAccessToken = response.data.data.accessToken;
-        const newRefreshToken = response.data.data.refreshToken;
         
-        // Update local storage
-        localStorage.setItem('accessToken', newAccessToken);
-        localStorage.setItem('refreshToken', newRefreshToken);
-
-        api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-        return api(originalRequest);
-
-      } catch (refreshError) {
-        toast.error("Your session has completely expired. Please login again.");
+        const { accessToken, refreshToken: newRefresh } = res.data.data;
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', newRefresh);
         
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user'); 
-        
-        window.location.href = '/login'; 
-        return Promise.reject(refreshError);
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return api(originalRequest); // Retry the original request
+      } catch (err) {
+        localStorage.clear();
+        window.location.href = '/login';
+        return Promise.reject(err);
       }
     }
-
-
+    
     return Promise.reject(error);
   }
 );
 
-export default api;
+// 4. API SERVICE EXPORT
+const apiService = {
+  get: (url, config = {}) => api.get(url, config),
+  post: (url, data, config = {}) => api.post(url, data, config),
+  put: (url, data, config = {}) => api.put(url, data, config),
+  patch: (url, data, config = {}) => api.patch(url, data, config),
+  delete: (url, config = {}) => api.delete(url, config),
+};
+
+export default apiService;

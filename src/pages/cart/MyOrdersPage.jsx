@@ -34,7 +34,6 @@ const MyOrdersPage = () => {
     }
   };
 
-  // Helper to render an individual order card
   const renderOrderCard = (order, isActive) => (
     <div key={order.id} className="premium-order-card">
       <div className="order-card-header">
