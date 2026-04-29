@@ -20,7 +20,7 @@ const Card = ({ product }) => {
 
   const cartItem = cart.find((item) => item.id === product.id);
   const quantity = cartItem ? cartItem.quantity : 0;
-  const liked = isProductLiked(product.id);
+  // const liked = isProductLiked(product.id);
 
   const requireLogin = () => {
     if (!user) { 
@@ -49,15 +49,17 @@ const Card = ({ product }) => {
 
   return (
     <>
-      <div className="group relative bg-white border border-slate-100 rounded-2xl overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:border-cyan-900/20">
+      <div className="group relative bg-white border border-slate-100 rounded-2xl overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-xl  hover:border-cyan-900/20">
         
         {/* Wishlist Button */}
-        <button 
-          className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-sm hover:scale-110 transition-transform"
-          onClick={(e) => { e.stopPropagation(); if(requireLogin()) toggleWishlist(product); }}
-        >
-          {liked ? <FavoriteIcon className="text-red-500 !text-lg" /> : <FavoriteBorderIcon className="text-slate-300 !text-lg" />}
-        </button>
+      <button className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-sm hover:scale-110 transition-transform"
+  onClick={(e) => { 
+    e.stopPropagation(); 
+    toggleWishlist(product); // Context automatically handles API & UI
+  }}
+>
+  {isProductLiked(product.id) ? <FavoriteIcon className="text-red-500" /> : <FavoriteBorderIcon />}
+</button>
 
         {/* Discount Badge */}
         {discount > 0 && (

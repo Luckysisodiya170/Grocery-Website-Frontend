@@ -56,9 +56,10 @@ function Home() {
     }
   };
 
+
   useEffect(() => {
     fetchHomeData(1);
-  }, [user]);
+  }, []); 
 
   useEffect(() => {
     if (apiData.banners.length === 0) return;
@@ -96,7 +97,12 @@ function Home() {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-[var(--success)] bg-[var(--bg)] font-bold animate-pulse tracking-widest text-xl">LOADING SHIPZZY...</div>;
+  if (loading) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg)] gap-4">
+      <div className="w-12 h-12 border-4 border-[var(--success)] border-t-transparent rounded-full animate-spin"></div>
+      <div className="text-[var(--success)] font-bold animate-pulse tracking-widest text-xl">LOADING SHIPZZY...</div>
+    </div>
+  );
 
   return (
     <div className="w-full min-h-screen pb-16 bg-transparent overflow-x-hidden">

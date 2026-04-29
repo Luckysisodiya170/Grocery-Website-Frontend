@@ -1,43 +1,45 @@
-import "./SimilarProducts.css";
+import { useState } from "react";
 import Card from "../Product/Productcard/Productcard";
-import products from "../../data/products.json";
 
 function SimilarProducts({ currentProduct }) {
-  // filter similar products by category
-  const similarItems = products
-    .filter((p) => p.category === currentProduct.category && p.id !== currentProduct.id);
+  const [visibleCount, setVisibleCount] = useState(4);
+  const similarItems = currentProduct?.similar_products || [];
+  const displayItems = similarItems.slice(0, visibleCount); 
 
-  const displayItems = similarItems.slice(0, 4); // Show first 4
-
-  // EMPTY STATE
   if (similarItems.length === 0) {
     return (
-      <section className="similar-section container">
-        <div className="similar-header"><h2>Similar Products</h2></div>
-        <div className="empty-state-box">
-          <h3>No product found.</h3>
-          <p>We couldn't find any similar items right now.</p>
+      <section className="w-full mt-10 p-5 md:p-[30px] bg-[var(--card-bg)] rounded-xl border border-[var(--border)]">
+        <div className="mb-5">
+          <h2 className="text-[18px] md:text-[22px] font-extrabold text-[var(--text-main)]">Similar Products</h2>
+        </div>
+        <div className="text-center py-12 bg-[var(--bg-soft)] rounded-lg border border-dashed border-[var(--border)]">
+          <h3 className="text-lg font-bold text-[var(--text-main)]">No product found.</h3>
+          <p className="text-[var(--text-muted)] mt-2">We couldn't find any similar items right now.</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="similar-section container">
-      <div className="similar-header">
-        <h2>Similar Products</h2>
+    <section className="w-full mt-10 p-5 md:p-[30px] bg-[var(--card-bg)] rounded-xl border border-[var(--border)]">
+      <div className="mb-5">
+        <h2 className="text-[18px] md:text-[22px] font-extrabold text-[var(--text-main)]">Similar Products</h2>
       </div>
 
-      <div className="similar-grid">
+      <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-[15px] md:gap-5">
         {displayItems.map((item) => (
           <Card key={item.id} product={item} />
         ))}
       </div>
 
-      {/* MORE PRODUCTS BUTTON */}
-      {similarItems.length > 4 && (
-        <div className="load-more-container">
-           <button className="btn-load-more">More Products ++</button>
+      {visibleCount < similarItems.length && (
+        <div className="mt-8 flex justify-center">
+          <button 
+            onClick={() => setVisibleCount((prev) => prev + 4)}
+            className="px-6 py-2.5 font-bold text-[var(--primary)] bg-transparent border-2 border-[var(--primary)] rounded-lg hover:bg-[var(--primary)] hover:text-[var(--secondary)] transition-colors duration-300"
+          >
+            More Products ++
+          </button>
         </div>
       )}
     </section>
