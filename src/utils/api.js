@@ -6,72 +6,51 @@ const api = axios.create({
   baseURL: BASE_URL,
 });
 
+// 1. REQUEST INTERCEPTOR
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const longLifeToken = localStorage.getItem('refreshToken');
+    
+    if (longLifeToken) {
+      config.headers.Authorization = `Bearer ${longLifeToken}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+// 2. RESPONSE INTERCEPTOR
 api.interceptors.response.use(
   (response) => {
-    if (response.data?.data?.is_logged_in === false && localStorage.getItem('accessToken')) {
-      console.warn("Session expired based on response data. Cleaning up...");
+    if (response.data?.data?.is_logged_in === false && localStorage.getItem('refreshToken')) {
       handleAuthCleanup();
     }
     return response;
   },
   async (error) => {
-    const originalRequest = error.config;
-
+    //  No Internet / Server Down
     if (!error.response || error.response.status >= 500) {
       window.dispatchEvent(new CustomEvent("server-error"));
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const rt = localStorage.getItem('refreshToken');
-
-      if (!rt) {
-        handleAuthCleanup();
-        return Promise.reject(error);
-      }
-
-      try {
-        const res = await axios.post(`${BASE_URL}/customers/refresh-token`, { token: rt });
-        
-        if (res.data.success) {
-          const { accessToken, refreshToken: newRefresh } = res.data.data;
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', newRefresh);
-          
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-          return api(originalRequest);
-        }
-      } catch (err) {
-        handleAuthCleanup();
-        return Promise.reject(err);
-      }
+    if (error.response?.status === 401) {
+      handleAuthCleanup();
     }
+    
     return Promise.reject(error);
   }
 );
 
 const handleAuthCleanup = () => {
- 
-  if (!localStorage.getItem('accessToken')) return;
+  if (!localStorage.getItem('refreshToken')) return;
 
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('user');
   
   if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
-    window.location.href = '/login';
+    window.location.href = '/';
   }
 };
 

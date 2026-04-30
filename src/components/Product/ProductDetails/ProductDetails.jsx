@@ -58,13 +58,13 @@ function ProductDetails() {
     <div className="max-w-[1200px] mx-auto py-8 px-5 flex flex-col gap-6 pb-[100px] md:pb-10">
       
       <button 
-        onClick={() => navigate('/')} 
+        onClick={() => navigate(-1)} 
         className="flex items-center gap-2 w-fit text-white font-bold hover:opacity-80 transition-opacity"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
         </svg>
-        Back to Home
+        Back
       </button>
 
       <div className="bg-[var(--card-bg)] rounded-[18px] p-[25px] md:p-10 shadow-[var(--shadow-md)] border border-[var(--border)] flex flex-col" ref={infoRef}>
