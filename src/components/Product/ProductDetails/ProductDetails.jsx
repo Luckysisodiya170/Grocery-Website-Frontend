@@ -1,17 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import apiService from "../../../utils/api"; 
+// import apiService from "../../../utils/api"; 
 import ProductGallery from "../ProductGallery";
 import ProductInfo from "../ProductInfo";
 import ProductTabs from "../ProductTabs";
 import SimilarProducts from "../../SimilarProduct/SimilarProducts";
+import { getProductByCode } from "../../../utils/productApi";
 
 function ProductDetails() {
-  const { id } = useParams();
+  const { id: code } = useParams();
   const navigate = useNavigate();
   const infoRef = useRef(null);
 
   const [product, setProduct] = useState(null);
+  
+  const [similarProducts, setSimilarProducts] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -19,12 +25,15 @@ function ProductDetails() {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await apiService.get(`/customers/products/${id}`);
-        if (response.data.success) {
-          setProduct(response.data.data.product);
+        const response = await getProductByCode(code); 
+        if (response.success) {
+          setProduct(response.data.product);
+          setSimilarProducts(response.data.product.similar_products || []);
+          setPagination(response.data.product.pagination || null);
         }
       } catch (error) {
         console.error(error);
+        navigate("/"); 
       } finally {
         setLoading(false);
       }
@@ -32,8 +41,38 @@ function ProductDetails() {
 
     fetchProduct();
     window.scrollTo(0, 0); 
-  }, [id]);
+  }, [code]);
 
+const loadMoreSimilarProducts = async () => {
+    if (!pagination?.hasNextPage) return;
+
+    try {
+      setLoadingMore(true);
+      const nextPage = pagination.page + 1;
+
+      console.log(`PAGINATION DEBUG: Fetching page ${nextPage}`); 
+
+      const response = await getProductByCode(code, nextPage);
+
+      if (response.success) {
+        const newProducts = response.data.product.similar_products || [];
+        
+        setSimilarProducts(prev => {
+          const existingIds = new Set(prev.map(p => p.id));
+          const uniqueNewProducts = newProducts.filter(p => !existingIds.has(p.id));
+          return [...prev, ...uniqueNewProducts];
+        });
+
+        setPagination(response.data.product.pagination);
+        
+        console.log(`PAGINATION DEBUG: Response Pagination`, response.data.product.pagination);
+      }
+    } catch (error) {
+      console.error("Failed to load more products:", error);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
   const requireLogin = () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -79,9 +118,13 @@ function ProductDetails() {
         </div>
 
         <div className="mt-12 pt-10 border-t border-[var(--border)]">
-          <SimilarProducts currentProduct={product} />
+          <SimilarProducts 
+            similarProducts={similarProducts} 
+            pagination={pagination}
+            onLoadMore={loadMoreSimilarProducts}
+            isLoadingMore={loadingMore}
+          />
         </div>
-
       </div>
 
       {showAuthModal && (

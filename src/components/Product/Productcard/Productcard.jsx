@@ -9,6 +9,8 @@ import StarHalfIcon from "@mui/icons-material/StarHalf";
 import { useAuth } from "../../../context/AuthContext";
 import { useCart } from "../../../pages/cart/CartContext";
 import { useWishlist } from "../../../pages/wishlist/WishlistContext";
+import { encodeId } from "../../../utils/crypto";
+
 
 const Card = ({ product }) => {
   const navigate = useNavigate();
@@ -30,9 +32,10 @@ const Card = ({ product }) => {
     return true;
   };
 
-  const goToProduct = () => {
+const goToProduct = () => {
     window.scrollTo({ top: 0, behavior: "instant" });
-    navigate(`/product/${product.id}`);
+    const maskedKey = encodeId(product.id); 
+    navigate(`/product/${maskedKey}`); 
   };
 
   const handleBuyNow = (e) => {
