@@ -16,16 +16,16 @@ import Notfound from "./pages/Not-found/Not-found";
 
 import WishlistPage from "./pages/wishlist/WishlistPage";
 import CartPage from "./pages/cart/CartPage";
-import CheckoutPage from "./pages/cart/CheckoutPage";
-import OrderHistory from "./pages/cart/OrderHistory";
+import CheckoutPage from "./pages/orders/CheckoutPage";
+import OrderHistory from "./pages/orders/OrderHistory";
 import Profile from "./pages/Profile/Profile";
 import { useState,useEffect } from "react";
 import { CartProvider } from "./pages/cart/CartContext";
 import { WishlistProvider } from "./pages/wishlist/WishlistContext";
-import { OrdersProvider } from "./pages/cart/OrdersContext";
+import { OrdersProvider } from "./pages/orders/OrdersContext";
 import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./components/common/ScrollToTop";
-import OrderSuccess from "./pages/cart/OrderSuccess";
+import OrderSuccess from "./pages/orders/OrderSuccess";
 
 function App() {
  const [isOffline, setIsOffline] = useState(!navigator.onLine);

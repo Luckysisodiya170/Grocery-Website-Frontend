@@ -1,14 +1,29 @@
+import React from "react";
+
 function RatingBreakdown({ product }) {
   const rating = parseFloat(product.avg_rating || 0).toFixed(1);
-  const reviewsCount = product.reviews?.length || 0;
+  const reviews = product.reviews || [];
+  const reviewsCount = reviews.length;
+
+  const starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  
+  reviews.forEach(review => {
+    if (review.rating && starCounts[review.rating] !== undefined) {
+      starCounts[review.rating] += 1;
+    }
+  });
 
   const reviewCategories = [
-    { label: "Excellent", stars: 5, count: 30, fill: "80%", color: "bg-green-500" },
-    { label: "Very Good", stars: 4, count: 10, fill: "10%", color: "bg-emerald-400" },
-    { label: "Good", stars: 3, count: 5, fill: "50%", color: "bg-yellow-400" },
-    { label: "Average", stars: 2, count: 2, fill: "20%", color: "bg-orange-400" },
-    { label: "Poor", stars: 1, count: 1, fill: "70%", color: "bg-red-500" }
-  ];
+    { label: "Excellent", stars: 5, color: "bg-green-500" },
+    { label: "Very Good", stars: 4, color: "bg-emerald-400" },
+    { label: "Good", stars: 3, color: "bg-yellow-400" },
+    { label: "Average", stars: 2, color: "bg-orange-400" },
+    { label: "Poor", stars: 1, color: "bg-red-500" }
+  ].map(cat => {
+    const count = starCounts[cat.stars];
+    const fill = reviewsCount > 0 ? `${(count / reviewsCount) * 100}%` : "0%";
+    return { ...cat, count, fill };
+  });
 
   return (
     <div className="flex flex-col">

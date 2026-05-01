@@ -11,7 +11,7 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import { useWishlist } from "../../pages/wishlist/WishlistContext";
 import { useCart } from "../../pages/cart/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import { useOrders } from "../../pages/cart/OrdersContext";
+import { useOrders } from "../../pages/orders/OrdersContext";
 import logo from "../../assets/logonew.jpeg";
 import HeaderSearch from "../common/HeaderSearch/HeaderSearch";
 

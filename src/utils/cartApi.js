@@ -18,7 +18,7 @@ export const getCartApi = async () => {
 // 3. REMOVE SINGLE ITEM / UPDATE QUANTITY (DELETE)
 export const removeFromCartApi = async (cartId, productId, quantity = 1) => {
   const response = await apiService.delete('/customers/cart', {
-    data: { // Axios delete mein body 'data' property mein jati hai
+    data: { 
       cart_id: cartId,
       product_id: productId,
       quantity: quantity

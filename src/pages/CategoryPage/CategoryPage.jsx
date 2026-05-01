@@ -22,18 +22,19 @@ const CategoryPage = () => {
   const [fetchingMore, setFetchingMore] = useState(false);
   const [allFallbackProducts, setAllFallbackProducts] = useState([]); 
 
+  const isFetchingRef = useRef(false);
+  const observer = useRef();
+
   const [activeCategory, setActiveCategory] = useState(urlCategory || "");
   const [activeSub, setActiveSub] = useState(urlSubcategory || "All");
   const [sortOrder, setSortOrder] = useState("featured");
-
-  const observer = useRef();
 
   const normalizeProducts = (records) => {
     return records.map(p => ({
       ...p,
       image: p.primary_image || (p.images && p.images[0]) || (p.all_images && p.all_images[0]?.image_url) || p.product_image || p.image,
       category: p.category || p.category_name,
-      subCategory: p.subCategory || p.subcategory_name
+      subCategory: p.subCategory || p.subcategory || p.subcategory_name
     }));
   };
 
@@ -42,7 +43,7 @@ const CategoryPage = () => {
     if (observer.current) observer.current.disconnect();
 
     observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasNextPage && !fetchingMore) {
+      if (entries[0].isIntersecting && hasNextPage && !isFetchingRef.current) {
         setPage(prev => prev + 1);
       }
     });
@@ -62,12 +63,15 @@ const CategoryPage = () => {
         setCategories(allCats);
         
         const initialCat = urlCategory || (allCats.length > 0 ? allCats[0].name : "");
+        const initialSub = urlSubcategory || "All";
+
         setActiveCategory(initialCat);
+        setActiveSub(initialSub);
 
         if (token) {
           const [subRes, prodRes] = await Promise.all([
             getSubcategories(),
-            getProducts(1, 10, { category: initialCat, subcategory: urlSubcategory !== "All" ? urlSubcategory : undefined })
+            getProducts(1, 10, { category: initialCat, subcategory: initialSub !== "All" ? initialSub : undefined })
           ]);
           if (subRes.success) setSubcategories(subRes.data.records.sort((a, b) => a.id - b.id));
           if (prodRes.success) {
@@ -77,23 +81,40 @@ const CategoryPage = () => {
         } else {
           const fallbackSubs = allCats.flatMap(cat => (cat.subcategories || []).map(sub => ({ ...sub, category: cat.name, icon: sub.image })));
           setSubcategories(fallbackSubs.sort((a, b) => a.id - b.id));
-          const totalProds = normalizeProducts(allCats.flatMap(cat => (cat.subcategories || []).flatMap(sub => sub.products || [])));
+          
+          let filteredProds = [];
+          allCats.forEach(cat => {
+            const catMatch = !initialCat || cat.name.toLowerCase() === initialCat.toLowerCase();
+            if (catMatch) {
+              (cat.subcategories || []).forEach(sub => {
+                const subMatch = !initialSub || initialSub === "All" || sub.name.toLowerCase() === initialSub.toLowerCase();
+                if (subMatch) {
+                  filteredProds.push(...(sub.products || []));
+                }
+              });
+            }
+          });
+
+          const totalProds = normalizeProducts(filteredProds);
           setAllFallbackProducts(totalProds);
           setProducts(totalProds.slice(0, 10)); 
           setHasNextPage(totalProds.length > 10);
         }
-      } catch (err) { console.error(err); } 
-      finally { setLoading(false); }
+      } catch (err) { 
+        console.error(err); 
+      } finally { 
+        setLoading(false); 
+      }
     };
     fetchAllData();
   }, [urlCategory, urlSubcategory]);
 
   useEffect(() => {
-    if (page === 1 || fetchingMore) return;
+    if (page === 1) return;
 
     const fetchMore = async () => {
+      isFetchingRef.current = true;
       setFetchingMore(true); 
-
       const token = localStorage.getItem('refreshToken');
 
       try {
@@ -104,7 +125,11 @@ const CategoryPage = () => {
           });
           if (res.success) {
             const newBatch = normalizeProducts(res.data.records);
-            setProducts(prev => [...prev, ...newBatch]);
+            setProducts(prev => {
+              const existingIds = new Set(prev.map(p => p.id));
+              const uniqueNew = newBatch.filter(p => !existingIds.has(p.id));
+              return [...prev, ...uniqueNew];
+            });
             setHasNextPage(res.data.pagination.hasNextPage);
           }
         } else {
@@ -116,7 +141,10 @@ const CategoryPage = () => {
       } catch (err) {
         console.error(err);
       } finally {
-        setTimeout(() => setFetchingMore(false), 800);
+        setTimeout(() => {
+          isFetchingRef.current = false;
+          setFetchingMore(false);
+        }, 500);
       }
     };
     fetchMore();
@@ -129,47 +157,67 @@ const CategoryPage = () => {
     </div>
   );
 
+  const handleCategoryClick = (name) => {
+    setActiveCategory(name);
+    setActiveSub("All"); 
+    setSearchParams({ category: name, subcategory: "All" });
+    setProducts([]);
+  };
+
+  const handleSubcategoryClick = (name) => {
+    setActiveSub(name);
+    setSearchParams({ category: activeCategory, subcategory: name });
+    setProducts([]);
+  };
+
   return (
-    <div className="min-h-screen py-10 px-4 md:px-8 ">
+    <div className="min-h-screen py-10 px-4 md:px-8">
       <div className="max-w-[1600px] mx-auto">
         <CategoryRow
           categories={categories}
           activeCategory={activeCategory}
-          onSelectCategory={(name) => {
-            setSearchParams({ category: name });
-            setProducts([]); 
-          }}
+          onSelectCategory={handleCategoryClick}
         />
 
         <div className="flex flex-col lg:flex-row gap-12 mt-12">
           <div className="lg:w-[250px] shrink-0">
             <CategorySidebar
-              subcategories={subcategories.filter(s => s.category === activeCategory)}
+              subcategories={subcategories.filter(s => {
+                return s.category && activeCategory && s.category.toLowerCase() === activeCategory.toLowerCase();
+              })}
               activeCategory={activeCategory}
               activeSub={activeSub}
-              setActiveSub={(name) => {
-                setSearchParams({ category: activeCategory, subcategory: name });
-                setProducts([]); 
-              }}
+              setActiveSub={handleSubcategoryClick}
             />
           </div>
 
-          <div className="flex-1">
-            {loading ? <LoadingSpinner /> : (
+          <div className="flex-1 min-h-[60vh]">
+            {loading && page === 1 ? <LoadingSpinner /> : (
               <>
                 <ProductGrid
                   products={products}
-                  loading={loading}
                   activeCategory={activeCategory}
                   activeSub={activeSub}
                   sortOrder={sortOrder} 
                   setSortOrder={setSortOrder} 
+                  clearFilters={() => {
+                    setSearchParams({});
+                    setProducts([]);
+                    setActiveCategory("");
+                    setActiveSub("All");
+                  }}
                 />
                 
                 <div ref={lastProductElementRef} className="h-20 w-full flex justify-center items-center mt-6">
                   {fetchingMore && <LoadingSpinner />}
                   {!hasNextPage && products.length > 0 && (
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">You've reached the end</p>
+                    <div className="flex items-center gap-4 opacity-50 w-full justify-center">
+                      <span className="w-16 h-[1px] bg-white/30"></span>
+                      <p className="text-white/70 text-[12px] font-black uppercase tracking-[0.2em] m-0">
+                        You've reached the end
+                      </p>
+                      <span className="w-16 h-[1px] bg-white/30"></span>
+                    </div>
                   )}
                 </div>
               </>

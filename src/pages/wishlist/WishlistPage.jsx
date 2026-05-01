@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { encodeId } from '../../utils/crypto';
 
 const WishlistPage = () => {
   const navigate = useNavigate();
@@ -18,7 +19,6 @@ const WishlistPage = () => {
   const [apiWishlist, setApiWishlist] = useState([]);
   const [isApiLoading, setIsApiLoading] = useState(true);
 
-  // 🔄 Fetch Data on Load
   const fetchItems = async () => {
     if (user) {
       try {
@@ -26,14 +26,16 @@ const WishlistPage = () => {
         if (res && res.success) {
           setApiWishlist(res.data?.items || []);
         }
-      } catch (err) { console.error(err); }
+      } catch (err) { 
+        console.error(err); 
+      }
     }
     setIsApiLoading(false);
   };
 
   useEffect(() => {
     fetchItems();
-  }, []);
+  }, [user]);
 
   const displayItems = user ? apiWishlist : wishlist;
 
@@ -47,7 +49,7 @@ const WishlistPage = () => {
           toast.success("Removed from wishlist");
         }
       } catch (err) {
-        toast.error("Could not remove item");
+        toast.error("Could not remove item", err);
         fetchItems();
       }
     } else {
@@ -65,17 +67,12 @@ const WishlistPage = () => {
             toast.success("Wishlist cleared!");
           }
         } catch (err) {
-          toast.error("Failed to clear wishlist");
+          toast.error("Failed to clear wishlist", err);
         }
       } else {
         setWishlist([]); 
       }
     }
-  };
-
-  const handleProductClick = (id) => {
-    window.scrollTo({ top: 0, behavior: "instant" });
-    navigate(`/product/${id}`);
   };
 
   if (loading || isApiLoading) return (
@@ -89,7 +86,6 @@ const WishlistPage = () => {
         
       {displayItems.length > 0 ? (
         <>
-          {/* --- HEADER (Only visible when items exist) --- */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-[30px] gap-4">
             <div>
               <h1 className="text-[32px] md:text-[40px] font-extrabold flex items-center gap-[15px] text-[var(--secondary)]">
@@ -103,23 +99,28 @@ const WishlistPage = () => {
               </p>
             </div>
 
-           <div className='bg-[var(--card-bg)] p-2.5 rounded-lg'>
-             <button 
-              onClick={handleClearAll}
-              className="bg-[var(--danger)]/10 text-[var(--danger)] border-none px-5 py-2.5 rounded-lg font-bold cursor-pointer transition-colors hover:bg-[var(--danger)] hover:text-white"
-            >
-              Clear All
-            </button>
-           </div>
+            <div className='bg-[var(--card-bg)] p-2.5 rounded-lg'>
+              <button 
+                onClick={handleClearAll}
+                className="bg-[var(--danger)]/10 text-[var(--danger)] border-none px-5 py-2.5 rounded-lg font-bold cursor-pointer transition-colors hover:bg-[var(--danger)] hover:text-white"
+              >
+                Clear All
+              </button>
+            </div>
           </div>
 
-          {/* --- LIST VIEW --- */}
           <div className="flex flex-col gap-5">
             {displayItems.map((item, index) => {
               const cartItem = cart.find((c) => c.id === item.id);
               const quantity = cartItem ? cartItem.quantity : 0;
               const isAvailable = parseInt(item.stock_available || 1) > 0;
               const itemPrice = Number(item.offer_price || item.price || 0).toFixed(0); 
+
+              const handleProductClick = () => {
+                window.scrollTo({ top: 0, behavior: "instant" });
+                const maskedKey = encodeId(item.id); 
+                navigate(`/product/${maskedKey}`); 
+              };
 
               return (
                 <div 
@@ -128,10 +129,9 @@ const WishlistPage = () => {
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   
-                  {/* Image */}
                   <div 
                     className="w-full md:w-[100px] h-[120px] md:h-[100px] bg-[var(--bg-soft)] border border-[var(--border)] rounded-[12px] p-2.5 mr-0 md:mr-6 mb-4 md:mb-0 shrink-0 flex justify-center items-center cursor-pointer"
-                    onClick={() => handleProductClick(item.id)}
+                    onClick={handleProductClick}
                   >
                     <img 
                       src={item.product_image || item.image || "https://via.placeholder.com/80?text=No+Image"} 
@@ -140,8 +140,7 @@ const WishlistPage = () => {
                     />
                   </div>
 
-                  {/* Details & Price */}
-                  <div className="flex-1 min-w-[200px] w-full md:w-auto mb-4 md:mb-0 cursor-pointer" onClick={() => handleProductClick(item.id)}>
+                  <div className="flex-1 min-w-[200px] w-full md:w-auto mb-4 md:mb-0 cursor-pointer" onClick={handleProductClick}>
                     <p className="text-[12px] text-[var(--text-muted)] font-bold uppercase tracking-wider mb-1">{item.category || "General"}</p>
                     <h3 className="text-[18px] text-[var(--text-main)] font-bold m-0 line-clamp-2">{item.name}</h3>
                     <div className="flex items-center gap-3 mt-2">
@@ -156,10 +155,8 @@ const WishlistPage = () => {
                     </div>
                   </div>
 
-                  {/* Right Actions: Add to Cart / Qty & Delete */}
                   <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                     
-                    {/* Cart Action */}
                     {quantity === 0 ? (
                       <button 
                         onClick={() => addToCart(item)}
@@ -186,7 +183,6 @@ const WishlistPage = () => {
                       </div>
                     )}
 
-                    {/* Remove from Wishlist (Trash Icon matching cart) */}
                     <button 
                       onClick={() => handleRemoveItem(item)}
                       className="bg-[var(--danger)]/10 text-[var(--danger)] border border-transparent w-[42px] h-[42px] rounded-[10px] flex items-center justify-center cursor-pointer transition-colors hover:bg-[var(--danger)] hover:text-white shrink-0 ml-2" 
@@ -202,7 +198,6 @@ const WishlistPage = () => {
           </div>
         </>
       ) : (
-        // --- EMPTY STATE (Header will NOT show here) ---
         <div className="min-h-[60vh] flex justify-center items-center">
           <div className="bg-[var(--card-bg)] p-[60px_30px] lg:p-[40px_40px] rounded-[30px] text-center max-w-[600px] w-full shadow-[var(--shadow-float)] border border-[var(--border)] animate-[fadeIn_0.4s_ease]">
             
