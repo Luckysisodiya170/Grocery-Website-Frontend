@@ -30,7 +30,6 @@ export const WishlistProvider = ({ children }) => {
 
     const isLiked = !wishlist.some(item => item.id === product.id);
     
-    // Optimistic UI update
     if (isLiked) {
       setWishlist(prev => [...prev, product]);
     } else {
@@ -44,7 +43,7 @@ export const WishlistProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error("Failed to update wishlist");
-      fetchWishlist(); // Rollback on error
+      fetchWishlist(); 
     }
   };
 

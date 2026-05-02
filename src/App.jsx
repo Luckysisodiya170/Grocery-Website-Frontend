@@ -26,6 +26,7 @@ import { OrdersProvider } from "./pages/orders/OrdersContext";
 import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./components/common/ScrollToTop";
 import OrderSuccess from "./pages/orders/OrderSuccess";
+import OrderDetails from './pages/orders/OrderDetails'
 
 function App() {
  const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -114,10 +115,11 @@ function App() {
                   <Route path="/cart" element={<CartPage />} />
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/orders" element={<OrderHistory />} />
+                  <Route path="/orders/:id" element={<OrderDetails />} />
                   <Route path="/wishlist" element={<WishlistPage />} />
                   <Route path="/help" element={<Help />} />
 
-                  {/* 🔥 Vendor moved here */}
+                  {/*Vendor moved here */}
                   <Route path="/vendor-register" element={<VendorRegister />} />
 
                 </Route>

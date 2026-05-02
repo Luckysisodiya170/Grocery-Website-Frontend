@@ -58,7 +58,7 @@ const goToProduct = () => {
       <button className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md rounded-full shadow-sm hover:scale-110 transition-transform"
   onClick={(e) => { 
     e.stopPropagation(); 
-    toggleWishlist(product); // Context automatically handles API & UI
+    toggleWishlist(product); 
   }}
 >
   {isProductLiked(product.id) ? <FavoriteIcon className="text-red-500" /> : <FavoriteBorderIcon />}

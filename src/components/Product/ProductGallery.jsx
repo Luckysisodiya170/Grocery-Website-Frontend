@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useWishlist } from "../../pages/wishlist/WishlistContext"; // Path check kar lena 
+import { useWishlist } from "../../pages/wishlist/WishlistContext";  
 import { useAuth } from "../../context/AuthContext";
 
 function ProductGallery({ product }) {
@@ -14,7 +14,6 @@ function ProductGallery({ product }) {
   const [animating, setAnimating] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Sync active image when product changes
   useEffect(() => {
     if (imageList.length > 0) setActive(imageList[0]);
   }, [product.id]);

@@ -9,10 +9,8 @@ import AboutUs from "./components/AboutUs";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
 
-import "./profile1.css";
 function Profile() {
   const [activeTab, setActiveTab] = useState("personal");
-  
   const profileTopRef = useRef(null);
 
   useEffect(() => {
@@ -41,19 +39,21 @@ function Profile() {
   };
 
   return (
- 
-    <div className="account-page" ref={profileTopRef} style={{ scrollMarginTop: "100px" }}>
-      <div className="account-header">
-        <h1>My Account</h1>
-        <p>Home / My Account</p>
+    <div className="pt-10 pb-20 min-h-screen" ref={profileTopRef} style={{ scrollMarginTop: "100px" }}>
+      <div className="text-center mb-10">
+        <h1 className="text-[36px] font-black text-[var(--secondary)] tracking-tight">My Account</h1>
+        <p className="text-[13px] text-[var(--secondary)] opacity-80 font-bold uppercase tracking-widest mt-2">Home / My Account</p>
       </div>
 
-      <div className="account-layout container">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-        
-        {/* Animation ke liye 'key' important hai */}
-        <div key={activeTab} className="account-content glass-panel">
-          {renderContent()}
+      <div className="container max-w-[1400px] mx-auto px-4 md:px-8">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="w-full lg:w-[320px] shrink-0 sticky top-[100px] z-10">
+             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+          </div>
+          
+          <div key={activeTab} className="flex-1 w-full min-w-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {renderContent()}
+          </div>
         </div>
       </div>
     </div>

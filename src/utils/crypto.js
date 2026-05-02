@@ -1,5 +1,5 @@
 export const encodeId = (id) => {
-  const secret = "sz"; // 
+  const secret = "sz"; 
   return btoa(`${secret}-${id}`).replace(/=/g, ""); 
 };
 

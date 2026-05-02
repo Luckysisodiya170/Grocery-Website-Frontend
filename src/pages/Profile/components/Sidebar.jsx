@@ -20,17 +20,26 @@ const menuItems = [
 
 function Sidebar({ activeTab, setActiveTab }) {
   return (
-    <div className="account-sidebar glass-panel">
-      {menuItems.map((item) => (
-        <button
-          key={item.id}
-          className={`sidebar-item ${activeTab === item.id ? "active" : ""}`}
-          onClick={() => setActiveTab(item.id)}
-        >
-          <span className="sidebar-icon">{item.icon}</span>
-          {item.label}
-        </button>
-      ))}
+    <div className="p-4 bg-[var(--card-bg)] border border-[var(--border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-sm)] flex flex-col gap-1.5 w-full min-h-[500px]">
+      {menuItems.map((item) => {
+        const isActive = activeTab === item.id;
+        return (
+          <button
+            key={item.id}
+            className={`group flex items-center gap-5 w-full px-6 py-4 rounded-[var(--radius-md)] font-bold text-lg transition-all duration-300 text-left border-l-[5px] ${
+              isActive 
+                ? "bg-[var(--bg-soft)] border-[var(--primary)] text-[var(--primary)]" 
+                : "border-transparent text-[var(--text-main)] hover:bg-[var(--bg-soft)] hover:text-[var(--primary)] hover:border-[var(--primary)]"
+            }`}
+            onClick={() => setActiveTab(item.id)}
+          >
+            <span className={`flex items-center justify-center transition-colors scale-125 ${isActive ? 'text-[var(--primary)]' : 'text-[var(--text-muted)] group-hover:text-[var(--primary)]'}`}>
+              {item.icon}
+            </span>
+            {item.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
