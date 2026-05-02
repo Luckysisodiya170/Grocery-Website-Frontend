@@ -1,29 +1,55 @@
-import { useState, useRef } from "react";
-import { useAuth } from "../../../context/AuthContext";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined"; 
+import { getProfileDetails, updateProfileDetails } from "../../../utils/profileApi";
 
 function PersonalInfo() {
-  const { user, updateUser } = useAuth();
   const fileInputRef = useRef(null);
-
-  // State to manage lock/unlock edit mode
   const [isEditing, setIsEditing] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const [originalData, setOriginalData] = useState(null);
   const [formData, setFormData] = useState({
-    name: user?.name || "",
-    email: user?.email || "",
-    phone: user?.phone || "",
-    gender: user?.gender || "",
-    avatar: user?.avatar || "",
+    name: "",
+    email: "",
+    phone: "",
+    gender: "",
+    avatar: "",
   });
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      setIsLoading(true);
+      const res = await getProfileDetails();
+      if (res && res.success) {
+        const customer = res.data.customer;
+        const initialData = {
+          name: customer.name || "",
+          email: customer.email || "",
+          phone: customer.mobile || "",
+          gender: customer.gender || "",
+          avatar: customer.profile_image || "",
+        };
+        setFormData(initialData);
+        setOriginalData(initialData);
+      }
+    } catch (error) {
+      toast.error("Failed to load profile details");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleImageClick = () => {
-    // Prevent image upload if profile is locked
     if (!isEditing) {
       return toast.info("Please click 'Edit Profile' to change your photo.", { position: "top-center" });
     }
@@ -34,6 +60,8 @@ function PersonalInfo() {
     const file = e.target.files[0];
     if (!file || !file.type.startsWith("image/")) return;
 
+    setSelectedFile(file);
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setFormData({ ...formData, avatar: reader.result });
@@ -41,36 +69,46 @@ function PersonalInfo() {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email) {
       return toast.error("Name and Email are required!");
     }
 
-    updateUser(formData);
-    setIsEditing(false); // Lock the profile again after saving
-    toast.success("Profile updated successfully!");
+    try {
+      const dataToSubmit = new FormData();
+      dataToSubmit.append('name', formData.name);
+      dataToSubmit.append('email', formData.email);
+      if (formData.gender) dataToSubmit.append('gender', formData.gender);
+      
+      if (selectedFile) {
+        dataToSubmit.append('profile_image', selectedFile);
+      }
+
+      const res = await updateProfileDetails(dataToSubmit);
+      
+      if (res.success) {
+        toast.success("Profile updated successfully!");
+        setIsEditing(false);
+        fetchProfile(); 
+      }
+    } catch (error) {
+      toast.error("Failed to update profile");
+    }
   };
 
   const handleCancel = () => {
-    // Revert form data back to original user data if cancelled
-    setFormData({
-      name: user?.name || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      gender: user?.gender || "",
-      avatar: user?.avatar || "",
-    });
-    setIsEditing(false); // Lock the profile
+    if (originalData) setFormData(originalData);
+    setSelectedFile(null);
+    setIsEditing(false);
   };
+
+  if (isLoading) return <div>Loading profile...</div>;
 
   return (
     <form onSubmit={handleSubmit} className="profile-form">
-
-      {/* Header with Title and Edit Button */}
       <div className="section-header-action">
         <h2 className="section-title" style={{ marginBottom: 0 }}>Personal Information</h2>
-
         {!isEditing && (
           <button
             type="button"
@@ -82,7 +120,6 @@ function PersonalInfo() {
         )}
       </div>
 
-      {/* Avatar Upload */}
       <div className="profile-upload-section" style={{ marginTop: "20px" }}>
         <div
           className={`profile-avatar-large ${!isEditing ? 'disabled-avatar' : ''}`}
@@ -103,7 +140,6 @@ function PersonalInfo() {
         {isEditing && <p className="upload-hint">Click image to upload profile photo</p>}
       </div>
 
-      {/* Form Fields */}
       <div className="grid-2">
         <div className="form-group">
           <input
@@ -156,15 +192,14 @@ function PersonalInfo() {
             disabled={!isEditing}
             className={!isEditing ? "input-disabled" : ""}
           >
-            <option value="" disabled hidden></option> /* Added empty option for floating label state */
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value="" disabled hidden></option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
           </select>
           <label>Gender</label>
         </div>
       </div>
 
-      {/* Action Buttons (Only visible when editing) */}
       {isEditing && (
         <div className="form-actions">
           <button type="button" className="cancel-btn" onClick={handleCancel}>

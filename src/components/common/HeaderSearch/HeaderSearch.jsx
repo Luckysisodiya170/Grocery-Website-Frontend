@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-
-// Icons
+import { toast } from "react-toastify";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
@@ -11,27 +10,58 @@ import MyLocationIcon from "@mui/icons-material/MyLocation";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
-
 import { useCart } from "../../../pages/cart/CartContext";
 import products from "../../../data/products.json";
+import { getProfileDetails } from "../../../utils/profileApi";
+import { addAddress } from "../../../utils/addressApi";
 
 function HeaderSearch() {
   const navigate = useNavigate();
   const { addToCart, setIsCartOpen } = useCart();
 
-  const [selectedLocation, setSelectedLocation] = useState("New Delhi, 110001");
+  const [addresses, setAddresses] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState("Select Location");
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const [addressForm, setAddressForm] = useState({
-    name: "", phone: "", street: "", landmark: "", city: "", state: "", pin: "", type: "Home"
+    address_name: "Home",
+    contact_person_name: "",
+    contact_phone: "",
+    address_line_1: "",
+    address_line_2: "",
+    landmark: "",
+    city: "",
+    state: "",
+    pincode: "",
+    is_default: false
   });
 
   const [query, setQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchContainerRef = useRef(null);
 
-  // Close search suggestions when clicking outside
+  const fetchAddresses = async () => {
+    try {
+      const res = await getProfileDetails();
+      if (res && res.success && res.data.addresses) {
+        const fetchedAddresses = res.data.addresses;
+        setAddresses(fetchedAddresses);
+        const defaultAddr = fetchedAddresses.find(a => a.is_default) || fetchedAddresses[0];
+        if (defaultAddr) {
+          setSelectedLocation(`${defaultAddr.city}, ${defaultAddr.pincode}`);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
@@ -42,7 +72,6 @@ function HeaderSearch() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // --- Search Logic ---
   const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(query.toLowerCase())
   ).slice(0, 6);
@@ -53,11 +82,51 @@ function HeaderSearch() {
     navigate(`/product/${productId}`);
   };
 
+  const handleSelectAddress = (addr) => {
+    setSelectedLocation(`${addr.city}, ${addr.pincode}`);
+    setShowLocationModal(false);
+  };
+
+  const handleAddressChange = (e) => {
+    setAddressForm({ ...addressForm, [e.target.name]: e.target.value });
+  };
+
+  const handleSaveAddress = async () => {
+    if (!addressForm.contact_person_name || !addressForm.contact_phone || !addressForm.address_line_1 || !addressForm.city || !addressForm.state || !addressForm.pincode) {
+      return toast.error("Please fill all required fields!");
+    }
+
+    try {
+      setIsSubmitting(true);
+      const payload = {
+        ...addressForm,
+        country: "India",
+        latitude: 0,
+        longitude: 0,
+      };
+
+      const res = await addAddress(payload);
+      
+      if (res.success) {
+        toast.success("Address added successfully!");
+        await fetchAddresses();
+        setIsAddingAddress(false);
+        setShowLocationModal(false);
+        setAddressForm({
+          address_name: "Home", contact_person_name: "", contact_phone: "",
+          address_line_1: "", address_line_2: "", landmark: "", city: "", state: "", pincode: "", is_default: false
+        });
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to add address");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="relative w-full" ref={searchContainerRef}>
       <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6 w-full">
-        
-        {/* --- Location Pill --- */}
         <button 
           onClick={() => setShowLocationModal(true)}
           className="flex items-center gap-3 p-1.5 pr-5 bg-[var(--bg)] border border-[var(--border)] rounded-2xl lg:rounded-full shadow-[var(--shadow-sm)] hover:border-[var(--primary)] transition-all min-w-full lg:min-w-[280px] group"
@@ -72,7 +141,6 @@ function HeaderSearch() {
           <KeyboardArrowDownIcon className="ml-auto text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-all" />
         </button>
 
-        {/* --- Search Bar --- */}
         <div className={`relative flex-1 flex items-center gap-3 px-5 h-14 rounded-2xl lg:rounded-full transition-all w-full border ${isSearchFocused ? 'bg-[var(--bg)] border-[var(--primary)] shadow-[var(--shadow-md)]' : 'bg-[var(--bg-soft)] border-[var(--border)] shadow-[var(--shadow-sm)]'}`}>
           <SearchIcon className={isSearchFocused ? 'text-[var(--primary)]' : 'text-[var(--text-muted)]'} />
           <input
@@ -91,7 +159,6 @@ function HeaderSearch() {
         </div>
       </div>
 
-      {/* --- SEARCH SUGGESTIONS DROPDOWN --- */}
       {isSearchFocused && query.length > 0 && (
         <div className="absolute top-full left-0 lg:left-auto lg:right-0 w-full lg:w-[calc(100%-300px)] bg-[var(--card-bg)] mt-3 rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-float)] overflow-hidden z-[1100] animate-in fade-in slide-in-from-top-2 duration-300">
           <div className="p-4">
@@ -135,12 +202,11 @@ function HeaderSearch() {
         </div>
       )}
 
-      {/* --- LOCATION MODAL --- */}
       {showLocationModal && createPortal(
         <div className="fixed inset-0 z-[2000] flex items-end lg:items-center justify-center">
           <div className="absolute inset-0 bg-[var(--glass-overlay)] backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setShowLocationModal(false)} />
           
-          <div className="relative w-full lg:max-w-xl bg-[var(--card-bg)] rounded-t-[40px] lg:rounded-[40px] shadow-[var(--shadow-float)] p-6 lg:p-10 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-10 duration-500">
+          <div className="relative w-full lg:max-w-xl bg-[var(--card-bg)] rounded-t-[40px] lg:rounded-[40px] shadow-[var(--shadow-float)] p-6 lg:p-10 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-10 duration-500 scrollbar-hide">
             <div className="flex justify-between items-center mb-8">
                {isAddingAddress ? (
                  <button onClick={() => setIsAddingAddress(false)} className="flex items-center gap-2 text-[var(--text-muted)] font-black uppercase text-xs hover:text-[var(--primary)]">
@@ -152,36 +218,52 @@ function HeaderSearch() {
                     <p className="text-[var(--text-muted)] text-sm font-bold">Where should we deliver your order?</p>
                  </div>
                )}
-               <button onClick={() => setShowLocationModal(false)} className="w-10 h-10 flex items-center justify-center bg-[var(--bg-soft)] rounded-full hover:bg-[var(--danger)] hover:text-[var(--secondary)] text-[var(--text-main)] transition-all">
+               <button onClick={() => setShowLocationModal(false)} className="w-10 h-10 flex items-center justify-center bg-[var(--bg-soft)] rounded-full hover:bg-[var(--danger)] hover:text-[var(--secondary)] text-[var(--text-main)] transition-all shrink-0">
                   <CloseIcon />
                </button>
             </div>
 
             {isAddingAddress ? (
-              /* Detailed form  */
-              <div className="flex flex-col gap-6 animate-in fade-in duration-300">
-                <div className="flex gap-3">
+              <div className="flex flex-col gap-4 animate-in fade-in duration-300">
+                <div className="flex gap-3 mb-2">
                    {["Home", "Work", "Other"].map(type => (
                      <button 
                        key={type}
-                       onClick={() => setAddressForm({...addressForm, type})}
-                       className={`flex-1 py-3 rounded-2xl font-black text-xs uppercase tracking-widest border-2 transition-all ${addressForm.type === type ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--secondary)] shadow-[var(--shadow-sm)]' : 'bg-[var(--bg-soft)] border-transparent text-[var(--text-muted)]'}`}
+                       onClick={() => setAddressForm({...addressForm, address_name: type})}
+                       className={`flex-1 py-3 rounded-2xl font-black text-xs uppercase tracking-widest border-2 transition-all ${addressForm.address_name === type ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--secondary)] shadow-[var(--shadow-sm)]' : 'bg-[var(--bg-soft)] border-transparent text-[var(--text-muted)]'}`}
                      >
                        {type}
                      </button>
                    ))}
                 </div>
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Receiver's Name" />
-                  <input className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Phone Number" />
+                  <input name="contact_person_name" value={addressForm.contact_person_name} onChange={handleAddressChange} className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Receiver's Name *" />
+                  <input name="contact_phone" value={addressForm.contact_phone} onChange={handleAddressChange} maxLength="10" className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Phone Number *" />
                 </div>
-                <input className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Flat / House No. / Building" />
-                <button className="w-full py-5 bg-[var(--primary)] text-[var(--secondary)] rounded-[24px] font-black shadow-[var(--shadow-md)] hover:bg-[var(--primary-hover)] transition-all uppercase tracking-widest">
-                   Save & Deliver Here
+                
+                <input name="address_line_1" value={addressForm.address_line_1} onChange={handleAddressChange} className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Flat / House No. / Building *" />
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input name="address_line_2" value={addressForm.address_line_2} onChange={handleAddressChange} className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Area / Street" />
+                  <input name="landmark" value={addressForm.landmark} onChange={handleAddressChange} className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Landmark" />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <input name="city" value={addressForm.city} onChange={handleAddressChange} className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="City *" />
+                  <input name="state" value={addressForm.state} onChange={handleAddressChange} className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="State *" />
+                  <input name="pincode" value={addressForm.pincode} onChange={handleAddressChange} maxLength="6" className="p-4 bg-[var(--bg-soft)] rounded-2xl font-bold text-[var(--text-main)] outline-none border-2 border-transparent focus:border-[var(--primary)] focus:bg-[var(--bg)] transition-all" placeholder="Pincode *" />
+                </div>
+
+                <button 
+                  onClick={handleSaveAddress}
+                  disabled={isSubmitting}
+                  className="w-full py-5 mt-2 bg-[var(--primary)] text-[var(--secondary)] rounded-[24px] font-black shadow-[var(--shadow-md)] hover:bg-[var(--primary-hover)] transition-all uppercase tracking-widest disabled:opacity-50"
+                >
+                   {isSubmitting ? "Saving..." : "Save & Deliver Here"}
                 </button>
               </div>
             ) : (
-              /* Saved addresses */
               <div className="flex flex-col gap-6">
                 <button onClick={() => setIsAddingAddress(true)} className="flex items-center gap-4 p-5 border-2 border-dashed border-[var(--border)] rounded-3xl hover:border-[var(--primary)] hover:bg-[var(--bg-soft)] transition-all group text-left">
                   <div className="w-12 h-12 rounded-2xl bg-[var(--bg-soft)] flex items-center justify-center text-[var(--text-main)] group-hover:bg-[var(--primary)] group-hover:text-[var(--secondary)] transition-all">
@@ -200,6 +282,27 @@ function HeaderSearch() {
                     <p className="text-xs text-[var(--secondary)] opacity-80 font-bold uppercase tracking-widest">Using GPS</p>
                   </div>
                 </button>
+
+                {addresses.length > 0 && (
+                  <div className="mt-2 flex flex-col gap-3">
+                    <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">Saved Addresses</p>
+                    {addresses.map((addr) => (
+                      <button
+                        key={addr.id}
+                        onClick={() => handleSelectAddress(addr)}
+                        className="flex items-center gap-4 p-4 border border-[var(--border)] rounded-2xl hover:border-[var(--primary)] hover:bg-[var(--bg-soft)] transition-all text-left group"
+                      >
+                        <LocationOnIcon fontSize="small" className="text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+                        <div className="flex-1">
+                          <p className="font-bold text-[var(--text-main)]">
+                            {addr.address_name} {addr.is_default && <span className="text-[10px] bg-[#e0f2fe] text-[#0369a1] px-2 py-0.5 rounded-full ml-1">Default</span>}
+                          </p>
+                          <p className="text-sm text-[var(--text-muted)] truncate">{addr.address_line_1}, {addr.city}, {addr.pincode}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

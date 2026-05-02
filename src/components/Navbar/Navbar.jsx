@@ -11,7 +11,6 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import { useWishlist } from "../../pages/wishlist/WishlistContext";
 import { useCart } from "../../pages/cart/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import { useOrders } from "../../pages/orders/OrdersContext";
 import logo from "../../assets/logonew.jpeg";
 import HeaderSearch from "../common/HeaderSearch/HeaderSearch";
 
@@ -20,7 +19,6 @@ function Navbar() {
   const isLoggedIn = !!user;
   const { getCartCount } = useCart();
   const { wishlist } = useWishlist();
-  const { orders } = useOrders();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -36,6 +34,7 @@ function Navbar() {
   }, []);
 
   const displayCartCount = isLoggedIn ? getCartCount() : 0;
+  const profileImage = user?.profile_image || user?.avatar;
 
   const navLinkClasses = ({ isActive }) =>
     `flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius-pill)] transition-all duration-300 font-extrabold text-base ${
@@ -77,9 +76,6 @@ function Navbar() {
                 <NavLink to="/orders" className={navLinkClasses}>
                   <div className="relative flex items-center">
                     <ShoppingBagOutlinedIcon fontSize="small" />
-                    {orders?.length > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-[var(--primary-hover)] w-2 h-2 rounded-full border border-[var(--card-bg)]"></span>
-                    )}
                   </div>
                   <span>Orders</span>
                 </NavLink>
@@ -112,23 +108,31 @@ function Navbar() {
                 </Link>
               ) : (
                 <div 
-                  className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--primary)] border border-[var(--glass-border)] cursor-pointer hover:scale-105 transition-all flex items-center justify-center shadow-[var(--shadow-md)]"
+                  className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--primary)] border border-[var(--glass-border)] cursor-pointer hover:scale-105 transition-all flex items-center justify-center shadow-[var(--shadow-md)] overflow-hidden"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                  <PersonRoundedIcon className="text-[var(--secondary)] scale-110" />
+                  {profileImage ? (
+                    <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <PersonRoundedIcon className="text-[var(--secondary)] scale-110" />
+                  )}
                 </div>
               )}
 
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-5 w-72 bg-[var(--glass-dropdown)] border border-[var(--border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-float)] p-2 animate-in fade-in zoom-in duration-200 z-[1100]">
                   <div className="flex items-center gap-4 px-4 py-5 mb-2 bg-[var(--bg-soft)] rounded-[var(--radius-lg)]">
-                    <div className="w-12 h-12 rounded-full bg-[var(--primary)] flex items-center justify-center text-[var(--secondary)] shadow-[var(--shadow-sm)]">
-                      <PersonRoundedIcon fontSize="medium" />
+                    <div className="w-12 h-12 rounded-full bg-[var(--primary)] flex items-center justify-center text-[var(--secondary)] shadow-[var(--shadow-sm)] overflow-hidden">
+                      {profileImage ? (
+                        <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <PersonRoundedIcon fontSize="medium" />
+                      )}
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Account</p>
                       <p className="text-[var(--text-main)] font-black text-base truncate">
-                        {user?.phone || user?.name || "User"}
+                        {user?.name || user?.phone || "User"}
                       </p>
                     </div>
                   </div>

@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-function ReviewList({ product }) {
+function ReviewList({ product, isDelivered }) {
   const reviews = product.reviews || [];
   const [selectedImage, setSelectedImage] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(5);
 
   const renderStars = (rating) => {
     const filled = "★".repeat(rating);
@@ -17,62 +18,82 @@ function ReviewList({ product }) {
     return name;
   };
 
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 5);
+  };
+
+  const visibleReviews = reviews.slice(0, visibleCount);
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--border)]">
         <h3 className="text-[20px] font-bold text-[var(--text-main)]">
           Customer Reviews
         </h3>
-        {/* <button 
-          className="py-2.5 px-5 bg-[var(--primary)] text-[var(--secondary)] border-none rounded-lg font-bold cursor-pointer transition-transform hover:-translate-y-0.5 shadow-[var(--shadow-sm)] text-sm"
-        >        
-          Write a Review
-        </button> */}
+        
+        {isDelivered && (
+          <button 
+            className="py-2.5 px-5 bg-[var(--primary)] text-[var(--secondary)] border-none rounded-lg font-bold cursor-pointer transition-transform hover:-translate-y-0.5 shadow-[var(--shadow-sm)] text-sm"
+          >        
+            Write a Review
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col">
         {reviews.length > 0 ? (
-          reviews.map((review, index) => (
-            <div className="py-6 border-b border-[var(--border)] last:border-none flex flex-col" key={review.id || index}>
-              
-              <div className="flex items-center justify-between mb-2">
-                <strong className="text-[16px] text-[var(--text-main)] flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-[var(--bg-soft)] text-[var(--primary)] flex items-center justify-center font-black text-sm uppercase">
-                    {getReviewerName(review.review_given_by).charAt(0)}
+          <>
+            {visibleReviews.map((review, index) => (
+              <div className="py-6 border-b border-[var(--border)] last:border-none flex flex-col" key={review.id || index}>
+                <div className="flex items-center justify-between mb-2">
+                  <strong className="text-[16px] text-[var(--text-main)] flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-[var(--bg-soft)] text-[var(--primary)] flex items-center justify-center font-black text-sm uppercase">
+                      {getReviewerName(review.review_given_by).charAt(0)}
+                    </div>
+                    {getReviewerName(review.review_given_by)}
+                  </strong>
+                  {review.created_at && (
+                    <span className="text-[12px] text-[var(--text-muted)] font-medium">
+                      {review.created_at}
+                    </span>
+                  )}
+                </div>
+                
+                <p className="text-[var(--warning)] my-1 tracking-[2px] text-[16px]">
+                  {renderStars(review.rating || 5)}
+                </p>
+                
+                <p className="text-[15px] text-[var(--text-light)] leading-[1.7] mt-2">
+                  {review.review}
+                </p>
+
+                {review.images && review.images.length > 0 && (
+                  <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide">
+                    {review.images.map((img, i) => (
+                      <img 
+                        key={i} 
+                        src={img} 
+                        alt="review" 
+                        onClick={() => setSelectedImage(img)}
+                        className="w-[80px] h-[80px] rounded-lg object-cover border border-[var(--border)] shadow-sm hover:scale-105 transition-transform cursor-pointer" 
+                      />
+                    ))}
                   </div>
-                  {getReviewerName(review.review_given_by)}
-                </strong>
-                {review.created_at && (
-                  <span className="text-[12px] text-[var(--text-muted)] font-medium">
-                    {review.created_at}
-                  </span>
                 )}
               </div>
-              
-              <p className="text-[var(--warning)] my-1 tracking-[2px] text-[16px]">
-                {renderStars(review.rating || 5)}
-              </p>
-              
-              <p className="text-[15px] text-[var(--text-light)] leading-[1.7] mt-2">
-                {review.review}
-              </p>
+            ))}
 
-              {review.images && review.images.length > 0 && (
-                <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide">
-                  {review.images.map((img, i) => (
-                    <img 
-                      key={i} 
-                      src={img} 
-                      alt="review" 
-                      onClick={() => setSelectedImage(img)}
-                      className="w-[80px] h-[80px] rounded-lg object-cover border border-[var(--border)] shadow-sm hover:scale-105 transition-transform cursor-pointer" 
-                    />
-                  ))}
-                </div>
-              )}
-
-            </div>
-          ))
+            {visibleCount < reviews.length && (
+              <div className="mt-6 flex justify-center">
+                <button 
+                  onClick={handleLoadMore}
+                  className="px-6 py-2.5 font-bold text-[14px] text-[var(--primary)] border-2 border-[var(--primary)] rounded-lg hover:bg-[var(--primary)] hover:text-[var(--secondary)] transition-all"
+                >
+                  Load More Reviews
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="py-12 text-center border-2 border-dashed border-[var(--border)] rounded-xl bg-[var(--bg-soft)]">
             <div className="w-16 h-16 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-sm text-[var(--text-muted)]">
