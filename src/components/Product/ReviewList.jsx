@@ -30,14 +30,7 @@ function ReviewList({ product, isDelivered }) {
         <h3 className="text-[20px] font-bold text-[var(--text-main)]">
           Customer Reviews
         </h3>
-        
-        {isDelivered && (
-          <button 
-            className="py-2.5 px-5 bg-[var(--primary)] text-[var(--secondary)] border-none rounded-lg font-bold cursor-pointer transition-transform hover:-translate-y-0.5 shadow-[var(--shadow-sm)] text-sm"
-          >        
-            Write a Review
-          </button>
-        )}
+       
       </div>
 
       <div className="flex flex-col">

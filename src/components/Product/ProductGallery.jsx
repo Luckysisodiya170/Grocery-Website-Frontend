@@ -51,7 +51,6 @@ function ProductGallery({ product }) {
     >
       <div className="w-full h-[320px] md:h-[420px] rounded-xl bg-white flex items-center justify-center overflow-hidden border border-[var(--border)] group relative">
         
-        {/* Wishlist Button connected to Context */}
         <button 
           onClick={() => toggleWishlist(product)}
           className="absolute top-4 right-4 z-10 w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform border border-slate-100"

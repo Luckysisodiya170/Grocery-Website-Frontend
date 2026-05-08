@@ -10,6 +10,7 @@ export const getProfileDetails = async () => {
   }
 };
 
+
 export const updateProfileDetails = async (formData) => {
   try {
     const response = await apiService.put("/customers/profile", formData, {
@@ -20,6 +21,18 @@ export const updateProfileDetails = async (formData) => {
     return response.data;
   } catch (error) {
     console.error("Error updating profile:", error);
+    throw error;
+  }
+};
+
+export const deleteAccount = async (reason = "Delete") => {
+  try {
+    const response = await apiService.delete("/customers/delete", {
+      data: { reason }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting account:", error);
     throw error;
   }
 };

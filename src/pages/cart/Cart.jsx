@@ -1,13 +1,11 @@
 import React from "react";
 import { useCart } from "./CartContext";
-// import "./cart.css"; ❌ Ab iski zaroorat nahi hai!
 
 const Cart = () => {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getCartCount, isCartOpen, setIsCartOpen } = useCart();
 
   return (
     <>
-      {/* 1. Dark Background Overlay */}
       <div 
         className={`fixed inset-0 bg-black/50 z-[999] backdrop-blur-[2px] transition-opacity duration-300 ease-in-out ${
           isCartOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -15,14 +13,12 @@ const Cart = () => {
         onClick={() => setIsCartOpen(false)}
       ></div>
 
-      {/* 2. The Sliding Drawer */}
       <div 
         className={`fixed top-0 w-full max-w-[420px] h-screen bg-[var(--card-bg)] z-[1000] flex flex-col shadow-[-5px_0_25px_rgba(0,0,0,0.1)] transition-[right] duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)] ${
           isCartOpen ? "right-0" : "-right-[100%]"
         }`}
       >
         
-        {/* Drawer Header */}
         <div className="p-5 flex justify-between items-center border-b border-[var(--border)] shrink-0">
           <h2 className="text-[1.4rem] font-extrabold m-0 text-[var(--text-main)]">
             My Cart <span className="text-[1rem] text-[var(--text-muted)] font-semibold ml-1">({getCartCount()} items)</span>
@@ -35,7 +31,6 @@ const Cart = () => {
           </button>
         </div>
 
-        {/* Drawer Body (Scrollable items) */}
         <div className="flex-1 overflow-y-auto p-5 bg-[var(--bg-soft)]">
           {cart.length === 0 ? (
             <div className="text-center py-10 px-5">
@@ -99,7 +94,7 @@ const Cart = () => {
           )}
         </div>
 
-        {/* Drawer Footer (Fixed at bottom) */}
+        {/* Drawer Footer */}
         {cart.length > 0 && (
           <div className="p-5 bg-[var(--card-bg)] border-t border-[var(--border)] shadow-[0_-4px_15px_rgba(0,0,0,0.03)] shrink-0">
             <div className="flex justify-between mb-2.5 font-semibold text-[var(--text-muted)]">

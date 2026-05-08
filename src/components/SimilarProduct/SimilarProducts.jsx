@@ -22,7 +22,6 @@ function SimilarProducts({ similarProducts, pagination, onLoadMore, isLoadingMor
       <div className="mb-5 flex flex-col md:flex-row md:items-baseline md:justify-between">
         <h2 className="text-[18px] md:text-[22px] font-extrabold text-[var(--text-main)]">Similar Products</h2>
         
-        {/* Shows count: e.g., "Showing 10 of 12 products" */}
         {pagination && (
            <p className="text-[13px] text-[var(--text-muted)] mt-1 md:mt-0 font-semibold uppercase tracking-wider">
              Showing {similarProducts.length} of {pagination.totalRecords}

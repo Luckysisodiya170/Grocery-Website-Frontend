@@ -8,6 +8,7 @@ import Wallet from "./components/Wallet";
 import AboutUs from "./components/AboutUs";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsConditions from "./components/TermsConditions";
+import DeletePage from "./components/DeletePage";
 
 function Profile() {
   const [activeTab, setActiveTab] = useState("personal");
@@ -34,6 +35,7 @@ function Profile() {
       case "privacy": return <PrivacyPolicy />;
       case "terms": return <TermsConditions />;
       case "logout": return <LogoutPanel />;
+      case "delete": return <DeletePage />;
       default: return <PersonalInfo />;
     }
   };

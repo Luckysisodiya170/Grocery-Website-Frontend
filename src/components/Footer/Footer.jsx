@@ -66,7 +66,6 @@ function Footer() {
         <div className="footer-bottom">
           <div className="copyright-area">
             <p>© 2026 Shippzyy Inc. All rights reserved.</p>
-            {/* 🔥 Design Credit Line Added 🔥 */}
             <p className="developer-credit">
               Designed and developed by <span>Blackcube Solutions LLC</span>
             </p>

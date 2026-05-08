@@ -125,7 +125,7 @@ const handleSubmit = async (e) => {
       {/* MAIN CONTAINER */}
       <div className="w-full max-w-[420px] flex flex-col rounded-2xl bg-cardBg shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-borderMain overflow-hidden animate-fade-in">
         
-        {/* 🔥 SEAMLESS HEADER (Brand Slogan at the Top) 🔥 */}
+        {/* HEADER */}
         <div className="w-full pt-8 pb-3 px-6 text-center z-20">
           <h2 className="text-[22px] md:text-[26px] font-black mb-0.5 text-transparent bg-clip-text bg-brand-gradient tracking-tight">
             Fast & Secure
@@ -135,7 +135,7 @@ const handleSubmit = async (e) => {
           </p>
         </div>
 
-        {/* IMAGE SECTION - Clean Image Only */}
+        {/* IMAGE SECTION  */}
         <div className="h-[120px] relative w-full">
           <img src={bg} alt="verification" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/10 z-10"></div>

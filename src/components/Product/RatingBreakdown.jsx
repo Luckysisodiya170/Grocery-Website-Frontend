@@ -25,15 +25,32 @@ function RatingBreakdown({ product }) {
     return { ...cat, count, fill };
   });
 
+  // Calculating percentage based on avg_rating (Out of 5)
+  const starPercentage = (rating / 5) * 100;
+
   return (
     <div className="flex flex-col">
       <div className="mb-6">
         <h2 className="text-[54px] font-black text-[var(--text-main)] leading-none">
           {rating}
         </h2>
-        <div className="text-[var(--warning)] text-[22px] my-2 tracking-[4px]">
-          ★★★★★
+        
+        {/* --- DYNAMIC STARS LOGIC --- */}
+        <div className="relative inline-block text-[22px] tracking-[4px] my-2">
+          {/* Background Empty Stars (Grey) */}
+          <div className="text-slate-200">
+            ★★★★★
+          </div>
+          
+          {/* Foreground Filled Stars (Warning Color) */}
+          <div 
+            className="absolute top-0 left-0 overflow-hidden text-[var(--warning)] whitespace-nowrap"
+            style={{ width: `${starPercentage}%` }}
+          >
+            ★★★★★
+          </div>
         </div>
+
         <p className="text-[var(--text-muted)] text-[14px] font-medium mt-1">
           Based on {reviewsCount} reviews
         </p>

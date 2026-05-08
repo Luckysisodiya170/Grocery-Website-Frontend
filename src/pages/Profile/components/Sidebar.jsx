@@ -16,6 +16,7 @@ const menuItems = [
   { id: "privacy", label: "Privacy Policy", icon: <SecurityOutlinedIcon /> },
   { id: "terms", label: "Terms & Conditions", icon: <GavelOutlinedIcon /> },
   { id: "logout", label: "Logout", icon: <LogoutOutlinedIcon /> },
+  { id: "delete", label: "Delete Account", icon: <GavelOutlinedIcon /> },
 ];
 
 function Sidebar({ activeTab, setActiveTab }) {

@@ -123,11 +123,16 @@ function Navbar() {
                 <div className="absolute right-0 mt-5 w-72 bg-[var(--glass-dropdown)] border border-[var(--border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-float)] p-2 animate-in fade-in zoom-in duration-200 z-[1100]">
                   <div className="flex items-center gap-4 px-4 py-5 mb-2 bg-[var(--bg-soft)] rounded-[var(--radius-lg)]">
                     <div className="w-12 h-12 rounded-full bg-[var(--primary)] flex items-center justify-center text-[var(--secondary)] shadow-[var(--shadow-sm)] overflow-hidden">
-                      {profileImage ? (
-                        <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        <PersonRoundedIcon fontSize="medium" />
-                      )}
+                     {profileImage ? (
+  <img 
+    src={`${profileImage}?t=${new Date().getTime()}`} 
+    alt="Profile" 
+    className="w-full h-full object-cover" 
+    onError={(e) => { e.target.src = "https://via.placeholder.com/150"; }} 
+  />
+) : (
+  <PersonRoundedIcon className="text-[var(--secondary)] scale-110" />
+)}
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">Account</p>
