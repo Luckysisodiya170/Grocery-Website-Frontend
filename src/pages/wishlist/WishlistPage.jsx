@@ -18,6 +18,9 @@ const WishlistPage = () => {
 
   const [apiWishlist, setApiWishlist] = useState([]);
   const [isApiLoading, setIsApiLoading] = useState(true);
+  
+  // Modal State
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: null, item: null });
 
   const fetchItems = async () => {
     if (user) {
@@ -39,26 +42,38 @@ const WishlistPage = () => {
 
   const displayItems = user ? apiWishlist : wishlist;
 
-  const handleRemoveItem = async (item) => {
-    if (user) {
-      try {
-        setApiWishlist(prev => prev.filter(i => i.id !== item.id));
-        
-        const res = await toggleWishlistApi(item.id, false);
-        if (res.success) {
-          toast.success("Removed from wishlist");
-        }
-      } catch (err) {
-        toast.error("Could not remove item", err);
-        fetchItems();
-      }
-    } else {
-      toggleWishlist(item); 
-    }
+  const handleRemoveClick = (item) => {
+    setConfirmModal({ isOpen: true, type: 'single', item });
   };
 
-  const handleClearAll = async () => {
-    if (window.confirm("Are you sure you want to clear your entire wishlist?")) {
+  const handleClearAllClick = () => {
+    setConfirmModal({ isOpen: true, type: 'all', item: null });
+  };
+
+  const closeModal = () => {
+    setConfirmModal({ isOpen: false, type: null, item: null });
+  };
+
+  const executeAction = async () => {
+    const { type, item } = confirmModal;
+
+    if (type === 'single') {
+      if (user) {
+        try {
+          setApiWishlist(prev => prev.filter(i => i.id !== item.id));
+          const res = await toggleWishlistApi(item.id, false);
+          if (res.success) {
+            toast.success("Removed from wishlist");
+          }
+        } catch (err) {
+          toast.error("Could not remove item", err);
+          fetchItems();
+        }
+      } else {
+        toggleWishlist(item); 
+        toast.success("Removed from wishlist");
+      }
+    } else if (type === 'all') {
       if (user) {
         try {
           const res = await clearAllWishlistApi();
@@ -71,8 +86,11 @@ const WishlistPage = () => {
         }
       } else {
         setWishlist([]); 
+        toast.success("Wishlist cleared!");
       }
     }
+    
+    closeModal();
   };
 
   if (loading || isApiLoading) return (
@@ -82,7 +100,7 @@ const WishlistPage = () => {
   );
 
   return (
-    <div className="min-h-screen pt-[60px] pb-[40px] px-4 md:px-8 max-w-[1000px] mx-auto w-full">
+    <div className="min-h-screen pt-[60px] pb-[40px] px-4 md:px-8 max-w-[1000px] mx-auto w-full relative">
         
       {displayItems.length > 0 ? (
         <>
@@ -99,9 +117,9 @@ const WishlistPage = () => {
               </p>
             </div>
 
-            <div className='bg-[var(--card-bg)] p-2.5 rounded-lg'>
+            <div className='bg-[var(--card-bg)] p-2.5 rounded-lg border border-[var(--border)]'>
               <button 
-                onClick={handleClearAll}
+                onClick={handleClearAllClick}
                 className="bg-[var(--danger)]/10 text-[var(--danger)] border-none px-5 py-2.5 rounded-lg font-bold cursor-pointer transition-colors hover:bg-[var(--danger)] hover:text-white"
               >
                 Clear All
@@ -168,14 +186,14 @@ const WishlistPage = () => {
                     ) : (
                       <div className="flex items-center gap-[15px] bg-[var(--bg-soft)] py-1.5 px-2.5 rounded-[12px]">
                         <button 
-                          className="bg-[var(--card-bg)] border border-[var(--border)] w-[32px] h-[32px] rounded-[8px] flex justify-center items-center font-bold text-[var(--text-main)] cursor-pointer hover:bg-[var(--primary)] hover:text-white"
+                          className="bg-[var(--card-bg)] border border-[var(--border)] w-[32px] h-[32px] rounded-[8px] flex justify-center items-center font-bold text-[var(--text-main)] cursor-pointer hover:bg-[var(--primary)] hover:text-white transition-colors"
                           onClick={() => removeFromCart(item.id)}
                         >
                           <RemoveIcon fontSize="small" />
                         </button>
                         <span className="font-black text-[15px] text-[var(--text-main)] w-[20px] text-center">{quantity}</span>
                         <button 
-                          className="bg-[var(--card-bg)] border border-[var(--border)] w-[32px] h-[32px] rounded-[8px] flex justify-center items-center font-bold text-[var(--text-main)] cursor-pointer hover:bg-[var(--primary)] hover:text-white"
+                          className="bg-[var(--card-bg)] border border-[var(--border)] w-[32px] h-[32px] rounded-[8px] flex justify-center items-center font-bold text-[var(--text-main)] cursor-pointer hover:bg-[var(--primary)] hover:text-white transition-colors"
                           onClick={() => addToCart(item)}
                         >
                           <AddIcon fontSize="small" />
@@ -184,7 +202,7 @@ const WishlistPage = () => {
                     )}
 
                     <button 
-                      onClick={() => handleRemoveItem(item)}
+                      onClick={() => handleRemoveClick(item)}
                       className="bg-[var(--danger)]/10 text-[var(--danger)] border border-transparent w-[42px] h-[42px] rounded-[10px] flex items-center justify-center cursor-pointer transition-colors hover:bg-[var(--danger)] hover:text-white shrink-0 ml-2" 
                       title="Remove from Wishlist"
                     >
@@ -229,6 +247,44 @@ const WishlistPage = () => {
           </div>
         </div>
       )}
+
+      {/* Confirmation Modal */}
+      {confirmModal.isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease]">
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-[24px] p-8 max-w-sm w-full shadow-2xl transform transition-all scale-100">
+            
+            <div className="w-14 h-14 bg-[var(--danger)]/10 rounded-full flex items-center justify-center mb-5 mx-auto">
+              <DeleteOutlineIcon className="text-[var(--danger)] text-3xl" />
+            </div>
+            
+            <h3 className="text-[22px] font-black text-center text-[var(--text-main)] mb-2">
+              {confirmModal.type === 'all' ? "Clear Wishlist?" : "Remove Item?"}
+            </h3>
+            
+            <p className="text-center text-[var(--text-muted)] font-medium mb-8">
+              {confirmModal.type === 'all' 
+                ? "Are you sure you want to remove all items from your wishlist? This action cannot be undone." 
+                : `Are you sure you want to remove "${confirmModal.item?.name}" from your wishlist?`}
+            </p>
+            
+            <div className="flex gap-4">
+              <button 
+                onClick={closeModal}
+                className="flex-1 py-3.5 bg-[var(--bg-soft)] text-[var(--text-main)] rounded-xl font-bold hover:bg-[var(--border)] transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={executeAction}
+                className="flex-1 py-3.5 bg-[var(--danger)] text-white rounded-xl font-bold hover:bg-red-600 transition-colors shadow-lg shadow-red-500/30"
+              >
+                {confirmModal.type === 'all' ? "Clear All" : "Remove"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

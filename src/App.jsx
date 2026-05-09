@@ -27,6 +27,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./components/common/ScrollToTop";
 import OrderSuccess from "./pages/orders/OrderSuccess";
 import OrderDetails from './pages/orders/OrderDetails'
+import SearchPage from "./components/common/HeaderSearch/SearchPage";
 
 function App() {
  const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -125,6 +126,8 @@ function App() {
                 </Route>
 
                 <Route path="*" element={<Notfound />} />
+                                  <Route path="/search" element={<SearchPage/>} />
+
                 <Route path="/order-success" element={
                   <OrderSuccess/>
                 }/>

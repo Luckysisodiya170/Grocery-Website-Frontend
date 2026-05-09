@@ -23,29 +23,30 @@ function TermsConditions() {
   }, []);
 
   return (
-    <div className="p-6 md:p-8 bg-[var(--card-bg)] rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-sm)] w-full h-full min-h-[500px]">
-      <div className="mb-6 pb-4 border-b border-[var(--border)]">
-        <h2 className="text-[22px] font-black text-[var(--text-main)]">Terms & Conditions</h2>
+    <div className="p-6 md:p-8 bg-[var(--card-bg)] rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-sm)] w-full h-[414px] flex flex-col overflow-hidden">
+      <div className="mb-6 pb-4 border-b border-[var(--border)] relative shrink-0">
+        <h2 className="text-2xl font-black bg-[image:var(--brand-gradient)] bg-clip-text text-transparent inline-block">
+          Terms & Conditions
+        </h2>
+        <div className="absolute bottom-[-1px] left-0 w-16 h-[3px] bg-[image:var(--brand-gradient)] rounded-full"></div>
       </div>
       
-      {loading ? (
-        <div className="flex justify-center p-10">
-          <div className="w-8 h-8 border-4 border-[var(--primary)] border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      ) : content ? (
-        <div className="text-[14px] md:text-[15px] text-[var(--text-light)] leading-relaxed prose prose-slate max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
-      ) : (
-        <>
-          <p className="text-[13px] text-[var(--text-muted)] font-medium mb-5">Last Updated: February 2026</p>
-          <div className="text-[14px] md:text-[15px] text-[var(--text-light)] leading-relaxed">
-            <h4 className="text-[18px] font-bold text-[var(--text-main)] mb-2">1. Acceptance of Terms</h4>
-            <p className="mb-5">
-              By accessing and using the Shipzyy platform, you accept and agree to be bound by 
-              the terms and provisions of this agreement.
-            </p>
+      <div className="flex-1 overflow-y-auto pr-2 scrollbar-hide">
+        {loading ? (
+          <div className="h-full flex justify-center items-center">
+            <div className="w-8 h-8 border-4 border-[var(--primary)] border-t-transparent rounded-full animate-spin"></div>
           </div>
-        </>
-      )}
+        ) : content ? (
+          <div className="text-[14px] text-[var(--text-light)] leading-relaxed prose prose-slate max-w-none prose-headings:text-[var(--primary)] prose-a:text-[var(--primary)]" dangerouslySetInnerHTML={{ __html: content }} />
+        ) : (
+          <div className="text-[14px] text-[var(--text-light)] leading-relaxed bg-[var(--bg-soft)] p-5 rounded-2xl border border-[var(--border)]">
+            <h4 className="text-lg font-black text-[var(--primary)] mb-2 flex items-center gap-2">
+              📜 Platform Rules
+            </h4>
+            <p>By using Shipzyy, you agree to our terms of service.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

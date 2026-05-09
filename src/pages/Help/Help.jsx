@@ -208,7 +208,7 @@ function Help() {
         </div>
       </div>
 
-      <div className="w-full bg-[#0f172a] py-20 border-t border-slate-800">
+      {/* <div className="w-full bg-[#0f172a] py-20 border-t border-slate-800">
         <div className="max-w-[1400px] mx-auto px-5">
           <div className="flex items-center justify-between mb-10">
             <div>
@@ -235,8 +235,8 @@ function Help() {
               ))
             )}
           </div>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
 
     </div>
   );

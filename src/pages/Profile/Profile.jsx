@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"; 
+import { useLocation } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import PersonalInfo from "./components/PersonalInfo";
 import ManageAddress from "./components/ManageAddress";
@@ -11,8 +12,16 @@ import TermsConditions from "./components/TermsConditions";
 import DeletePage from "./components/DeletePage";
 
 function Profile() {
-  const [activeTab, setActiveTab] = useState("personal");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.activeTab || "personal");
   const profileTopRef = useRef(null);
+
+  // Agar user footer ke link se kisi specific tab par navigate karta hai
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -30,7 +39,7 @@ function Profile() {
       case "personal": return <PersonalInfo />;
       case "address": return <ManageAddress />;
       case "wallet": return <Wallet />;
-      case "password": return <PasswordManager />;
+      // case "password": return <PasswordManager />;
       case "about": return <AboutUs />;
       case "privacy": return <PrivacyPolicy />;
       case "terms": return <TermsConditions />;

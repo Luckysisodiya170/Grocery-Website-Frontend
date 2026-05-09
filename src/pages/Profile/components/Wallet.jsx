@@ -2,50 +2,67 @@ import React from 'react';
 
 function Wallet() {
   return (
-    <div className="flex flex-col min-h-[500px] w-full p-6 md:p-10 bg-[var(--card-bg)] rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-sm)]">
+    <div className="h-[414px] w-full p-6 md:p-8 bg-[var(--card-bg)] rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-sm)] flex flex-col overflow-hidden">
       
-      <div className="mb-8 pb-4 border-b border-[var(--border)]">
-        <h2 className="text-[24px] font-black text-[var(--text-main)]">My Wallet</h2>
-        <p className="text-[13px] text-[var(--text-muted)] font-medium mt-1">Track your balance and transaction history.</p>
+      {/* Header */}
+      <div className="mb-6 pb-4 border-b border-[var(--border)] relative shrink-0">
+        <h2 className="text-2xl font-black bg-[image:var(--brand-gradient)] bg-clip-text text-transparent inline-block">
+          My Wallet
+        </h2>
+        <div className="absolute bottom-[-1px] left-0 w-16 h-[3px] bg-[image:var(--brand-gradient)] rounded-full"></div>
       </div>
       
-      <div className="flex flex-col sm:flex-row items-center justify-between p-6 bg-gradient-to-r from-[#005f73] to-[#14b8a6] rounded-[var(--radius-lg)] shadow-[var(--shadow-md)] mb-8 text-white shrink-0">
-        <div className="text-center sm:text-left mb-4 sm:mb-0">
-          <p className="text-[13px] font-bold opacity-90 uppercase tracking-widest mb-1">Available Balance</p>
-          <h3 className="text-[32px] font-black tracking-tight text-white">₹1,250.00</h3>
+      {/* Balance Card - Compact & Premium */}
+      <div className="p-6 bg-[image:var(--brand-gradient)] rounded-[24px] shadow-lg mb-6 text-white shrink-0 relative overflow-hidden group transition-transform hover:scale-[1.01]">
+        <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+        <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-center sm:text-left">
+            <p className="text-[11px] font-black opacity-80 uppercase tracking-[0.2em] mb-1">Available Balance</p>
+            <h3 className="text-3xl font-black tracking-tight">₹1,250.00</h3>
+          </div>
+          <button className="px-6 py-2.5 bg-white text-[#005f73] font-black uppercase tracking-widest text-[11px] rounded-full shadow-md hover:bg-slate-50 transition-all active:scale-95">
+            + Add Money
+          </button>
         </div>
-        <button className="px-8 py-3 bg-white text-[#005f73] font-black uppercase tracking-widest text-[12px] rounded-[var(--radius-pill)] shadow-sm hover:scale-105 transition-transform active:scale-95">
-          Add Money
-        </button>
       </div>
       
-      <div className="flex flex-col flex-1 min-h-0">
-        <h4 className="text-[18px] font-bold text-[var(--text-main)] mb-4">Recent Transactions</h4>
+      {/* Transactions List - Scrollable */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <h4 className="text-[14px] font-black text-[var(--text-main)] uppercase tracking-widest mb-4 ml-1">Recent Transactions</h4>
         
-        <div className="flex flex-col gap-3 overflow-y-auto pr-2 max-h-[250px] scrollbar-thin scrollbar-thumb-[var(--border)]">
+        <div className="flex-1 overflow-y-auto pr-2 scrollbar-hide space-y-3">
           
-          <div className="flex items-center justify-between p-4 bg-[var(--bg-soft)] rounded-[var(--radius-md)] border border-transparent hover:border-[var(--border)] transition-colors shrink-0">
-            <div>
-              <strong className="text-[15px] font-bold text-[var(--text-main)]">Added to Wallet</strong>
-              <p className="text-[12px] text-[var(--text-muted)] mt-1">12 Feb 2026, 10:30 AM</p>
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-slate-100 transition-all group">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 text-lg">💰</div>
+              <div>
+                <strong className="text-sm font-black text-slate-800">Added to Wallet</strong>
+                <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5">12 Feb 2026 • 10:30 AM</p>
+              </div>
             </div>
-            <span className="text-[16px] font-black text-[var(--success)] tracking-wider">+ ₹500</span>
+            <span className="text-sm font-black text-emerald-500 tracking-wider">+ ₹500</span>
           </div>
           
-          <div className="flex items-center justify-between p-4 bg-[var(--bg-soft)] rounded-[var(--radius-md)] border border-transparent hover:border-[var(--border)] transition-colors shrink-0">
-            <div>
-              <strong className="text-[15px] font-bold text-[var(--text-main)]">Order #ORD1024</strong>
-              <p className="text-[12px] text-[var(--text-muted)] mt-1">10 Feb 2026, 04:15 PM</p>
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-slate-100 transition-all group">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 text-lg">🛍️</div>
+              <div>
+                <strong className="text-sm font-black text-slate-800">Order #ORD1024</strong>
+                <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5">10 Feb 2026 • 04:15 PM</p>
+              </div>
             </div>
-            <span className="text-[16px] font-black text-[var(--danger)] tracking-wider">- ₹850</span>
+            <span className="text-sm font-black text-rose-500 tracking-wider">- ₹850</span>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-[var(--bg-soft)] rounded-[var(--radius-md)] border border-transparent hover:border-[var(--border)] transition-colors shrink-0">
-            <div>
-              <strong className="text-[15px] font-bold text-[var(--text-main)]">Refund Received</strong>
-              <p className="text-[12px] text-[var(--text-muted)] mt-1">08 Feb 2026, 11:20 AM</p>
+          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-slate-100 transition-all group">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-600 text-lg">🔄</div>
+              <div>
+                <strong className="text-sm font-black text-slate-800">Refund Received</strong>
+                <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5">08 Feb 2026 • 11:20 AM</p>
+              </div>
             </div>
-            <span className="text-[16px] font-black text-[var(--success)] tracking-wider">+ ₹1,200</span>
+            <span className="text-sm font-black text-emerald-500 tracking-wider">+ ₹1,200</span>
           </div>
 
         </div>
