@@ -113,13 +113,6 @@ function Footer() {
               Designed and developed by <span className="text-cyan-400 font-bold">Blackcube Solutions LLC</span>
             </p>
           </div>
-          
-          <div className="flex gap-3 flex-wrap justify-center">
-            <span className="bg-white/5 px-4 py-2 rounded-lg text-xs font-extrabold text-white border border-white/5 tracking-widest">Visa</span>
-            <span className="bg-white/5 px-4 py-2 rounded-lg text-xs font-extrabold text-white border border-white/5 tracking-widest">Mastercard</span>
-            <span className="bg-white/5 px-4 py-2 rounded-lg text-xs font-extrabold text-white border border-white/5 tracking-widest">UPI</span>
-            <span className="bg-white/5 px-4 py-2 rounded-lg text-xs font-extrabold text-white border border-white/5 tracking-widest">PayPal</span>
-          </div>
         </div>
       </div>
     </footer>
