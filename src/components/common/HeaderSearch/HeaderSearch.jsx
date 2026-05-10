@@ -22,6 +22,7 @@ function HeaderSearch() {
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [addresses, setAddresses] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
+    const [isLocating, setIsLocating] = useState(false);
 
     const token = localStorage.getItem("token") || localStorage.getItem("refreshToken");
     const isLoggedIn = !!token;
@@ -57,38 +58,56 @@ function HeaderSearch() {
     };
 
     const askInitialPermission = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => fetchReverseGeocode(pos.coords.latitude, pos.coords.longitude),
-                () => setSelectedLocation("Select Location")
-            );
-        }
+        if (!navigator.geolocation) return;
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                fetchReverseGeocode(position.coords.latitude, position.coords.longitude);
+            },
+            () => {
+                setSelectedLocation("Select Location");
+            }
+        );
     };
 
     const fetchReverseGeocode = async (lat, lon) => {
         try {
             const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
             const data = await res.json();
-            const loc = `${data.address.city || data.address.town || "Unknown"}, ${data.address.postcode || ""}`;
-            setSelectedLocation(loc);
+            
+            if (data && data.address) {
+                const addr = data.address;
+                const locName = addr.city || addr.town || addr.village || addr.suburb || addr.county || addr.state_district || addr.state || "Location Fetched";
+                const pin = addr.postcode || "";
+                setSelectedLocation(pin ? `${locName}, ${pin}` : locName);
+            } else {
+                setSelectedLocation("Location Fetched");
+            }
         } catch (err) {
             setSelectedLocation("Location Fetched");
         }
     };
 
     const handleUseCurrent = () => {
-        if (!isLoggedIn) {
-            setIsModalOpen(false);
-            setShowAuthModal(true);
-        } else {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    fetchReverseGeocode(pos.coords.latitude, pos.coords.longitude);
-                    setIsModalOpen(false);
-                },
-                () => toast.error("Please enable location permission")
-            );
+        setIsLocating(true);
+
+        if (!navigator.geolocation) {
+            toast.error("Geolocation is not supported by your browser.");
+            setIsLocating(false);
+            return;
         }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                fetchReverseGeocode(position.coords.latitude, position.coords.longitude);
+                setIsLocating(false);
+                setIsModalOpen(false);
+            },
+            (error) => {
+                toast.error(error.message);
+                setIsLocating(false);
+            }
+        );
     };
 
     const handleAddAddress = async (e) => {
@@ -137,9 +156,11 @@ function HeaderSearch() {
                         </div>
 
                         <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
-                            <button onClick={handleUseCurrent} className="w-full flex items-center gap-4 p-5 rounded-3xl bg-cyan-900 text-white hover:bg-cyan-950 shadow-lg shadow-cyan-900/20 transition-all shrink-0">
-                                <MyLocationIcon /> 
-                                <span className="font-black text-sm uppercase tracking-widest text-left">Use Current Location</span>
+                            <button onClick={handleUseCurrent} disabled={isLocating} className="w-full flex items-center gap-4 p-5 rounded-3xl bg-cyan-900 text-white hover:bg-cyan-950 shadow-lg shadow-cyan-900/20 transition-all shrink-0 disabled:opacity-70">
+                                <MyLocationIcon className={isLocating ? "animate-spin" : ""} /> 
+                                <span className="font-black text-sm uppercase tracking-widest text-left">
+                                    {isLocating ? "Locating..." : "Use Current Location"}
+                                </span>
                             </button>
 
                             <div className="space-y-4">
