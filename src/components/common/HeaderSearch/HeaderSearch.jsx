@@ -23,6 +23,9 @@ function HeaderSearch() {
     const [addresses, setAddresses] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
     const [isLocating, setIsLocating] = useState(false);
+    
+    // Naya state Live Indicator ke liye
+    const [isLiveLocation, setIsLiveLocation] = useState(false);
 
     const token = localStorage.getItem("token") || localStorage.getItem("refreshToken");
     const isLoggedIn = !!token;
@@ -32,6 +35,13 @@ function HeaderSearch() {
         address_line_1: "", city: "", state: "", pincode: "", country: "India" 
     };
     const [formData, setFormData] = useState(initialForm);
+
+    // Geolocation options for exact GPS location
+    const geoOptions = {
+        enableHighAccuracy: true, 
+        timeout: 10000, 
+        maximumAge: 0 
+    };
 
     if (location.pathname === "/search") return null;
 
@@ -50,7 +60,10 @@ function HeaderSearch() {
                 const addrs = res.data.addresses || [];
                 setAddresses(addrs);
                 const def = addrs.find(a => a.is_default) || addrs[0];
-                if (def) setSelectedLocation(`${def.city}, ${def.pincode}`);
+                if (def) {
+                    setSelectedLocation(`${def.city}, ${def.pincode}`);
+                    setIsLiveLocation(false); // Saved address hai, live nahi
+                }
             }
         } catch (err) {
             console.error(err);
@@ -66,7 +79,9 @@ function HeaderSearch() {
             },
             () => {
                 setSelectedLocation("Select Location");
-            }
+                setIsLiveLocation(false);
+            },
+            geoOptions // Pass high accuracy options
         );
     };
 
@@ -80,8 +95,10 @@ function HeaderSearch() {
                 const locName = addr.city || addr.town || addr.village || addr.suburb || addr.county || addr.state_district || addr.state || "Location Fetched";
                 const pin = addr.postcode || "";
                 setSelectedLocation(pin ? `${locName}, ${pin}` : locName);
+                setIsLiveLocation(true); // Successfully fetched live location
             } else {
                 setSelectedLocation("Location Fetched");
+                setIsLiveLocation(true);
             }
         } catch (err) {
             setSelectedLocation("Location Fetched");
@@ -104,9 +121,10 @@ function HeaderSearch() {
                 setIsModalOpen(false);
             },
             (error) => {
-                toast.error(error.message);
+                toast.error(error.message || "Failed to fetch live location");
                 setIsLocating(false);
-            }
+            },
+            geoOptions // Exact GPS pin-point location ke liye
         );
     };
 
@@ -128,11 +146,20 @@ function HeaderSearch() {
         <>
             <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6 w-full animate-in fade-in">
                 <div onClick={() => setIsModalOpen(true)} className="flex items-center gap-3 p-1.5 pr-5 bg-[var(--bg)] border border-[var(--border)] rounded-full min-w-full lg:min-w-[280px] cursor-pointer hover:border-[var(--primary)] transition-all">
-                    <div className="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center text-[var(--secondary)] shrink-0 shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center text-[var(--secondary)] shrink-0 shadow-sm relative">
                         <LocationOnIcon fontSize="small" />
+                        {/* Live Location Pulsing Dot */}
+                        {isLiveLocation && (
+                            <span className="absolute top-0 right-0 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500 border border-white"></span>
+                            </span>
+                        )}
                     </div>
                     <div className="flex flex-col items-start text-left overflow-hidden">
-                        <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-wider">Delivering to</span>
+                        <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-wider">
+                            {isLiveLocation ? "Live Location" : "Delivering to"}
+                        </span>
                         <strong className="text-sm font-black text-[var(--primary)] truncate w-40">{selectedLocation}</strong>
                     </div>
                 </div>
@@ -143,6 +170,7 @@ function HeaderSearch() {
                 </Link>
             </div>
 
+            {/* Modal Components Below remain mostly exactly the same */}
             {isModalOpen && createPortal(
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6" onClick={() => setIsModalOpen(false)}>
                     <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
@@ -156,10 +184,10 @@ function HeaderSearch() {
                         </div>
 
                         <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
-                            <button onClick={handleUseCurrent} disabled={isLocating} className="w-full flex items-center gap-4 p-5 rounded-3xl bg-cyan-900 text-white hover:bg-cyan-950 shadow-lg shadow-cyan-900/20 transition-all shrink-0 disabled:opacity-70">
+                            <button onClick={handleUseCurrent} disabled={isLocating} className="w-full flex items-center gap-4 p-5 rounded-3xl bg-cyan-900 text-white hover:bg-cyan-950 shadow-lg shadow-cyan-900/20 transition-all shrink-0 disabled:opacity-70 relative overflow-hidden">
                                 <MyLocationIcon className={isLocating ? "animate-spin" : ""} /> 
                                 <span className="font-black text-sm uppercase tracking-widest text-left">
-                                    {isLocating ? "Locating..." : "Use Current Location"}
+                                    {isLocating ? "Locating..." : "Use Live Location"}
                                 </span>
                             </button>
 
@@ -168,7 +196,7 @@ function HeaderSearch() {
                                 {isLoggedIn ? (
                                     <div className="space-y-3">
                                         {addresses.map((addr) => (
-                                            <div key={addr.id} onClick={() => { setSelectedLocation(`${addr.city}, ${addr.pincode}`); setIsModalOpen(false); }} className="flex items-start gap-4 p-5 rounded-[28px] border border-slate-100 hover:border-cyan-900 hover:bg-slate-50 cursor-pointer transition-all group">
+                                            <div key={addr.id} onClick={() => { setSelectedLocation(`${addr.city}, ${addr.pincode}`); setIsLiveLocation(false); setIsModalOpen(false); }} className="flex items-start gap-4 p-5 rounded-[28px] border border-slate-100 hover:border-cyan-900 hover:bg-slate-50 cursor-pointer transition-all group">
                                                 <div className="mt-1 text-cyan-900 group-hover:scale-110 transition-transform">
                                                     {addr.address_name === "Home" ? <HomeOutlinedIcon /> : addr.address_name === "Office" ? <BusinessOutlinedIcon /> : <FmdGoodOutlinedIcon />}
                                                 </div>
