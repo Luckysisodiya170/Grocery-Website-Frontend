@@ -28,6 +28,7 @@ import ScrollToTop from "./components/common/ScrollToTop";
 import OrderSuccess from "./pages/orders/OrderSuccess";
 import OrderDetails from './pages/orders/OrderDetails'
 import SearchPage from "./components/common/HeaderSearch/SearchPage";
+import LegalPage from "./pages/Help/LegalPage";
 
 function App() {
  const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -118,6 +119,7 @@ function App() {
                   <Route path="/orders" element={<OrderHistory />} />
                   <Route path="/orders/:id" element={<OrderDetails />} />
                   <Route path="/wishlist" element={<WishlistPage />} />
+                  <Route path="/info/:type" element={<LegalPage />} />
                   <Route path="/help" element={<Help />} />
 
                   {/*Vendor moved here */}

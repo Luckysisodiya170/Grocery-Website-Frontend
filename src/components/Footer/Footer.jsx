@@ -70,9 +70,21 @@ function Footer() {
               <h4 className="text-white text-xl mb-6 font-bold">Support</h4>
               <ul className="space-y-4">
                 <li><Link to="/help" onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">Help Center</Link></li>
-                <li><Link to="/profile" state={{ activeTab: "about" }} onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">About Us</Link></li>
-                <li><Link to="/profile" state={{ activeTab: "terms" }} onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">Terms of Service</Link></li>
-                <li><Link to="/profile" state={{ activeTab: "privacy" }} onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">Privacy Policy</Link></li>
+               <li>
+      <Link to="/info/aboutUs" onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">
+        About Us
+      </Link>
+    </li>
+    <li>
+      <Link to="/info/termsConditions" onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">
+        Terms of Service
+      </Link>
+    </li>
+    <li>
+      <Link to="/info/privacyPolicy" onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">
+        Privacy Policy
+      </Link>
+    </li>
               </ul>
             </div>
 
