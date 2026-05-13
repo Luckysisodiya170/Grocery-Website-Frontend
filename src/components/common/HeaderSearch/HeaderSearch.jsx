@@ -1,49 +1,57 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useLocation, Link, useNavigate } from "react-router-dom"; 
 import { toast } from "react-toastify";
+
+// Icons
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import AddIcon from "@mui/icons-material/Add";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 
+// API
 import { getProfileDetails } from "../../../utils/profileApi";
-import { addAddress } from "../../../utils/addressApi";
+import { addAddress, updateAddress } from "../../../utils/addressApi";
 
 function HeaderSearch() {
     const location = useLocation();
     const navigate = useNavigate();
+    
     const [selectedLocation, setSelectedLocation] = useState("Select Location");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [addresses, setAddresses] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
     const [isLocating, setIsLocating] = useState(false);
-    
-    // Naya state Live Indicator ke liye
     const [isLiveLocation, setIsLiveLocation] = useState(false);
+    const [editId, setEditId] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const token = localStorage.getItem("token") || localStorage.getItem("refreshToken");
     const isLoggedIn = !!token;
 
-    const initialForm = { 
-        address_name: "Home", contact_person_name: "", contact_phone: "", 
-        address_line_1: "", city: "", state: "", pincode: "", country: "India" 
+    const initialForm = {
+        address_name: "Home",
+        address_type: "myself",
+        contact_person_name: "",
+        contact_phone: "",
+        address_line_1: "",
+        address_line_2: "",
+        landmark: "",
+        city: "",
+        state: "",
+        pincode: "",
+        is_default: true,
+        country: "India",
+        latitude: 23.1765,
+        longitude: 75.8362,
     };
+
     const [formData, setFormData] = useState(initialForm);
-
-    // Geolocation options for exact GPS location
-    const geoOptions = {
-        enableHighAccuracy: true, 
-        timeout: 10000, 
-        maximumAge: 0 
-    };
-
-    if (location.pathname === "/search") return null;
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -62,133 +70,154 @@ function HeaderSearch() {
                 const def = addrs.find(a => a.is_default) || addrs[0];
                 if (def) {
                     setSelectedLocation(`${def.city}, ${def.pincode}`);
-                    setIsLiveLocation(false); // Saved address hai, live nahi
+                    setIsLiveLocation(false);
                 }
             }
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     };
 
     const askInitialPermission = () => {
         if (!navigator.geolocation) return;
-        
         navigator.geolocation.getCurrentPosition(
-            (position) => {
-                fetchReverseGeocode(position.coords.latitude, position.coords.longitude);
-            },
-            () => {
-                setSelectedLocation("Select Location");
-                setIsLiveLocation(false);
-            },
-            geoOptions // Pass high accuracy options
+            (pos) => fetchReverseGeocode(pos.coords.latitude, pos.coords.longitude),
+            () => setSelectedLocation("Select Location"),
+            { enableHighAccuracy: true, timeout: 5000 }
         );
     };
 
     const fetchReverseGeocode = async (lat, lon) => {
         try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`
+            );
             const data = await res.json();
             
             if (data && data.address) {
                 const addr = data.address;
-                const locName = addr.city || addr.town || addr.village || addr.suburb || addr.county || addr.state_district || addr.state || "Location Fetched";
-                const pin = addr.postcode || "";
-                setSelectedLocation(pin ? `${locName}, ${pin}` : locName);
-                setIsLiveLocation(true); // Successfully fetched live location
-            } else {
-                setSelectedLocation("Location Fetched");
+                
+                const locationName = 
+                    addr.suburb || 
+                    addr.neighbourhood || 
+                    addr.tehsil || 
+                    addr.village || 
+                    addr.town || 
+                    addr.city_district || 
+                    addr.city || 
+                    "Unknown Location";
+
+                const post = addr.postcode ? `, ${addr.postcode}` : "";
+                
+                setSelectedLocation(`${locationName}${post}`);
                 setIsLiveLocation(true);
             }
         } catch (err) {
-            setSelectedLocation("Location Fetched");
+            console.error("Geocoding Error:", err);
+            setSelectedLocation("Location Set"); 
         }
     };
 
     const handleUseCurrent = () => {
         setIsLocating(true);
-
-        if (!navigator.geolocation) {
-            toast.error("Geolocation is not supported by your browser.");
-            setIsLocating(false);
-            return;
-        }
-
         navigator.geolocation.getCurrentPosition(
-            (position) => {
-                fetchReverseGeocode(position.coords.latitude, position.coords.longitude);
+            (pos) => {
+                fetchReverseGeocode(pos.coords.latitude, pos.coords.longitude);
                 setIsLocating(false);
                 setIsModalOpen(false);
             },
-            (error) => {
-                toast.error(error.message || "Failed to fetch live location");
-                setIsLocating(false);
-            },
-            geoOptions // Exact GPS pin-point location ke liye
+            () => { toast.error("Permission denied"); setIsLocating(false); }
         );
     };
 
-    const handleAddAddress = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await addAddress(formData);
-            if (res.success) {
-                toast.success("Address Added");
-                setShowAddForm(false);
-                fetchUserAddresses();
-            }
-        } catch (err) {
-            toast.error("Failed to add address");
+    const handleChange = async (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        if (name === "pincode" && value.length === 6) {
+            try {
+                const res = await fetch(`https://api.postalpincode.in/pincode/${value}`);
+                const data = await res.json();
+                if (data[0]?.Status === "Success") {
+                    const post = data[0].PostOffice[0];
+                    setFormData(prev => ({ ...prev, city: post.District, state: post.State }));
+                }
+            } catch (err) {}
         }
     };
 
+    const handleEditClick = (e, addr) => {
+        e.stopPropagation();
+        setEditId(addr.id);
+        setFormData(addr);
+        setShowAddForm(true);
+    };
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            setIsSubmitting(true);
+            const res = editId ? await updateAddress(editId, formData) : await addAddress(formData);
+            if (res.success) {
+                toast.success(editId ? "Updated" : "Saved");
+                setShowAddForm(false);
+                setEditId(null);
+                fetchUserAddresses();
+            }
+        } catch (err) { toast.error("Error saving address"); }
+        finally { setIsSubmitting(false); }
+    };
+
+    if (location.pathname === "/search") return null;
+
     return (
         <>
-            <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6 w-full animate-in fade-in">
-                <div onClick={() => setIsModalOpen(true)} className="flex items-center gap-3 p-1.5 pr-5 bg-[var(--bg)] border border-[var(--border)] rounded-full min-w-full lg:min-w-[280px] cursor-pointer hover:border-[var(--primary)] transition-all">
-                    <div className="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center text-[var(--secondary)] shrink-0 shadow-sm relative">
-                        <LocationOnIcon fontSize="small" />
-                        {/* Live Location Pulsing Dot */}
+            {/* Header UI */}
+            <div className="flex items-center gap-3 w-full px-1 py-2">
+                
+                {/* Location Box */}
+                <div 
+                    onClick={() => setIsModalOpen(true)} 
+                    className="flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:border-cyan-900 shadow-sm transition-all shrink-0 max-w-[180px] md:max-w-[240px]"
+                >
+                    <div className="w-8 h-8 rounded-full bg-cyan-900 flex items-center justify-center text-white relative shrink-0">
+                        <LocationOnIcon sx={{ fontSize: 18 }} />
                         {isLiveLocation && (
-                            <span className="absolute top-0 right-0 flex h-3 w-3">
+                            <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500 border border-white"></span>
+                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500 border border-white"></span>
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-col items-start text-left overflow-hidden">
-                        <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-wider">
-                            {isLiveLocation ? "Live Location" : "Delivering to"}
-                        </span>
-                        <strong className="text-sm font-black text-[var(--primary)] truncate w-40">{selectedLocation}</strong>
+                    <div className="flex flex-col text-left overflow-hidden">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter leading-none mb-0.5">Delivering to</span>
+                        <strong className="text-[12px] font-extrabold text-slate-800 truncate leading-tight">
+                            {selectedLocation}
+                        </strong>
                     </div>
                 </div>
 
-                <Link to="/search" className="flex-1 flex items-center gap-3 px-5 h-14 rounded-full bg-[var(--bg-soft)] border border-[var(--border)] w-full group hover:border-[var(--primary)] transition-all decoration-none">
-                    <SearchIcon className="text-[var(--text-muted)] group-hover:text-[var(--primary)]" />
-                    <span className="text-[var(--text-muted)] font-medium">Search for groceries...</span>
+                {/* Search Bar*/}
+                <Link 
+                    to="/search" 
+                    className="flex-1 flex items-center gap-3 px-4 h-16 rounded-full bg-slate-50 border border-cyan-800 group decoration-none hover:border-cyan-900 transition-all"
+                >
+                    <SearchIcon className="text-cyan-900 group-hover:scale-110 transition-transform" sx={{ fontSize: 20 }} />
+                    <span className="text-slate-400 font-bold text-sm truncate">Search for groceries...</span>
                 </Link>
             </div>
 
-            {/* Modal Components Below remain mostly exactly the same */}
+            {/* Modal */}
             {isModalOpen && createPortal(
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6" onClick={() => setIsModalOpen(false)}>
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" onClick={() => setIsModalOpen(false)}>
                     <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
-
-                    <div className="relative bg-white w-full max-w-md rounded-[40px] shadow-2xl animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white shrink-0 rounded-t-[40px]">
-                            <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">Select Location</h2>
-                            <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 flex items-center justify-center hover:bg-slate-100 rounded-full transition-colors">
-                                <CloseIcon />
-                            </button>
+                    <div className="relative bg-white w-full max-w-md rounded-[32px] shadow-2xl flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+                        <div className="p-5 border-b flex justify-between items-center">
+                            <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight">Select Location</h2>
+                            <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 flex items-center justify-center hover:bg-slate-100 rounded-full transition-colors"><CloseIcon /></button>
                         </div>
 
-                        <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
-                            <button onClick={handleUseCurrent} disabled={isLocating} className="w-full flex items-center gap-4 p-5 rounded-3xl bg-cyan-900 text-white hover:bg-cyan-950 shadow-lg shadow-cyan-900/20 transition-all shrink-0 disabled:opacity-70 relative overflow-hidden">
+                        <div className="p-6 overflow-y-auto space-y-6 custom-scrollbar">
+                            <button onClick={handleUseCurrent} disabled={isLocating} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-cyan-900 text-white shadow-lg active:scale-95 transition-all">
                                 <MyLocationIcon className={isLocating ? "animate-spin" : ""} /> 
-                                <span className="font-black text-sm uppercase tracking-widest text-left">
-                                    {isLocating ? "Locating..." : "Use Live Location"}
-                                </span>
+                                <span className="font-black text-sm uppercase tracking-widest">{isLocating ? "Locating..." : "Use Current Location"}</span>
                             </button>
 
                             <div className="space-y-4">
@@ -196,63 +225,57 @@ function HeaderSearch() {
                                 {isLoggedIn ? (
                                     <div className="space-y-3">
                                         {addresses.map((addr) => (
-                                            <div key={addr.id} onClick={() => { setSelectedLocation(`${addr.city}, ${addr.pincode}`); setIsLiveLocation(false); setIsModalOpen(false); }} className="flex items-start gap-4 p-5 rounded-[28px] border border-slate-100 hover:border-cyan-900 hover:bg-slate-50 cursor-pointer transition-all group">
-                                                <div className="mt-1 text-cyan-900 group-hover:scale-110 transition-transform">
-                                                    {addr.address_name === "Home" ? <HomeOutlinedIcon /> : addr.address_name === "Office" ? <BusinessOutlinedIcon /> : <FmdGoodOutlinedIcon />}
+                                            <div key={addr.id} className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 hover:border-cyan-900 bg-slate-50 cursor-pointer transition-all group">
+                                                <div className="flex items-start gap-4 flex-1" onClick={() => { setSelectedLocation(`${addr.city}, ${addr.pincode}`); setIsModalOpen(false); }}>
+                                                    <div className="mt-1 text-cyan-900">
+                                                        {addr.address_name === "Home" ? <HomeOutlinedIcon /> : <BusinessOutlinedIcon />}
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <span className="font-black text-slate-800 text-sm uppercase leading-none mb-1">{addr.address_name}</span>
+                                                        <p className="text-xs font-bold text-slate-500 line-clamp-1">{addr.address_line_1}, {addr.city}</p>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <span className="font-black text-slate-800 text-sm uppercase">{addr.address_name}</span>
-                                                    <p className="text-xs font-bold text-slate-500 line-clamp-1">{addr.address_line_1}, {addr.city}</p>
-                                                </div>
+                                                <button onClick={(e) => handleEditClick(e, addr)} className="p-2 text-slate-300 hover:text-cyan-900"><EditOutlinedIcon fontSize="small" /></button>
                                             </div>
                                         ))}
-                                        
                                         {!showAddForm && (
-                                            <button onClick={() => setShowAddForm(true)} className="w-full py-4 border-2 border-dashed border-slate-200 rounded-[28px] text-slate-400 font-bold text-sm hover:border-cyan-900 hover:text-cyan-900 transition-all">
-                                                + Add New Address
-                                            </button>
+                                            <button onClick={() => { setEditId(null); setFormData(initialForm); setShowAddForm(true); }} className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold text-sm hover:border-cyan-900 hover:text-cyan-900 transition-all">+ Add New Address</button>
                                         )}
                                     </div>
                                 ) : (
-                                    <div className="p-10 text-center bg-slate-50 rounded-[32px] border-2 border-dashed border-slate-200">
-                                        <p className="text-slate-400 font-bold text-xs uppercase mb-4 tracking-tighter">Login to see saved addresses</p>
-                                        <button onClick={() => { setIsModalOpen(false); setShowAuthModal(true); }} className="text-cyan-900 font-black text-sm underline">Login Now</button>
+                                    <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed">
+                                        <button onClick={() => { setIsModalOpen(false); setShowAuthModal(true); }} className="text-cyan-900 font-black text-sm underline">Login to see addresses</button>
                                     </div>
                                 )}
                             </div>
 
                             {showAddForm && (
-                                <form onSubmit={handleAddAddress} className="space-y-4 p-5 border border-slate-100 rounded-[32px] bg-slate-50 animate-in slide-in-from-top-4">
-                                    <div className="flex justify-between items-center mb-2 px-1">
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">New Address</span>
-                                        <button type="button" onClick={() => setShowAddForm(false)} className="text-xs font-bold text-rose-500">Cancel</button>
+                                <form onSubmit={handleFormSubmit} className="space-y-3 p-4 border rounded-2xl bg-slate-50 animate-in slide-in-from-top-2">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span className="text-[10px] font-black text-slate-400 uppercase">{editId ? "Update" : "New Address"}</span>
+                                        <button type="button" onClick={() => setShowAddForm(false)} className="text-[10px] font-black text-rose-500 uppercase underline">Cancel</button>
                                     </div>
-                                    <input placeholder="Receiver Name" className="w-full p-4 bg-white rounded-2xl border border-slate-100 outline-none font-bold text-sm" onChange={e => setFormData({...formData, contact_person_name: e.target.value})} required />
-                                    <input placeholder="House / Street Name" className="w-full p-4 bg-white rounded-2xl border border-slate-100 outline-none font-bold text-sm" onChange={e => setFormData({...formData, address_line_1: e.target.value})} required />
-                                    <div className="flex gap-2">
-                                        <input placeholder="City" className="flex-1 p-4 bg-white rounded-2xl border border-slate-100 outline-none font-bold text-sm" onChange={e => setFormData({...formData, city: e.target.value})} required />
-                                        <input placeholder="Pin" className="w-24 p-4 bg-white rounded-2xl border border-slate-100 outline-none font-bold text-sm" onChange={e => setFormData({...formData, pincode: e.target.value})} required />
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {["myself", "someone_else"].map(t => (
+                                            <button key={t} type="button" onClick={() => setFormData({...formData, address_type: t})} className={`h-8 rounded-lg text-[9px] font-black uppercase border transition-all ${formData.address_type === t ? "bg-cyan-900 text-white border-cyan-900" : "bg-white text-slate-400 border-slate-200"}`}>{t.replace('_', ' ')}</button>
+                                        ))}
                                     </div>
-                                    <button type="submit" className="w-full py-4 bg-emerald-500 text-white rounded-2xl font-black uppercase text-xs shadow-lg shadow-emerald-500/20 active:scale-95 transition-all">Save & Deliver Here</button>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <input name="contact_person_name" placeholder="Full Name" className="w-full h-10 px-3 rounded-xl border border-slate-200 outline-none font-bold text-xs" value={formData.contact_person_name} onChange={handleChange} required />
+                                        <input name="contact_phone" placeholder="Phone No" className="w-full h-10 px-3 rounded-xl border border-slate-200 outline-none font-bold text-xs" value={formData.contact_phone} onChange={handleChange} required />
+                                    </div>
+                                    <input name="address_line_1" placeholder="House No / Flat / Street" className="w-full h-10 px-3 rounded-xl border border-slate-200 outline-none font-bold text-xs" value={formData.address_line_1} onChange={handleChange} required />
+                                    <input name="address_line_2" placeholder="Area / Colony (Optional)" className="w-full h-10 px-3 rounded-xl border border-slate-200 outline-none font-bold text-xs" value={formData.address_line_2} onChange={handleChange} />
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <input name="pincode" placeholder="Pincode" className="w-full h-10 px-3 rounded-xl border border-slate-200 outline-none font-bold text-xs" value={formData.pincode} onChange={handleChange} maxLength="6" required />
+                                        <input placeholder="City" className="w-full h-10 px-3 rounded-xl border-none font-bold text-xs bg-slate-200/50 text-slate-500" value={formData.city} readOnly />
+                                        <input placeholder="State" className="w-full h-10 px-3 rounded-xl border-none font-bold text-xs bg-slate-200/50 text-slate-500" value={formData.state} readOnly />
+                                    </div>
+                                    <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black uppercase text-xs shadow-md active:scale-95 transition-all">
+                                        {isSubmitting ? "Processing..." : "Save Address"}
+                                    </button>
                                 </form>
                             )}
-                        </div>
-                    </div>
-                </div>,
-                document.body
-            )}
-
-            {showAuthModal && createPortal(
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md" onClick={() => setShowAuthModal(false)}>
-                    <div className="bg-white rounded-[40px] p-8 max-w-[350px] w-full text-center shadow-2xl animate-in zoom-in-90" onClick={e => e.stopPropagation()}>
-                        <div className="w-20 h-20 bg-cyan-900/10 text-cyan-900 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <LocationOnIcon style={{ fontSize: '40px' }} />
-                        </div>
-                        <h3 className="text-2xl font-black text-slate-900 mb-2">Login Required</h3>
-                        <p className="text-sm font-bold text-slate-500 mb-8 leading-relaxed px-2">To save addresses and get live location tracking, please login to your account.</p>
-                        <div className="flex flex-col gap-3">
-                            <button onClick={() => navigate("/login")} className="w-full py-4 bg-cyan-900 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl active:scale-95 transition-all">Login Now</button>
-                            <button onClick={() => setShowAuthModal(false)} className="w-full py-4 text-slate-400 font-black uppercase text-[10px]">Maybe Later</button>
                         </div>
                     </div>
                 </div>,

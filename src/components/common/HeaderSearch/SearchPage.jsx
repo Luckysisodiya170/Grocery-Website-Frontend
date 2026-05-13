@@ -9,18 +9,6 @@ import { searchProducts } from "../../../utils/searchApi";
 import { getHomeData } from "../../../utils/homeApi";
 import Card from "../../../components/Product/Productcard/Productcard";
 
-
-const catStyles = [
-  { bg: "bg-pink-50", text: "text-pink-700", border: "border-pink-100" },
-  { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-100" },
-  { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-100" },
-  { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-100" },
-  { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-100" },
-  { bg: "bg-rose-50", text: "text-rose-700", border: "border-rose-100" },
-  { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-100" },
-  { bg: "bg-cyan-50", text: "text-cyan-700", border: "border-cyan-100" },
-];
-
 function SearchPage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
@@ -75,23 +63,23 @@ function SearchPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Search Header */}
+      {/* --- Header --- */}
       <div className="sticky top-0 z-50 bg-white border-b border-slate-100 p-4 shadow-sm">
-        <div className="max-w-[1400px] mx-auto flex items-center gap-4">
+        <div className="max-w-[1400px] mx-auto flex items-center gap-3">
           <button 
             onClick={() => navigate(-1)} 
-            className="w-12 h-12 flex items-center justify-center bg-cyan-900 text-white rounded-2xl shadow-lg shadow-cyan-900/20 hover:scale-110 active:scale-95 transition-all shrink-0"
+            className="w-12 h-12 flex items-center justify-center bg-slate-900 text-white rounded-2xl shrink-0"
           >
             <ArrowBackIcon />
           </button>
           
-          <div className="flex-1 flex items-center gap-3 px-6 h-14 rounded-2xl bg-slate-50 border-2 border-transparent focus-within:border-cyan-900 focus-within:bg-white transition-all">
+          <div className="flex-1 flex items-center gap-3 px-5 h-14 rounded-2xl bg-slate-100 border-2 border-transparent focus-within:border-emerald-500 focus-within:bg-white transition-all">
             <SearchIcon className="text-slate-400" />
             <input 
               autoFocus
               type="text"
-              placeholder="Search for snacks, drinks or daily essentials..."
-              className="flex-1 bg-transparent outline-none font-bold text-lg text-slate-800"
+              placeholder="Search groceries..."
+              className="flex-1 bg-transparent outline-none font-black text-lg text-slate-800"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -101,25 +89,22 @@ function SearchPage() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto p-6 md:p-10">
-        
+      <div className="max-w-[1400px] mx-auto p-4 md:p-8">
         {!query ? (
-          <div className="space-y-12 animate-in fade-in duration-500">
+          <div className="space-y-10">
             
             {/* Recent Searches */}
             {recentSearches.length > 0 && (
               <div>
-                <div className="flex justify-between items-center mb-5">
-                  <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[2px] flex items-center gap-2">
-                    <HistoryIcon style={{ fontSize: '18px' }} /> Recent Searches
+                <div className="flex justify-between items-center mb-4 px-1">
+                  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] flex items-center gap-2">
+                    <HistoryIcon fontSize="small" /> Recent
                   </h3>
-                  <button onClick={clearRecent} className="text-rose-500 font-bold text-xs flex items-center gap-1 hover:bg-rose-50 px-3 py-1.5 rounded-lg transition-all">
-                    <DeleteSweepIcon style={{ fontSize: '18px' }} /> Clear
-                  </button>
+                  <button onClick={clearRecent} className="text-rose-500 font-black text-[10px] uppercase">Clear</button>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2">
                   {recentSearches.map((s, i) => (
-                    <button key={i} onClick={() => setQuery(s)} className="px-5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-extrabold text-slate-600 hover:border-cyan-900 hover:text-cyan-900 transition-all">
+                    <button key={i} onClick={() => setQuery(s)} className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-600">
                       {s}
                     </button>
                   ))}
@@ -127,53 +112,49 @@ function SearchPage() {
               </div>
             )}
 
-            {/* Filtered Categories Grid */}
+            {/* --- Categories Grid --- */}
             <div>
-              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[2px] mb-6 px-1">Shop by Category</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
-                {categories.map((cat, i) => {
-                  const style = catStyles[i % catStyles.length];
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => { setQuery(cat.name); addToRecent(cat.name); }}
-                      className={`${style.bg} ${style.border} border-2 h-32 rounded-[30px] flex items-center justify-center p-4 transition-all hover:scale-[1.03] hover:shadow-xl group relative overflow-hidden`}
-                    >
-                      <span className={`${style.text} font-black text-[15px] text-center leading-tight relative z-10 uppercase tracking-tighter`}>
-                        {cat.name}
-                      </span>
-                      <div className="absolute -right-2 -bottom-2 w-12 h-12 bg-white/20 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
-                    </button>
-                  );
-                })}
+              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-6 px-1">Shop by Category</h3>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-8">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => { setQuery(cat.name); addToRecent(cat.name); }}
+                    className="flex flex-col items-center group"
+                  >
+                    {/* Image Container*/}
+                    <div className="w-full aspect-square rounded-[24px] overflow-hidden bg-slate-100 border border-slate-100 group-hover:scale-105 group-hover:shadow-xl transition-all duration-300">
+                      <img 
+                        src={cat.icon} 
+                        alt={cat.name} 
+                        className="w-full h-full object-cover" 
+                        loading="lazy"
+                      />
+                    </div>
+                    {/* Name below box */}
+                    <span className="mt-3 text-[11px] md:text-xs font-black text-slate-800 uppercase tracking-tighter text-center leading-tight">
+                      {cat.name}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
-
           </div>
         ) : (
           /* Search Results */
-          <div className="space-y-8">
-             <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Results for "{query}"</h2>
-                {isSearching && <div className="w-6 h-6 border-4 border-cyan-900 border-t-transparent rounded-full animate-spin" />}
+          <div className="space-y-6">
+             <div className="flex justify-between items-center border-b pb-4">
+                <h2 className="text-xl font-black text-slate-800">"{query}"</h2>
+                {isSearching && <div className="w-5 h-5 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />}
              </div>
 
-             {searchResults.length > 0 ? (
-               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                 {searchResults.map((product) => (
-                   <div key={product.id} onClick={() => addToRecent(product.name)}>
-                     <Card product={product} />
-                   </div>
-                 ))}
-               </div>
-             ) : !isSearching && (
-               <div className="py-20 text-center flex flex-col items-center">
-                 <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-200">
-                    <SearchIcon style={{ fontSize: '40px' }} />
+             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+               {searchResults.map((product) => (
+                 <div key={product.id} onClick={() => addToRecent(product.name)}>
+                   <Card product={product} />
                  </div>
-                 <p className="text-slate-400 font-black uppercase tracking-widest text-xs">No items found</p>
-               </div>
-             )}
+               ))}
+             </div>
           </div>
         )}
       </div>

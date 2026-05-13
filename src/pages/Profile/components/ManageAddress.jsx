@@ -15,146 +15,441 @@ function ManageAddress() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editId, setEditId] = useState(null);
 
-  const initialForm = { 
-    address_name: "Home", 
-    contact_person_name: "", 
-    contact_phone: "", 
-    address_line_1: "", 
-    address_line_2: "", 
-    city: "", 
-    state: "", 
-    pincode: "", 
-    is_default: false, 
-    country: "India" 
+  const initialForm = {
+    address_name: "Home",
+    address_type: "myself",
+    contact_person_name: "",
+    contact_phone: "",
+    address_line_1: "",
+    address_line_2: "",
+    landmark: "",
+    city: "",
+    state: "",
+    pincode: "",
+    is_default: true,
+    country: "India",
+    latitude: 0,
+    longitude: 0,
   };
+
   const [formData, setFormData] = useState(initialForm);
 
-  useEffect(() => { fetchAddresses(); }, []);
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  useEffect(() => {
+    if (showForm && !editId) {
+      setFormData(initialForm);
+    }
+  }, [showForm, editId]);
 
   const fetchAddresses = async () => {
     try {
       setIsLoading(true);
+
       const res = await getProfileDetails();
-      if (res?.success) setAddresses(res.data.addresses || []);
-    } catch (error) { toast.error("Failed to load addresses"); }
-    finally { setIsLoading(false); }
+
+      if (res?.success) {
+        setAddresses(res.data.addresses || []);
+      }
+    } catch (error) {
+      toast.error("Failed to load addresses");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this address?")) return;
+    if (!window.confirm("Are you sure?")) return;
+
     try {
       const res = await deleteAddress(id);
-      if (res.success) { 
-        toast.success("Address deleted"); 
-        fetchAddresses(); 
+
+      if (res.success) {
+        toast.success("Deleted");
+        fetchAddresses();
       }
-    } catch (error) { toast.error("Failed to delete"); }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to delete");
+    }
   };
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (name === "pincode" && value.length === 6) {
+      try {
+        const response = await fetch(
+          `https://api.postalpincode.in/pincode/${value}`
+        );
+
+        const data = await response.json();
+
+        if (
+          data[0]?.Status === "Success" &&
+          data[0]?.PostOffice?.length > 0
+        ) {
+          const postOffice = data[0].PostOffice[0];
+
+          setFormData((prev) => ({
+            ...prev,
+            pincode: value,
+            city: postOffice.District,
+            state: postOffice.State,
+          }));
+        }
+      } catch (error) {}
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       setIsSubmitting(true);
-      const res = editId ? await updateAddress(editId, formData) : await addAddress(formData);
+
+      const payload = {
+        ...formData,
+        latitude: Number(formData.latitude) || 23.1765,
+        longitude: Number(formData.longitude) || 75.8362,
+      };
+
+      const res = editId
+        ? await updateAddress(editId, payload)
+        : await addAddress(payload);
+
       if (res.success) {
-        toast.success(editId ? "Address Updated" : "Address Saved");
+        toast.success(editId ? "Updated" : "Saved");
         setShowForm(false);
         setEditId(null);
+        setFormData(initialForm);
         fetchAddresses();
       }
-    } catch (error) { toast.error("Failed to save address"); }
-    finally { setIsSubmitting(false); }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Validation Error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  if (isLoading) return <div className="h-[414px] flex items-center justify-center w-full bg-[var(--card-bg)] rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-sm)] animate-pulse font-bold text-[var(--primary)]">Loading Addresses...</div>;
+  if (isLoading) {
+    return (
+      <div className="h-[414px] flex items-center justify-center w-full bg-[var(--card-bg)] rounded-[var(--radius-xl)] border border-[var(--border)] text-sm font-bold text-[var(--primary)]">
+        Loading...
+      </div>
+    );
+  }
 
   return (
-    <div className="h-[414px] w-full p-8 bg-[var(--card-bg)] rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-sm)] flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between mb-8 pb-4 border-b border-[var(--border)] shrink-0">
-        <h2 className="text-2xl font-black text-[var(--text-main)]">My Addresses</h2>
+    <div className="h-[414px] w-full p-4 bg-[var(--card-bg)] rounded-[var(--radius-xl)] border border-[var(--border)] shadow-sm flex flex-col overflow-hidden">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--border)] shrink-0">
+        <h2 className="text-lg font-black text-[var(--text-main)]">
+          My Addresses
+        </h2>
+
         {!showForm && (
-          <button 
-            onClick={() => { setEditId(null); setFormData(initialForm); setShowForm(true); }} 
-            className="px-6 py-2.5 bg-[var(--primary)] text-white font-black text-[12px] uppercase tracking-widest rounded-full shadow-md hover:bg-[var(--primary-hover)] transition-all active:scale-95"
+          <button
+            onClick={() => {
+              setEditId(null);
+              setShowForm(true);
+            }}
+            className="px-4 h-9 bg-[var(--primary)] text-white font-black text-[10px] uppercase tracking-widest rounded-full"
           >
-            Add New Address
+            + Add New
           </button>
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto pr-2 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto pr-1 no-scrollbar">
         {showForm ? (
-          <form onSubmit={handleSubmit} className="space-y-6 pb-2">
-            <div className="grid grid-cols-3 gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-              {["Home", "Office", "Other"].map(t => (
-                <button 
-                  key={t} 
-                  type="button" 
-                  onClick={() => setFormData({...formData, address_name: t})} 
-                  className={`py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${formData.address_name === t ? 'bg-white text-[var(--primary)] shadow-md border border-slate-100' : 'text-slate-400 hover:text-slate-600'}`}
+          <form onSubmit={handleSubmit} className="space-y-2 pb-1">
+            <div className="grid grid-cols-3 gap-2 bg-slate-100 p-1 rounded-xl">
+              {["Home", "Office", "Other"].map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      address_name: t,
+                    }))
+                  }
+                  className={`h-8 rounded-lg text-[10px] font-black uppercase transition-all border ${
+                    formData.address_name === t
+                      ? "bg-[var(--primary)] text-white border-[var(--primary)] shadow-md"
+                      : "bg-white text-slate-400 border-slate-200"
+                  }`}
                 >
                   {t}
                 </button>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Receiver Name</label>
-                <input name="contact_person_name" value={formData.contact_person_name} onChange={handleChange} placeholder="e.g. Lucky Sisodya" required className="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-[var(--primary)] focus:bg-white outline-none text-[15px] font-bold transition-all" />
+            <div className="bg-slate-50 rounded-xl p-3 border border-slate-200">
+              <div className="flex gap-2 mb-3">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      address_type: "myself",
+                    }))
+                  }
+                  className={`flex-1 h-8 rounded-lg text-[10px] font-black transition-all border ${
+                    formData.address_type === "myself"
+                      ? "bg-[var(--primary)] text-white border-[var(--primary)] shadow-md"
+                      : "bg-white text-slate-500 border-slate-200"
+                  }`}
+                >
+                  Myself
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      address_type: "someone_else",
+                    }))
+                  }
+                  className={`flex-1 h-8 rounded-lg text-[10px] font-black transition-all border ${
+                    formData.address_type === "someone_else"
+                      ? "bg-[var(--primary)] text-white border-[var(--primary)] shadow-md"
+                      : "bg-white text-slate-500 border-slate-200"
+                  }`}
+                >
+                  Someone Else
+                </button>
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Mobile Number</label>
-                <input name="contact_phone" value={formData.contact_phone} onChange={handleChange} placeholder="10-digit number" maxLength="10" required className="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-[var(--primary)] focus:bg-white outline-none text-[15px] font-bold transition-all" />
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[8px] font-black text-slate-400 uppercase tracking-wide ml-1 mb-1 block">
+                    {formData.address_type === "someone_else"
+                      ? "Receiver Name"
+                      : "Full Name"}
+                  </label>
+
+                  <input
+                    name="contact_person_name"
+                    value={formData.contact_person_name}
+                    onChange={handleChange}
+                    placeholder={
+                      formData.address_type === "someone_else"
+                        ? "Receiver Name"
+                        : "Full Name"
+                    }
+                    required
+                    className="w-full h-10 px-3 bg-white rounded-xl border border-transparent focus:border-[var(--primary)] outline-none text-[11px] font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[8px] font-black text-slate-400 uppercase tracking-wide ml-1 mb-1 block">
+                    Phone
+                  </label>
+
+                  <input
+                    name="contact_phone"
+                    value={formData.contact_phone}
+                    onChange={handleChange}
+                    placeholder="Phone Number"
+                    required
+                    className="w-full h-10 px-3 bg-white rounded-xl border border-transparent focus:border-[var(--primary)] outline-none text-[11px] font-semibold"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">House / Area Details</label>
-              <input name="address_line_1" value={formData.address_line_1} onChange={handleChange} placeholder="House No, Street, Building" required className="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-[var(--primary)] focus:bg-white outline-none text-[15px] font-bold transition-all" />
+            <div>
+              <label className="text-[8px] font-black text-slate-400 uppercase tracking-wide ml-1 mb-1 block">
+                Address Line 1
+              </label>
+
+              <input
+                name="address_line_1"
+                value={formData.address_line_1}
+                onChange={handleChange}
+                placeholder="House No, Street"
+                required
+                className="w-full h-10 px-3 bg-slate-50 rounded-xl border border-transparent focus:border-[var(--primary)] outline-none text-[11px] font-semibold"
+              />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <input name="city" value={formData.city} onChange={handleChange} placeholder="City" required className="p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-[var(--primary)] focus:bg-white outline-none text-[15px] font-bold transition-all" />
-              <input name="state" value={formData.state} onChange={handleChange} placeholder="State" required className="p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-[var(--primary)] focus:bg-white outline-none text-[15px] font-bold transition-all" />
-              <input name="pincode" value={formData.pincode} onChange={handleChange} placeholder="Pincode" maxLength="6" required className="p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-[var(--primary)] focus:bg-white outline-none text-[15px] font-bold transition-all" />
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-[8px] font-black text-slate-400 uppercase tracking-wide ml-1 mb-1 block">
+                  Address Line 2
+                </label>
+
+                <input
+                  name="address_line_2"
+                  value={formData.address_line_2}
+                  onChange={handleChange}
+                  placeholder="Area, Colony"
+                  className="w-full h-10 px-3 bg-slate-50 rounded-xl border border-transparent focus:border-[var(--primary)] outline-none text-[11px] font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="text-[8px] font-black text-slate-400 uppercase tracking-wide ml-1 mb-1 block">
+                  Landmark
+                </label>
+
+                <input
+                  name="landmark"
+                  value={formData.landmark}
+                  onChange={handleChange}
+                  placeholder="Nearby Landmark"
+                  className="w-full h-10 px-3 bg-slate-50 rounded-xl border border-transparent focus:border-[var(--primary)] outline-none text-[11px] font-semibold"
+                />
+              </div>
             </div>
 
-            <div className="flex gap-4 pt-4 border-t border-slate-100">
-              <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-4 rounded-2xl border-2 border-slate-200 font-black text-xs uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-all">Cancel</button>
-              <button type="submit" disabled={isSubmitting} className="flex-1 py-4 rounded-2xl bg-[var(--primary)] text-white font-black text-xs uppercase tracking-widest shadow-lg hover:-translate-y-1 transition-all active:scale-95">
-                {isSubmitting ? "Saving..." : "Save Address"}
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <label className="text-[8px] font-black text-slate-400 uppercase tracking-wide ml-1 mb-1 block">
+                  City
+                </label>
+
+                <input
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  placeholder="City"
+                  required
+                  className="w-full h-10 px-3 bg-slate-50 rounded-xl border border-transparent focus:border-[var(--primary)] outline-none text-[11px] font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="text-[8px] font-black text-slate-400 uppercase tracking-wide ml-1 mb-1 block">
+                  State
+                </label>
+
+                <input
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  placeholder="State"
+                  required
+                  className="w-full h-10 px-3 bg-slate-50 rounded-xl border border-transparent focus:border-[var(--primary)] outline-none text-[11px] font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="text-[8px] font-black text-slate-400 uppercase tracking-wide ml-1 mb-1 block">
+                  Pincode
+                </label>
+
+                <input
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  placeholder="Pincode"
+                  maxLength="6"
+                  required
+                  className="w-full h-10 px-3 bg-slate-50 rounded-xl border border-transparent focus:border-[var(--primary)] outline-none text-[11px] font-semibold"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="flex-1 h-10 rounded-xl border border-slate-200 font-black text-[10px] uppercase text-slate-400"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 h-10 rounded-xl bg-[var(--primary)] text-white font-black text-[10px] uppercase"
+              >
+                {isSubmitting ? "Saving..." : "Save"}
               </button>
             </div>
           </form>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {addresses.map((loc) => (
-              <div key={loc.id} className="p-6 rounded-[32px] bg-slate-50 border-2 border-transparent hover:border-[var(--primary)] hover:bg-white hover:shadow-xl transition-all group relative">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[var(--primary)] shadow-sm group-hover:bg-[var(--primary)] group-hover:text-white transition-all">
-                    {loc.address_name === "Home" ? <HomeOutlinedIcon /> : loc.address_name === "Office" ? <BusinessOutlinedIcon /> : <LocationOnOutlinedIcon />}
+              <div
+                key={loc.id}
+                className="p-3 rounded-2xl border bg-slate-50 border-slate-100 hover:border-[var(--primary)] transition-all group relative"
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm bg-white text-[var(--primary)]">
+                    {loc.address_name === "Home" ? (
+                      <HomeOutlinedIcon fontSize="small" />
+                    ) : loc.address_name === "Office" ? (
+                      <BusinessOutlinedIcon fontSize="small" />
+                    ) : (
+                      <LocationOnOutlinedIcon fontSize="small" />
+                    )}
                   </div>
-                  <div className="flex gap-1">
-                    <button onClick={() => { setEditId(loc.id); setFormData(loc); setShowForm(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-colors"><EditOutlinedIcon fontSize="small" /></button>
-                    <button onClick={() => handleDelete(loc.id)} className="p-2 text-slate-400 hover:text-red-500 transition-colors"><DeleteOutlineIcon fontSize="small" /></button>
+
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={() => {
+                        setEditId(loc.id);
+                        setFormData(loc);
+                        setShowForm(true);
+                      }}
+                      className="p-1.5 text-blue-500"
+                    >
+                      <EditOutlinedIcon sx={{ fontSize: 16 }} />
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(loc.id)}
+                      className="p-1.5 text-red-500"
+                    >
+                      <DeleteOutlineIcon sx={{ fontSize: 16 }} />
+                    </button>
                   </div>
                 </div>
-                <h4 className="font-black text-slate-800 text-lg mb-1">{loc.address_name}</h4>
-                <p className="text-[11px] font-black text-[var(--primary)] mb-3 uppercase tracking-tighter">{loc.contact_person_name} • {loc.contact_phone}</p>
-                <p className="text-[13px] text-slate-500 font-bold leading-relaxed line-clamp-2">
-                  {loc.address_line_1}, {loc.city}, {loc.state} - {loc.pincode}
+
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className="px-2 h-6 rounded-full bg-[var(--primary)] text-white text-[9px] font-black uppercase flex items-center">
+                    {loc.address_name}
+                  </span>
+
+                  <span className="px-2 h-6 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-[9px] font-black uppercase flex items-center">
+                    {loc.address_type === "someone_else"
+                      ? "Someone Else"
+                      : "Myself"}
+                  </span>
+                </div>
+
+                <p className="text-[10px] font-bold text-[var(--primary)] uppercase">
+                  {loc.contact_person_name}
                 </p>
+
+                <p className="text-[10px] text-slate-500 font-semibold mb-1">
+                  {loc.contact_phone}
+                </p>
+
+                <div className="space-y-0.5 text-[11px] text-slate-500 font-medium">
+                  <p>{loc.address_line_1}</p>
+
+                  {loc.address_line_2 && <p>{loc.address_line_2}</p>}
+
+                  {loc.landmark && <p>{loc.landmark}</p>}
+
+                  <p>
+                    {loc.city}, {loc.state} - {loc.pincode}
+                  </p>
+                </div>
               </div>
             ))}
-            {addresses.length === 0 && (
-              <div className="col-span-full h-40 flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-100 rounded-[32px]">
-                <LocationOnOutlinedIcon fontSize="large" className="mb-2 opacity-20" />
-                <p className="font-bold text-sm uppercase tracking-widest">No addresses found</p>
-              </div>
-            )}
           </div>
         )}
       </div>

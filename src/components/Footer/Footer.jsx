@@ -69,22 +69,42 @@ function Footer() {
             <div>
               <h4 className="text-white text-xl mb-6 font-bold">Support</h4>
               <ul className="space-y-4">
-                <li><Link to="/help" onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">Help Center</Link></li>
-               <li>
-      <Link to="/info/aboutUs" onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">
-        About Us
-      </Link>
-    </li>
-    <li>
-      <Link to="/info/termsConditions" onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">
-        Terms of Service
-      </Link>
-    </li>
-    <li>
-      <Link to="/info/privacyPolicy" onClick={handleScrollTop} className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0">
-        Privacy Policy
-      </Link>
-    </li>
+                <li>
+                  <Link 
+                    to="/info/faq" 
+                    onClick={handleScrollTop}
+                    className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0"
+                  >
+                    FAQs
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/info/aboutUs" 
+                    onClick={handleScrollTop}
+                    className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0"
+                  >
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/info/termsConditions" 
+                    onClick={handleScrollTop}
+                    className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0"
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/info/privacyPolicy" 
+                    onClick={handleScrollTop}
+                    className="text-slate-400 transition-all duration-300 text-[15px] inline-block hover:text-cyan-400 sm:hover:translate-x-2 hover:-translate-y-1 sm:hover:translate-y-0"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -122,7 +142,15 @@ function Footer() {
           <div>
             <p className="text-slate-400 leading-relaxed">© 2026 Shippzyy Inc. All rights reserved.</p>
             <p className="text-[13px] text-slate-500 mt-1">
-              Designed and developed by <span className="text-cyan-400 font-bold">Blackcube Solutions LLC</span>
+              Designed and developed by{" "}
+              <a 
+                href="https://blackcube.ae/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-cyan-400 font-bold hover:text-emerald-400 transition-colors duration-300 underline-offset-4 hover:underline"
+              >
+                Blackcube Solutions LLC
+              </a>
             </p>
           </div>
         </div>

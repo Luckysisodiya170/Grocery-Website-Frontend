@@ -16,7 +16,6 @@ function Profile() {
   const [activeTab, setActiveTab] = useState(location.state?.activeTab || "personal");
   const profileTopRef = useRef(null);
 
-  // Agar user footer ke link se kisi specific tab par navigate karta hai
   useEffect(() => {
     if (location.state?.activeTab) {
       setActiveTab(location.state.activeTab);

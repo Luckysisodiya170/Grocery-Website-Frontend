@@ -147,9 +147,11 @@ const handleSubmit = async (e) => {
           <h2 className="text-2xl font-bold text-textMain mb-1">
             Verify OTP
           </h2>
-          <p className="text-[13px] font-medium text-textMuted mb-6">
-            Code sent to <span className="font-bold text-primary">+91 {phone}</span>
-          </p>
+         <p className="text-[13px] sm:text-[14px] font-bold text-[var(--text-muted)] mb-5">
+  Code sent to <span className="font-black text-[var(--primary)] tracking-wider">
+    +{phone?.slice(0, 2)} {phone?.slice(2, 7)} {phone?.slice(7)}
+  </span>
+</p>
 
           <form onSubmit={handleSubmit}>
             {/* OTP BOXES */}
